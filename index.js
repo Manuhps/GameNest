@@ -14,12 +14,9 @@ app.get('/', function (req, res) {
     res.status(200).json({ message: 'home -- TUTORIALS api' });
 });
 
-// routing middleware for resource TUTORIALS
-app.use('/tutorials', require('./routes/tutorials.routes.js'))
-
 // handle invalid routes
 app.get('*', function (req, res) {
-    res.status(404).json({ message: 'WHAT???' });
+    res.status(404).json({ message: 'Error 404 Not Found' });
 })
 
 app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/`));
