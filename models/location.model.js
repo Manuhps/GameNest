@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index').sequelize;
+const { DataTypes } = require('sequelize');
+const sequelize = require('./index');
 
 const Location = sequelize.define("Location",
     {

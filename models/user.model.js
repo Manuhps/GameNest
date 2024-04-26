@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index').sequelize;
+const sequelize = require('./index');
+const Location = require('./location.model');
 
 const User = sequelize.define("User",
     {

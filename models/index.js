@@ -1,19 +1,17 @@
-const config = require('../config/db.config');
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD,
-    {
-        host: config.HOST,
-        dialect: config.dialect
-    }
-);
+const { Sequelize } = require('sequelize');
+const dbConfig = require('../config/db.config'); 
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+    host: dbConfig.HOST,
+    dialect: dbConfig.dialect
+});
 
 const User = require('./user.model');
 const Product = require('./product.model');
 const Order = require('./order.model');
-const Location = require('./location.model');
 const Review = require('./review.model');
 const Discount = require('./discount.model');
 const Category = require('./category.model');
+const Location = require('./location.model');
 const SubCategory = require('./subCategory.model');
 const OrderProduct = require('./orderProduct.model');
 const Genre = require('./genre.model');
