@@ -11,7 +11,7 @@ app.use(express.json()); //enable parsing JSON body data
 
 // root route -- /api/
 app.get('/', function (req, res) {
-    res.status(200).json({ message: 'home -- TUTORIALS api' });
+    res.status(200).json({ message: 'home -- GameNest' });
 });
 
 // handle invalid routes

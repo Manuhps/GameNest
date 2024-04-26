@@ -47,7 +47,7 @@ Product.belongsToMany(GameMode, { through: 'ProductGameMode' })  //Creates inter
 GameMode.belongsToMany(Product, { through: 'ProductGameMode' })  //Creates intermediary table between Product and GameMode
 
 Category.hasOne(SubCategory)  //One Category can have one SubCategory
-SubCategory.belongsTo(SubCategory)  //One SubCategory has one Category
+SubCategory.belongsTo(Category)  //One SubCategory has one Category
 
 //Synchronizes the Models With the DataBase
 
