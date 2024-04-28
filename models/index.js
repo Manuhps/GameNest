@@ -5,8 +5,8 @@ const sequelize = require('../connection')
 // const Discount = require('./discount.model');
 // const Review = require('./review.model');
 
-// const Product = require('./product.model');
-// const Category = require('./category.model');
+const Product = require('./product.model');
+const Category = require('./category.model');
 
 // const OrderProduct = require('./orderProduct.model');
 // const SubCategory = require('./subCategory.model');
@@ -43,8 +43,6 @@ Category.hasMany(Product) //One Category has many Products
 
 // Category.hasOne(SubCategory)  //One Category can have one SubCategory
 // SubCategory.belongsTo(Category)  //One SubCategory has one Category
-
-
 
 //Synchronizes the Models With the DataBase
 (async () => {
