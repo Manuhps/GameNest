@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 // import controller middleware
-const moviesController = require("../controllers/movies.controller");
+const ordersController = require("../controllers/orders.controller");
 
 router.route('/')
-    .get(moviesController.findAll)
-    .post(moviesController.bodyValidator, moviesController.create);
+    .get(ordersController.findAll)
+    .post(ordersController.bodyValidator, ordersController.create);
 
 router.route('/:id')
-    .get(moviesController.findOne)
-    .put(moviesController.bodyValidator, moviesController.update)
-    .delete(moviesController.delete);
+    .get(ordersController.findOne)
+    .put(ordersController.bodyValidator, ordersController.update)
+    .delete(ordersController.delete);
 
 router.all('*', (req, res) => {
-    res.status(404).json({ message: 'MOVIES: what???' }); //send a predefined error message
+    res.status(404).json({ message: 'orders: what???' }); //send a predefined error message
 })
 
 //export this router
