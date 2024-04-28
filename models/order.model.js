@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../connection')
+const User = require('./user.model')
 
 const Order = sequelize.define("Order",
     {
@@ -33,4 +34,10 @@ const Order = sequelize.define("Order",
     }
 );
 
-module.exports = Order;
+//Synchronizes the Models With the DataBase
+(async () => {
+    await sequelize.sync();
+    console.log('Tables Synchronized.');
+})();
+
+module.exports = {Order};

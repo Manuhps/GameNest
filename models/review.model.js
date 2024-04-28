@@ -1,5 +1,7 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../connection')
+const User = require('./user.model')
+const Product = require('./product.model')
 
 const Review = sequelize.define("Review",
     {
@@ -16,14 +18,14 @@ const Review = sequelize.define("Review",
             allowNull: true,
         },
         userID: {
-            type: DataTypes.integer,
+            type: DataTypes.INTEGER,
             references: {
                 model: User, 
                 key: 'userID' 
             }
         },
         productID: {
-            type: DataTypes.integer,
+            type: DataTypes.INTEGER,
             references: {
                 model: Product, 
                 key: 'productID' 
@@ -32,4 +34,10 @@ const Review = sequelize.define("Review",
     }
 );
 
-module.exports = Review;
+//Synchronizes the Models With the DataBase
+(async () => {
+    await sequelize.sync();
+    console.log('Tables Synchronized.');
+})();
+
+module.exports = {Review};

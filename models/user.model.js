@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../connection')
 const Location = require('./location.model');
 
 const User = sequelize.define("User",
@@ -22,7 +22,7 @@ const User = sequelize.define("User",
             allowNull: false
         },
         role: DataTypes.STRING,
-        isBanned: DataTypes.Boolean,
+        isBanned: DataTypes.BOOLEAN,
         postalCode: {
             type: DataTypes.STRING,
             references: {
@@ -33,4 +33,10 @@ const User = sequelize.define("User",
     }
 );
 
-module.exports = User;
+//Synchronizes the Models With the DataBase
+(async () => {
+    await sequelize.sync();
+    console.log('Tables Synchronized.');
+})();
+
+module.exports = {User};

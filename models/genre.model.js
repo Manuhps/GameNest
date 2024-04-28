@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../connection');
 
 const Genre = sequelize.define("Genre",
     {
@@ -10,4 +10,10 @@ const Genre = sequelize.define("Genre",
     }
 );
 
-module.exports = Genre;
+//Synchronizes the Models With the DataBase
+(async () => {
+    await sequelize.sync();
+    console.log('Tables Synchronized.');
+})();
+
+module.exports = {Genre};

@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const sequelize = require('../connection')
+const { DataTypes } = require('sequelize');
 
 const SubCategory = sequelize.define("SubCategory",
     {
@@ -10,4 +10,10 @@ const SubCategory = sequelize.define("SubCategory",
     }
 );
 
-module.exports = SubCategory;
+//Synchronizes the Models With the DataBase
+(async () => {
+    await sequelize.sync();
+    console.log('Tables Synchronized.');
+})();
+
+module.exports = {SubCategory};

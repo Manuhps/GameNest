@@ -1,5 +1,5 @@
+const sequelize = require('../connection')
 const { DataTypes } = require('sequelize');
-const sequelize = require('./index');
 
 const Location = sequelize.define("Location",
     {
@@ -15,4 +15,10 @@ const Location = sequelize.define("Location",
     }
 );
 
-module.exports = Location;
+//Synchronizes the Models With the DataBase
+(async () => {
+    await sequelize.sync();
+    console.log('Tables Synchronized.');
+})();
+
+module.exports = {Location};
