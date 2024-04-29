@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const gameMode = require('../models/gameMode.model');
 
-exports.findAll = (req, res) => {
+exports.findAllGameMode = (req, res) => {
     gameMode.find()
         .then(gameModes => {
             res.send(gameModes);
@@ -13,7 +13,7 @@ exports.findAll = (req, res) => {
         });
 };
 
-exports.findOne = (req, res) => {
+exports.findOneGameMode = (req, res) => {
     gameMode.findById(req.params.id)
         .then(gameMode => {
             if (!gameMode) {
@@ -34,7 +34,7 @@ exports.findOne = (req, res) => {
         });
 };
 
-exports.create = (req, res) => {
+exports.createGameMode = (req, res) => {
     // Validação de requisição
     if(!req.body) {
         return res.status(400).send({
@@ -59,7 +59,7 @@ exports.create = (req, res) => {
     });
 };
 
-exports.update = (req, res) => {
+exports.updateGameMode = (req, res) => {
     // Validação de requisição
     if(!req.body) {
         return res.status(400).send({
