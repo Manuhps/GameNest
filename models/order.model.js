@@ -4,6 +4,12 @@ const User = require('./user.model')
 
 const Order = sequelize.define("Order",
     {
+        orderID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         deliverDate: {
             type: DataTypes.DATE,
             allowNull: true
@@ -23,21 +29,11 @@ const Order = sequelize.define("Order",
         state: {
             type: DataTypes.STRING,
             allowNull: false
-        },
-        userID: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: User, 
-                key: 'userID' 
-            }
         }
     }
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Order.sync({"logging":false})
 
-module.exports = {Order};
+module.exports = Order;

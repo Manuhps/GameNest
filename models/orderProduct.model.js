@@ -11,9 +11,6 @@ const OrderProduct = sequelize.define("OrderProduct",
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// OrderProduct.sync({"logging":false})
 
-module.exports = {OrderProduct};
+module.exports = OrderProduct;

@@ -1,9 +1,15 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-// const Category = require('./category.model')
+const Category = require('./category.model')
 
 const Product = sequelize.define("Product",
     {
+        productID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false
@@ -35,15 +41,11 @@ const Product = sequelize.define("Product",
         platform: {
             type: DataTypes.STRING,
             allowNull: true
-        },
+        }
     }
-    
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Product.sync({"logging": false})
 
-module.exports = {Product};
+module.exports = Product;

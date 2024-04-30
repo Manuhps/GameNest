@@ -4,6 +4,12 @@ const Product = require('./product.model')
 
 const Discount = sequelize.define("Discount",
     {
+        discountID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         percentage: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -19,21 +25,11 @@ const Discount = sequelize.define("Discount",
         endDate: {
             type: DataTypes.DATE,
             allowNull: false
-        },
-        productID: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: Product, 
-                key: 'productID' 
-            }
         }
     }
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Discount.sync({"logging":false})
 
-module.exports = {Discount};
+module.exports = Discount;
