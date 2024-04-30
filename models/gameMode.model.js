@@ -3,6 +3,12 @@ const sequelize = require('../connection')
 
 const GameMode = sequelize.define("GameMode",
     {
+        gameModeID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         gameModeName: {
             type: DataTypes.STRING,
             allowNull: false
@@ -11,9 +17,5 @@ const GameMode = sequelize.define("GameMode",
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
-
-module.exports = {GameMode};
+// GameMode.sync({"logging":false})
+module.exports = GameMode;

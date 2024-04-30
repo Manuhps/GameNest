@@ -3,6 +3,12 @@ const sequelize = require('../connection');
 
 const Genre = sequelize.define("Genre",
     {
+        genreID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         genreName: {
             type: DataTypes.STRING,
             allowNull: false
@@ -11,9 +17,6 @@ const Genre = sequelize.define("Genre",
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Genre.sync({"logging":false})
 
-module.exports = {Genre};
+module.exports = Genre;

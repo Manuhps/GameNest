@@ -16,9 +16,6 @@ const Location = sequelize.define("Location",
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Location.sync({"logging":false})
 
-module.exports = {Location};
+module.exports = Location;

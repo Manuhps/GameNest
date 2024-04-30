@@ -5,6 +5,12 @@ const Product = require('./product.model')
 
 const Review = sequelize.define("Review",
     {
+        reviewID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         rating: {
             type: DataTypes.DECIMAL(3,1),
             allowNull: false,
@@ -16,28 +22,11 @@ const Review = sequelize.define("Review",
         comment: {
             type: DataTypes.STRING,
             allowNull: true,
-        },
-        userID: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: User, 
-                key: 'userID' 
-            }
-        },
-        productID: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: Product, 
-                key: 'productID' 
-            }
         }
     }
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Review.sync({"logging":false})
 
-module.exports = {Review};
+module.exports = Review;

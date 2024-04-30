@@ -15,5 +15,13 @@
     "express": "^4.19.2",
     "mysql2": "^3.9.7",
     "sequelize": "^6.37.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Manuhps/GameNest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Manuhps/GameNest/issues"
+  },
+  "homepage": "https://github.com/Manuhps/GameNest#readme"
 }

@@ -4,6 +4,12 @@ const Location = require('./location.model');
 
 const User = sequelize.define("User",
     {
+        userID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         username: {
             type: DataTypes.STRING,
             allowNull: false
@@ -22,21 +28,11 @@ const User = sequelize.define("User",
             allowNull: false
         },
         role: DataTypes.STRING,
-        isBanned: DataTypes.BOOLEAN,
-        postalCode: {
-            type: DataTypes.STRING,
-            references: {
-                model: Location, 
-                key: 'postalCode' 
-            }
-        }
+        isBanned: DataTypes.BOOLEAN
     }
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// User.sync({"logging":false})
 
-module.exports = {User};
+module.exports = User;

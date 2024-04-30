@@ -3,6 +3,12 @@ const { DataTypes } = require('sequelize');
 
 const SubCategory = sequelize.define("SubCategory",
     {
+        subCategoryID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         subCategoryName: {
             type: DataTypes.STRING,
             allowNull: false
@@ -11,9 +17,6 @@ const SubCategory = sequelize.define("SubCategory",
 );
 
 //Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// SubCategory.sync({"logging":false})
 
-module.exports = {SubCategory};
+module.exports = SubCategory;

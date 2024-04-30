@@ -1,8 +1,14 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../connection')
+const sequelize = require('../connection');
 
 const Category = sequelize.define("Category",
     {
+        categoryID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
         categoryName: {
             type: DataTypes.STRING,
             allowNull: false
@@ -10,10 +16,6 @@ const Category = sequelize.define("Category",
     }
 );
 
-//Synchronizes the Models With the DataBase
-(async () => {
-    await sequelize.sync();
-    console.log('Tables Synchronized.');
-})();
+// Category.sync({"logging":false})
 
-module.exports = {Category};
+module.exports = Category;
