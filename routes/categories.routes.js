@@ -10,7 +10,6 @@ router.route('/')
 
 router.route('/:id')
     .get(categoriesController.findOne)
-    .put(categoriesController.bodyValidator, categoriesController.update)
     .delete(categoriesController.delete);
 
 router.all('*', (req, res) => {
