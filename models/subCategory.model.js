@@ -16,7 +16,4 @@ const SubCategory = sequelize.define("SubCategory",
     }
 );
 
-//Synchronizes the Models With the DataBase
-// SubCategory.sync({"logging":false})
-
 module.exports = SubCategory;

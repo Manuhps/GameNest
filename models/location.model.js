@@ -15,7 +15,4 @@ const Location = sequelize.define("Location",
     }
 );
 
-//Synchronizes the Models With the DataBase
-// Location.sync({"logging":false})
-
 module.exports = Location;

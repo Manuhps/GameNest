@@ -1,12 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-const Product = require('./product.model')
 
 const Discount = sequelize.define("Discount",
     {
         discountID: {
             type: DataTypes.INTEGER,
-            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
@@ -21,15 +19,14 @@ const Discount = sequelize.define("Discount",
         startDate: {
             type: DataTypes.DATE,
             allowNull: false,
+            validate: { notNull: { msg: "Start date can not be empty or null!" } }
         },
         endDate: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: false,
+            validate: { notNull: { msg: "End date can not be empty or null!" } }
         }
     }
 );
-
-//Synchronizes the Models With the DataBase
-// Discount.sync({"logging":false})
 
 module.exports = Discount;

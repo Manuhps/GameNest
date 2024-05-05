@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-const Location = require('./location.model');
 
 const User = sequelize.define("User",
     {
@@ -28,11 +27,19 @@ const User = sequelize.define("User",
             allowNull: false
         },
         role: DataTypes.STRING,
-        isBanned: DataTypes.BOOLEAN
+        isBanned: DataTypes.BOOLEAN,
+        points: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                // custom validation function 
+                isBoolean: function (val) {
+                    if (typeof (val) != 'boolean')
+                        throw new Error('Type must contain a boolean value!');
+                }
+            } 
+        }
     }
 );
-
-//Synchronizes the Models With the DataBase
-// User.sync({"logging":false})
 
 module.exports = User;
