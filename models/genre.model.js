@@ -16,7 +16,4 @@ const Genre = sequelize.define("Genre",
     }
 );
 
-//Synchronizes the Models With the DataBase
-// Genre.sync({"logging":false})
-
 module.exports = Genre;

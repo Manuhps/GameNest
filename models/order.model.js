@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-const User = require('./user.model')
 
 const Order = sequelize.define("Order",
     {
@@ -32,8 +31,5 @@ const Order = sequelize.define("Order",
         }
     }
 );
-
-//Synchronizes the Models With the DataBase
-// Order.sync({"logging":false})
 
 module.exports = Order;

@@ -5,17 +5,15 @@ const Category = sequelize.define("Category",
     {
         categoryID: {
             type: DataTypes.INTEGER,
-            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         categoryName: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: { notNull: { msg: "Category Name can not be empty or null!" } }
         }
     }
 );
-
-// Category.sync({"logging":false})
 
 module.exports = Category;

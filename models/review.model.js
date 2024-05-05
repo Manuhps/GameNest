@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-const User = require('./user.model')
-const Product = require('./product.model')
 
 const Review = sequelize.define("Review",
     {
@@ -25,8 +23,5 @@ const Review = sequelize.define("Review",
         }
     }
 );
-
-//Synchronizes the Models With the DataBase
-// Review.sync({"logging":false})
 
 module.exports = Review;
