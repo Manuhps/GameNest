@@ -11,7 +11,8 @@ const Genre = sequelize.define("Genre",
         },
         genreName: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: { notNull: { msg: "Genre Name can not be empty or null!" } }
         }
     }
 );
