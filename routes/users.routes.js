@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
 
-// import controller middleware
+// import users controller
 const usersController = require("../controllers/users.controller");
 
 router.route('/users')
-    .get(usersController.findAll)
+    .get(usersController.getUsers)
 
 router.route('/users/login')
     .post(usersController.login)
 
 router.route('/user')
-    .post(usersController.addUser)
+    .post(usersController.register)
 
 router.route('/users/me')
     .get(usersController.getUser)
