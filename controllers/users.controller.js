@@ -1,6 +1,6 @@
 const { User } = require("../models/index");
 const { compareHash } = require("./bcrypt");
-const { SignToken, verifyAdmin } = require("./jwt");
+const { SignToken, verifyAdmin, verifyUser } = require("./jwt");
 
 module.exports = {
   login: async (req, res) => {
@@ -118,6 +118,49 @@ module.exports = {
       // Return the list of users
       res.status(200).send({users: users, links: links});
     } catch (error) {
+      res.status(500).send({ 
+        message: "Something went wrong. Please try again later",
+        details: error,
+      });
+    }
+  },
+  updateUser: async (req, res) => {
+    try {
+      // Check if the token was provided
+      if (!req.headers.authorization) {
+        return res.status(401).send({ message: "No access token provided" });
+      }
+
+      // Extract token from the request header
+      const bearer = req.headers.authorization.split(" ")[1];
+
+      // Verify the user's token
+      const decodedToken = await verifyUser(bearer);
+
+      // Check if the user exists
+      const user = await User.findByPk(decodedToken.id);
+      if (!user) {
+        return res.status(404).send({ message: "User Not Found" });
+      }
+
+      // Update the user's data with the values from the request body, if provided
+      if (req.body.username) user.username = req.body.username;
+      if (req.body.password) user.password = req.body.password;
+      if (req.body.email) user.email = req.body.email;
+      if (req.body.address) user.address = req.body.address;
+      if (req.body.postalCode) user.postalCode = req.body.postalCode;
+      if (req.body.profileImg) user.profileImg = req.body.profileImg;
+
+      // Save the changes to the database
+      await user.save();
+
+      // Return a success response
+      res.status(200).send({ message: "Data successfully updated" });
+    } catch (error) {
+      // Handle errors
+      if (error.name === "JsonWebTokenError") {
+        return res.status(401).send({ message: "Your token has expired! Please login again." });
+      }
       res.status(500).send({ 
         message: "Something went wrong. Please try again later",
         details: error,
