@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// import controller middleware
+// import genres controller 
 const genresController = require("../controllers/genres.controller");
 
 router.route('/genre')
