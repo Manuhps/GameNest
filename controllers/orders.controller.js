@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const orders = require('../models/orders.model');
+const Order = require('../models/orders.model');
+const ORDER_STATUS = Order.ORDER_STATUS;
 
 exports.findAll = (req, res) => {
-    orders.find()
+    Order.findAll()
         .then(orders => {
             res.send(orders);
         }).catch(err => {
@@ -14,7 +15,7 @@ exports.findAll = (req, res) => {
 }
 
 exports.findOne = (req, res) => {
-    orders.findById(req.params.id)
+    Order.findByPk(req.params.id)
         .then(order => {
             if (!order) {
                 return res.status(404).send({
@@ -33,6 +34,31 @@ exports.findOne = (req, res) => {
             });
         });
 };
- 
+
+exports.updateStatus = (req, res) => {
+    if (!req.body.status || !Object.values(ORDER_STATUS).includes(req.body.status)) {
+        return res.status(400).send({
+            message: "Invalid order status"
+        });
+    }
+
+    Order.update({ state: req.body.status }, { where: { orderID: req.params.id } })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "Order status was updated successfully."
+                });
+            } else {
+                res.send({
+                    message: `Cannot update Order with id=${req.params.id}. Maybe Order was not found or req.body is empty!`
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating Order with id=" + req.params.id
+            });
+        });
+};
 
 module.exports = router;
