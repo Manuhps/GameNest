@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// import controller middleware
+// import categories controller 
 const categoriesController = require("../controllers/categories.controller");
 
 router.route('/categories')
@@ -9,7 +9,7 @@ router.route('/categories')
     .post(categoriesController.createCategory);
 
 router.route('/categories/:categoryID')
-    .delete(categoriesController.delete);
+    .delete(categoriesController.deleteCategory);
 
 router.all('*', (req, res) => {
     res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
