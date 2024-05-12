@@ -10,12 +10,10 @@ const Location = sequelize.define("Location",
         },
         location: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: { notNull: { msg: "Location can not be empty or null!" } }
         }, 
     }
 );
-
-//Synchronizes the Models With the DataBase
-// Location.sync({"logging":false})
 
 module.exports = Location;

@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-const User = require('./user.model')
 
 const Order = sequelize.define("Order",
     {
@@ -12,7 +11,8 @@ const Order = sequelize.define("Order",
         },
         deliverDate: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: true,
+            validate: { notNull: { msg: "State can not be empty or null!" } }
         },
         cardName: {
             type: DataTypes.STRING,
@@ -28,12 +28,10 @@ const Order = sequelize.define("Order",
         },
         state: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: { notNull: { msg: "State can not be empty or null!" } }
         }
     }
 );
-
-//Synchronizes the Models With the DataBase
-// Order.sync({"logging":false})
 
 module.exports = Order;

@@ -10,7 +10,4 @@ const OrderProduct = sequelize.define("OrderProduct",
     }
 );
 
-//Synchronizes the Models With the DataBase
-// OrderProduct.sync({"logging":false})
-
 module.exports = OrderProduct;

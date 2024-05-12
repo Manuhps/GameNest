@@ -8,9 +8,10 @@ const GameMode = require('./gameMode.model');
 const Discount = require('./discount.model');
 const User = require('./user.model');
 const Location = require('./location.model');
-const Order = require('./order.model');
+const Order = require('./order.model'); 
 const Review = require('./review.model');
 const OrderProduct = require('./orderProduct.model');
+const PointsTransaction = require('./pointsTransaction.model');
 
 // Category.hasOne(SubCategory);  // One category can have one subcategory.  
 // SubCategory.belongsTo(Category);  // One subcategory has one category.
@@ -24,11 +25,11 @@ const OrderProduct = require('./orderProduct.model');
 // User.hasMany(Review);  // One user can have many reviews.
 // Review.belongsTo(User);  // Each review has only one user.
 
-// Product.belongsToMany(Genre, { through: 'ProductGenre', as: 'ProductGenres' });  // Creates intermediary table between Product and Genre.
-// Genre.belongsToMany(Product, { through: 'ProductGenre', as: 'GenreProducts' });  // Creates intermediary table between Product and Genre.
+// Product.belongsToMany(Genre, { through: 'ProductGenre' });  // Creates intermediary table between Product and Genre.
+// Genre.belongsToMany(Product, { through: 'ProductGenre' });  // Creates intermediary table between Product and Genre.
 
-// Product.belongsToMany(GameMode, { through: 'ProductGameMode', as: 'ProductGameModes' });  // Creates intermediary table between Product and GameMode.
-// GameMode.belongsToMany(Product, { through: 'ProductGameMode', as: 'gameModeProducts' });  // Creates intermediary table between Product and GameMode.
+// Product.belongsToMany(GameMode, { through: 'ProductGameMode' });  // Creates intermediary table between Product and GameMode.
+// GameMode.belongsToMany(Product, { through: 'ProductGameMode' });  // Creates intermediary table between Product and GameMode.
 
 // Product.hasMany(Review);  // One product can have many reviews.
 // Review.belongsTo(Product);  // Each review has only one product.
@@ -39,9 +40,15 @@ const OrderProduct = require('./orderProduct.model');
 // Product.hasMany(Discount);  // One product can have many discounts (but only one at a time).
 // Discount.belongsTo(Product);  // Each discount has only one product.
 
-// Order.belongsToMany(Product, { through: OrderProduct, as: 'OrderProducts' });  // Creates intermediary table between Order and Product.
-// Product.belongsToMany(Order, { through: OrderProduct, as: 'ProductOrders' });  // Creates intermediary table between Order and Product.
-    
-// sequelize.sync({'logging': false});
+// Order.belongsToMany(Product, { through: OrderProduct });  // Creates intermediary table between Order and Product.
+// Product.belongsToMany(Order, { through: OrderProduct });  // Creates intermediary table between Order and Product.
 
-module.exports = { User, Product, Order, Category, SubCategory, Discount, OrderProduct, Location, Review, Genre, GameMode };
+// PointsTransaction.belongsTo(User) // Each points transaction is associated to one User
+// User.hasMany(PointsTransaction) // Each User can have many Points Transactions
+
+// PointsTransaction.belongsTo(Order) // Each points transaction is associated to one Order
+// Order.hasMany(PointsTransaction) // Each Order can have many Points Transactions (receiving or paying points)
+
+// sequelize.sync({'logging': false, 'force': true});
+
+module.exports = { User, Product, Order, Category, SubCategory, Discount, OrderProduct, Location, Review, Genre, GameMode, PointsTransaction};

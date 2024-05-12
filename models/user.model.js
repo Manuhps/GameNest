@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
-const Location = require('./location.model');
+const bcrypt = require('bcrypt')
 
 const User = sequelize.define("User",
     {
@@ -25,14 +25,27 @@ const User = sequelize.define("User",
         address: DataTypes.STRING,
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true,
+            set(value) {
+                const hashedPassword = bcrypt.hashSync(value,10)
+                this.setDataValue('password',hashedPassword)
+            }
         },
-        role: DataTypes.STRING,
-        isBanned: DataTypes.BOOLEAN
-    }
+        role: {
+            type: DataTypes.STRING,
+            defaultValue: 'user'
+        },
+        isBanned: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }, 
+        points: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        }
+    },
+    
 );
-
-//Synchronizes the Models With the DataBase
-// User.sync({"logging":false})
 
 module.exports = User;

@@ -1,20 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
-// import controller middleware
+// import genres controller 
 const genresController = require("../controllers/genres.controller");
 
-router.route('/')
-    .get(genresController.findAll)
-    .post(genresController.bodyValidator, genresController.create);
+router.route('/genre')
+    .get(genresController.findAllGenre)
+    .post(genresController.createGenre);
 
-router.route('/:id')
-    .get(genresController.findOne)
-    .put(genresController.bodyValidator, genresController.update)
-    .delete(genresController.delete);
+router.route('/genre/:genreID')
+    .delete(genresController.deleteGenre);
 
 router.all('*', (req, res) => {
-    res.status(404).json({ message: 'genres: what???' }); //send a predefined error message
+    res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
 })
 
 //export this router

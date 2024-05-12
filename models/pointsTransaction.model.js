@@ -1,20 +1,23 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
 
-const GameMode = sequelize.define("GameMode",
+const PointsTransaction = sequelize.define("PointsTransaction",
     {
-        gameModeID: {
+        transactionID: {
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        gameModeName: {
+        transactionType: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: { notNull: { msg: "Game Mode Name can not be empty or null!" } }
+            allowNull: false
+        },
+        transactionPoints: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }
 );
 
-module.exports = GameMode;
+module.exports = PointsTransaction;
