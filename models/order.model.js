@@ -12,7 +12,7 @@ const Order = sequelize.define("Order",
         deliverDate: {
             type: DataTypes.DATE,
             allowNull: true,
-            validate: { notNull: { msg: "State can not be empty or null!" } }
+            // validate: { notNull: { msg: "State can not be empty or null!" } }
         },
         cardName: {
             type: DataTypes.STRING,
@@ -29,7 +29,7 @@ const Order = sequelize.define("Order",
         state: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: { notNull: { msg: "State can not be empty or null!" } }
+            // validate: { notNull: { msg: "State can not be empty or null!" } }
         }
     }
 );
