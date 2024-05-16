@@ -36,13 +36,13 @@ module.exports = {
 
     createGameMode: async (req, res) => {
         // Authorization check
-
+/*
         if (!req.headers.authorization) {
             return res.status(401).send({ message: "No access token provided" });
         }
 
         await verifyAdmin(req, res);
-
+*/
         // Request validation
         if (!req.body) {
             return res.status(400).send({
@@ -51,14 +51,16 @@ module.exports = {
         }
 
         // Create a new GameMode
-        const gameMode = new gameMode({
+        const gameModes = new gameMode({
             gameModeName: req.body.gameModeName,
         });
 
         // Save the GameMode in the database
         try {
-            const data = await gameMode.save();
-            res.send(data);
+            const data = await gameModes.save();
+            res.status(201).send({
+                message:"New game mode created with success."
+            });
         } catch (err) {
             res.status(500).send({
                 message: err.message || "Some error occurred while creating the GameMode."
