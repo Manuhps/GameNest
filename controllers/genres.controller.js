@@ -1,14 +1,18 @@
-const Genre = require('../models/genre.model'); 
-const { verifyAdmin } = require("./jwt");
+const express = require('express');
+const router = express.Router();
+const genre = require('../models/genre.model'); 
+const { verifyAdmin } = require("../middlewares/jwt");
 
 module.exports = {
     findAllGenre : async (req, res) => {
         try {
+            
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
         
             await verifyAdmin(req, res);
+            
         
             const page = req.query.page ? parseInt(req.query.page) : 0;
         
@@ -25,7 +29,18 @@ module.exports = {
                 limit: limit
             });
 
-            res.status(200).send({genres: genres});
+            const nextPage = `/users?page=${page + 1}`;
+            const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+
+            const links = [
+                { rel: "createGenre", href: "/genre", method: "POST" },
+                { rel: "deleteGenre", href: "/genre/:genreID", method: "DELETE" },
+                { rel: "nextPage", href: nextPage, method: "GET" },
+                { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
+
+            console.log('success');
+            res.status(200).send({genres: genres, links: links});
         }   catch(error) {
                 res.status(500).send({
                     message: err.message || "Something went wrong. Please try again later.",
@@ -35,8 +50,9 @@ module.exports = {
     },
           
     createGenre : async (req, res) => {
-        try {
+        /*try {
             // Validação de requisição
+            
             if (!req.body.genre || typeof req.body.genre !== 'string') {
                 return res.status(400).send({
                     message: "Genre name must be a non-empty string"
@@ -48,8 +64,7 @@ module.exports = {
             }
 
             await verifyAdmin(req, res);
-    
-            // Verifica se o gênero já existe no banco de dados
+
             const existingGenre = await Genre.findOne({ GenreName: req.body.genre }); 
     
             // Se o gênero já existir, retorna um erro 409 (Conflito)
@@ -58,34 +73,43 @@ module.exports = {
                     message: "A genre with that name already exists."
                 });
             }
+            */
     
-            // Cria um novo gênero se não existir
-            const newGenre = new Genre({
-                GenreName: req.body.genre
-            });
+
+        
+            if (!req.body) {
+                return res.status(400).send({
+                    message: "Genre content can not be empty"
+                });
+            }
     
             // Salva o gênero no banco de dados
-            const savedGenre = await newGenre.save();
-    
-            // Responde com o gênero recém-criado
-            res.status(201).send(savedGenre);
-        } catch (error) {
-            // Trata quaisquer outros erros
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
+            const genres = new genre({
+                genreName: req.body.genreName,
             });
-        }
+    
+            
+            try {
+                const data = await genres.save();
+                res.status(201).send({
+                    message:"New genre created with success."
+                });
+            } catch (err) {
+                res.status(500).send({
+                    message: err.message || "Something went wrong. Please try again later."
+                });
+            }
     },
 
     deleteGenre : async (req, res) => {
         try {
-
+            
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
               }
 
             await verifyAdmin(req, res);
+            
 
             let result = await Genre.destroy({ where: { id: req.params.id}})
             if (result == 1)
@@ -101,6 +125,3 @@ module.exports = {
         }
     },
 }
-
-
-
