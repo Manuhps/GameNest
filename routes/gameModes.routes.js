@@ -4,11 +4,11 @@ const router = express.Router();
 // import genres controller 
 const gameModeController = require("../controllers/gameMode.controller");
 
-router.route('/gameMode')
+router.route('/')
     .get(gameModeController.findAllGameMode)
-    .post(gameModeController.creategameMode);
+    .post(gameModeController.createGameMode);
 
-router.route('/gameMode/:gameModeID')
+router.route('/:gameModeID')
     .delete(gameModeController.deleteGameMode);
 
 router.all('*', (req, res) => {
