@@ -1,19 +1,18 @@
 const express = require('express');
 const router = express.Router();
-// import controller middleware
+
+// import genres controller 
 const gameModeController = require("../controllers/gameMode.controller");
 
-router.route('/')
-    .get(gameModeController.findAll)
-    .post(gameModeController.bodyValidator, gameModeController.create);
+router.route('/gameMode')
+    .get(gameModeController.findAllGameMode)
+    .post(gameModeController.creategameMode);
 
-router.route('/:id')
-    .get(gameModeController.findOne)
-    .put(gameModeController.bodyValidator, gameModeController.update)
-    .delete(gameModeController.delete);
+router.route('/gameMode/:gameModeID')
+    .delete(gameModeController.deleteGameMode);
 
 router.all('*', (req, res) => {
-    res.status(404).json({ message: 'gameMode: what???' }); //send a predefined error message
+    res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
 })
 
 //export this router
