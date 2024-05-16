@@ -1,5 +1,7 @@
-const Category = require('../models/category.model'); 
-const { verifyAdmin } = require("./jwt");
+const express = require('express');
+const router = express.Router();
+const category = require('../models/category.model'); 
+const { verifyAdmin } = require("../middlewares/jwt");
 
 module.exports = {
     findAllCategory : async (req, res) => {
@@ -25,7 +27,18 @@ module.exports = {
                 limit: limit
             });
 
-            res.status(200).send({categories: categories});
+            const nextPage = `/users?page=${page + 1}`;
+            const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+
+            const links = [
+                { rel: "createCategory", href: "/categories", method: "POST" },
+                { rel: "deleteCategory", href: "/categories/:categoryID", method: "DELETE" },
+                { rel: "nextPage", href: nextPage, method: "GET" },
+                { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
+
+            console.log('success');
+            res.status(200).send({categories: categories, links: links});
         }   catch(error) {
                 res.status(500).send({
                     message: err.message || "Something went wrong. Please try again later.",
@@ -35,8 +48,9 @@ module.exports = {
     },
 
     createCategory : async (req, res) => {
-        try {
+        /*try {
             // Validação de requisição
+            
             if (!req.body.category || typeof req.body.category !== 'string') {
                 return res.status(400).send({
                     message: "Category name must be a non-empty string"
@@ -45,11 +59,10 @@ module.exports = {
 
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
-              }
+            }
 
             await verifyAdmin(req, res);
-    
-            // Verifica se a categoria já existe no banco de dados
+
             const existingCategory = await Category.findOne({ CategoryName: req.body.category }); 
     
             // Se a categoria já existir, retorna um erro 409 (Conflito)
@@ -58,24 +71,32 @@ module.exports = {
                     message: "A category with that name already exists."
                 });
             }
+            */
     
-            // Cria uma nova categoria se não existir
-            const newCategory = new Category({
-                CategoryName: req.body.category
-            });
+
+           
+            if (!req.body) {
+                return res.status(400).send({
+                    message: "Category content can not be empty"
+                });
+            }
     
             // Salva a categoria no banco de dados
-            const savedCategory = await newCategory.save();
-    
-            // Responde com a categoria recém-criada
-            res.status(201).send(savedCategory);
-        } catch (error) {
-            // Trata quaisquer outros erros
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
+            const categories = new category({
+                categoryName: req.body.categoryName,
             });
-        }
+    
+            
+            try {
+                const data = await categories.save();
+                res.status(201).send({
+                    message:"New category created with success."
+                });
+            } catch (err) {
+                res.status(500).send({
+                    message: err.message || "Something went wrong. Please try again later."
+                });
+            }
     },
 
     deleteCategory : async (req, res) => {
@@ -101,7 +122,6 @@ module.exports = {
         }
     },
 }
-
 
 
 

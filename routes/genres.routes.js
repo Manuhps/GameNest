@@ -4,11 +4,11 @@ const router = express.Router();
 // import genres controller 
 const genresController = require("../controllers/genres.controller");
 
-router.route('/genre')
+router.route('/')
     .get(genresController.findAllGenre)
     .post(genresController.createGenre);
 
-router.route('/genre/:genreID')
+router.route('/:genreID')
     .delete(genresController.deleteGenre);
 
 router.all('*', (req, res) => {
