@@ -57,7 +57,7 @@ module.exports = {
 
         // Save the GameMode in the database
         try {
-            const data = await gameModes.save();
+            const datas = await gameModes.save();
             res.status(201).send({
                 message:"New game mode created with success."
             });
