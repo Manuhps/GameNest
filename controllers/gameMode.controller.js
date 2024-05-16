@@ -5,11 +5,12 @@ const { verifyAdmin } = require("./jwt");
 
 exports.findAllGameMode = async (req, res) => {
     try {
+        /*
         if (!req.headers.authorization) {
             return res.status(401).send({ message: "No access token provided" });
         }
-    
-        await verifyAdmin(req, res);
+    */
+        //await verifyAdmin(req, res);
     
         const page = req.query.page ? parseInt(req.query.page) : 0;
     
@@ -35,11 +36,12 @@ exports.findAllGameMode = async (req, res) => {
 
 exports.createGameMode = async (req, res) => {
     // Authorization check
+    /*
     if (!req.headers.authorization) {
         return res.status(401).send({ message: "No access token provided" });
     }
-
-    await verifyAdmin(req, res);
+*/
+    //await verifyAdmin(req, res);
 
     // Request validation
     if(!req.body) {
@@ -67,11 +69,11 @@ exports.createGameMode = async (req, res) => {
 
 exports.deleteGameMode = async (req, res) => {
     // Authorization check
-    if (!req.headers.authorization) {
-        return res.status(401).send({ message: "No access token provided" });
-    }
+    //if (!req.headers.authorization) {
+        //return res.status(401).send({ message: "No access token provided" });
+   // }
 
-    await verifyAdmin(req, res);
+    //await verifyAdmin(req, res);
 
     // Request validation
     if(!req.body) {
