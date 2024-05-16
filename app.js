@@ -8,7 +8,7 @@ app.use(cors()); //enable ALL CORS requests (client requests from other domain)
 app.use(express.json()); //enable parsing JSON body data
 
 app.use('/users', require('./routes/users.routes'))
-
+app.use('/gameModes', require('./routes/gameModes.routes'))
 
 app.listen(process.env.PORT, () => 
     console.log(`Server running at http://${process.env.HOST}:${process.env.PORT}/`)
