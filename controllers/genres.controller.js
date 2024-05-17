@@ -6,13 +6,13 @@ const { verifyAdmin } = require("../middlewares/jwt");
 module.exports = {
     findAllGenre : async (req, res) => {
         try {
-            
+            /*
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
         
             await verifyAdmin(req, res);
-            
+            */
         
             const page = req.query.page ? parseInt(req.query.page) : 0;
         
@@ -24,7 +24,7 @@ module.exports = {
         
             const offset = page * limit;
         
-            const genres = await Genre.findAll({
+            const genres = await genre.findAll({
                 offset: offset,
                 limit: limit
             });
@@ -41,12 +41,11 @@ module.exports = {
 
             console.log('success');
             res.status(200).send({genres: genres, links: links});
-        }   catch(error) {
-                res.status(500).send({
-                    message: err.message || "Something went wrong. Please try again later.",
-                    details: error,
-                });
-            }   
+        } catch (err) {
+            res.status(500).send({
+                message: err.message || "Something went wrong. Please try again later."
+            });
+        }   
     },
           
     createGenre : async (req, res) => {
@@ -103,19 +102,27 @@ module.exports = {
 
     deleteGenre : async (req, res) => {
         try {
-            
+            /*
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
               }
 
             await verifyAdmin(req, res);
-            
+            */
 
-            let result = await Genre.destroy({ where: { id: req.params.id}})
+            let result = await genre.destroy({ where: { genreID: req.params.genreID}})
             if (result == 1)
-                return res.status(204).send({
+                return res.status(201).send({
                      msg: `Genre deleted successfully.`
+            
                 });
+            else {
+                res
+                    .status(404)
+                    .send({
+                        messsage: "Genre not found",
+                    });
+            }
         }
         catch (error) {
             res.status(500).send({
