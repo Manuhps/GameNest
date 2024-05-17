@@ -11,7 +11,7 @@ const Category = sequelize.define("Category",
         categoryName: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: { notNull: { msg: "Category Name can not be empty or null!" } }
+            //validate: { notNull: { msg: "Category Name can not be empty or null!" } }
         }
     }
 );

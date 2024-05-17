@@ -6,12 +6,13 @@ const { verifyAdmin } = require("../middlewares/jwt");
 module.exports = {
     findAllCategory : async (req, res) => {
         try {
+            /*
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
         
             await verifyAdmin(req, res);
-        
+        */
             const page = req.query.page ? parseInt(req.query.page) : 0;
         
             if (page < 0 || !Number.isInteger(page)) {
@@ -22,7 +23,7 @@ module.exports = {
         
             const offset = page * limit;
         
-            const categories = await Category.findAll({
+            const categories = await category.findAll({
                 offset: offset,
                 limit: limit
             });
@@ -39,12 +40,11 @@ module.exports = {
 
             console.log('success');
             res.status(200).send({categories: categories, links: links});
-        }   catch(error) {
-                res.status(500).send({
-                    message: err.message || "Something went wrong. Please try again later.",
-                    details: error,
-                });
-            }   
+        } catch (err) {
+            res.status(500).send({
+                message: err.message || "Something went wrong. Please try again later."
+            });
+        }  
     },
 
     createCategory : async (req, res) => {
@@ -63,7 +63,7 @@ module.exports = {
 
             await verifyAdmin(req, res);
 
-            const existingCategory = await Category.findOne({ CategoryName: req.body.category }); 
+            const existingCategory = await category.findOne({ CategoryName: req.body.category }); 
     
             // Se a categoria já existir, retorna um erro 409 (Conflito)
             if (existingCategory) {
@@ -71,10 +71,15 @@ module.exports = {
                     message: "A category with that name already exists."
                 });
             }
-            */
-    
+            
+    */
 
-           
+            if (req.body.categoryName) {
+                if (await category.findOne({ where: { categoryName: req.body.categoryName } })) {
+                    res.status(409).send({ message: "Category already exists" });
+                }
+            }
+
             if (!req.body) {
                 return res.status(400).send({
                     message: "Category content can not be empty"
@@ -101,20 +106,27 @@ module.exports = {
 
     deleteCategory : async (req, res) => {
         try {
-
+/*
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
 
             await verifyAdmin(req, res);
-
-            let result = await Category.destroy({ where: { id: req.params.id}})
+*/
+            let result = await category.destroy({ where: { categoryID: req.params.categoryID}})
             if (result == 1)
-                return res.status(204).send({
-                     msg: `Category deleted successfully.`
+                return res.status(201).send({
+                    message: `Category deleted successfully.`
+             
                 });
-        }
-        catch (error) {
+            else {
+                res
+                    .status(404)
+                    .send({
+                        messsage: "Category not found",
+                    });
+            }
+        } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later.",
                 details: error,
