@@ -1,21 +1,22 @@
 const { User } = require("../models/index");
 const { compareHash } = require("../middlewares/bcrypt");
 const { SignToken, verifyAdmin, verifyUser } = require("../middlewares/jwt");
+const { checkToken } = require("../middlewares/checkToken")
+const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     login: async (req, res) => {
         try {
             const user = await User.findOne({ where: { username: req.body.username } });
             if (req.body.password && req.body.username) {
-                const passwordIsValid = await compareHash(
-                    user.password,
-                    req.body.password
-                );
+                //Verifies if the password matches the user's password'
+                const passwordIsValid = await compareHash(user.password, req.body.password);
 
                 if (passwordIsValid) {
                     console.log("Valid Password yep");
-                    const token = await SignToken(user.id);
 
+                    //Calls the SignToken function that creates the token
+                    const token = await SignToken(user.id);
                     res.status(201).send({ accessToken: token });
                 } else {
                     res.status(401).send({ message: "Invalid Credentials" });
@@ -69,10 +70,8 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
-            // Check if the token was provided
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
+            //Verifies is the token is provided, using the checkToken middleware
+            await checkToken(req, res)
 
             // Verify if the user is an admin
             await verifyAdmin(req, res);
@@ -80,26 +79,12 @@ module.exports = {
             // If we've reached this point, the user is an admin
 
             // Pagination
-            // Get the page number from the query parameter, default to page 0 if not specified
-            const page = req.query.page ? parseInt(req.query.page) : 0;
-
-            // Set the number of items per page
-            const limit = 10; // Number of users per page
-
-            // Calculate the offset based on the page number and limit
-            const offset = page * limit;
-
-            // Retrieve all users with pagination
-            const users = await User.findAll({
-                offset: offset,
-                limit: limit
-            });
+            const users = await paginatedResults(req, res, 10, User) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
             // Construct links for pagination
-            const nextPage = `/users?page=${page + 1}`;
-            const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
-            // Construct links for other related actions
+            // Construct HATEOAS links
             const links = [
                 { rel: "login", href: "/users/login", method: "POST" },
                 { rel: "register", href: "/users", method: "POST" },
@@ -181,8 +166,21 @@ module.exports = {
                     return res.status(404).send({ message: "User Not Found" });
                 }
 
+                // Construct links for pagination
+                const nextPage = `/users?page=${page + 1}`;
+                const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+
+                // Construct links for other related actions
+                const links = [
+                    { rel: "login", href: "/users/login", method: "POST" },
+                    { rel: "register", href: "/users", method: "POST" },
+                    { rel: "banUser", href: "/users/:userID", method: "PATCH" },
+                    { rel: "nextPage", href: nextPage, method: "GET" },
+                    { rel: "prevPage", href: prevPage, method: "GET" }
+                ];
+
                 // Return the user's information
-                res.status(200).send({ user: user });
+                res.status(200).send({ user: user, links: links });
             });
         } catch (error) {
             // Handle errors

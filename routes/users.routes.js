@@ -13,7 +13,7 @@ router.route('/login')
 
 
 router.route('/me')
-    // .get(usersController.getUser)
+    .get(usersController.getSelf)
     .patch(usersController.editProfile)
 
 router.route('/:userID')
