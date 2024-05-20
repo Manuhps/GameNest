@@ -1,35 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const category = require('../models/category.model'); 
-const { verifyAdmin } = require("../middlewares/jwt");
+const { SignToken, verifyAdmin, } = require("../middlewares/jwt");
+const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     findAllCategory : async (req, res) => {
         try {
             /*
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
-        
+            await checkToken(req, res)
+
             await verifyAdmin(req, res);
         */
-            const page = req.query.page ? parseInt(req.query.page) : 0;
-        
-            if (page < 0 || !Number.isInteger(page)) {
-                return res.status(400).send({ message: "Page must be 0 or a positive integer" });
-            }
-        
-            const limit = 5; 
-        
-            const offset = page * limit;
-        
-            const categories = await category.findAll({
-                offset: offset,
-                limit: limit
-            });
+            const categories = await paginatedResults(req, res, 5, category) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
-            const nextPage = `/users?page=${page + 1}`;
-            const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+            // Construct links for pagination
+            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
             const links = [
                 { rel: "createCategory", href: "/categories", method: "POST" },
@@ -51,27 +37,9 @@ module.exports = {
         /*try {
             // Validação de requisição
             
-            if (!req.body.category || typeof req.body.category !== 'string') {
-                return res.status(400).send({
-                    message: "Category name must be a non-empty string"
-                });
-            }
-
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
+            await checkToken(req, res)
 
             await verifyAdmin(req, res);
-
-            const existingCategory = await category.findOne({ CategoryName: req.body.category }); 
-    
-            // Se a categoria já existir, retorna um erro 409 (Conflito)
-            if (existingCategory) {
-                return res.status(409).send({
-                    message: "A category with that name already exists."
-                });
-            }
-            
     */
 
             if (req.body.categoryName) {
@@ -80,9 +48,9 @@ module.exports = {
                 }
             }
 
-            if (!req.body) {
+            if (!req.body.categoryName) {
                 return res.status(400).send({
-                    message: "Category content can not be empty"
+                    message: "Category name must be a non-empty string"
                 });
             }
     
@@ -107,9 +75,7 @@ module.exports = {
     deleteCategory : async (req, res) => {
         try {
 /*
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
+            await checkToken(req, res)
 
             await verifyAdmin(req, res);
 */
