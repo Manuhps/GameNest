@@ -11,22 +11,15 @@ module.exports = {
             if (req.body.password && req.body.username) {
                 //Verifies if the password matches the user's password'
                 const passwordIsValid = await compareHash(user.password, req.body.password);
-
                 if (passwordIsValid) {
-                    console.log("Valid Password yep");
-
                     //Calls the SignToken function that creates the token
-                    const token = await SignToken(user.id);
+                    const token = await SignToken(user.userID);
                     res.status(201).send({ accessToken: token });
                 } else {
                     res.status(401).send({ message: "Invalid Credentials" });
                 }
             } else {
-                res
-                    .status(400)
-                    .send({
-                        message: "Please fill all the required fields.",
-                    });
+                res.status(400).send({ message: "Please fill all the required fields.", });
             }
         } catch (error) {
             res
@@ -70,7 +63,7 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
-            //Verifies is the token is provided, using the checkToken middleware
+            //Verifies if the token is provided, using the checkToken middleware
             await checkToken(req, res)
 
             // Verify if the user is an admin
@@ -81,7 +74,7 @@ module.exports = {
             // Pagination
             const users = await paginatedResults(req, res, 10, User) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
-            // Construct links for pagination
+            // Construct nextPage and previousPage links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
             // Construct HATEOAS links
@@ -105,16 +98,11 @@ module.exports = {
     },
     editProfile: async (req, res) => {
         try {
-            // Check if the token was provided
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
-
-            // Extract token from the request header
-            const bearer = req.headers.authorization.split(" ")[1];
+            //Verifies is the token is provided, using the checkToken middleware
+            await checkToken(req, res)
 
             // Verify the user's token
-            const decodedToken = await verifyUser(bearer);
+            const decodedToken = await verifyUser(req, res, next);
 
             // Check if the user exists
             const user = await User.findByPk(decodedToken.id);
@@ -148,10 +136,8 @@ module.exports = {
     },
     getSelf: async (req, res) => {
         try {
-            // Check if the token was provided
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
+            //Verifies if the token is provided, using the checkToken middleware
+            await checkToken(req, res)
 
             // Verify the token
             await verifyUser(req, res, async () => {
@@ -166,9 +152,8 @@ module.exports = {
                     return res.status(404).send({ message: "User Not Found" });
                 }
 
-                // Construct links for pagination
-                const nextPage = `/users?page=${page + 1}`;
-                const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+                // Build Path for nextPage and previousPage pagination
+                let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
                 // Construct links for other related actions
                 const links = [
@@ -188,6 +173,39 @@ module.exports = {
                 message: "Something went wrong. Please try again later",
                 details: error,
             });
+        }
+    },
+    banUser: async (req, res) => {
+        try {
+            //Verifies if the token is provided
+            await checkToken(req, res)
+
+            //Verifies if the user is an admin
+            await verifyAdmin(req, res)
+
+            //Get the user to be banned's using it's id provided in the url
+            const userID= req.params.userID
+            const user = await User.findByPk(userID)
+
+            if (!user) {
+                return res.status(404).send({ message: "User Not Found" })
+            }
+
+            const isBanned = req.body.isBanned
+
+            //Set the user as banned or Unbanned
+            user.isBanned = isBanned
+
+            //Save the data
+            await user.save()
+
+            //Returns a success message
+            res.status(200).send({ message: "Data Successfully Updated" })
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error
+            })
         }
     }
 }; 

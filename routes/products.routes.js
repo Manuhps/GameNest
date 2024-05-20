@@ -1,20 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-// import controller middleware
-const moviesController = require("../controllers/movies.controller");
+// import products controller
+const productsController = require("../controllers/products.controller");
 
 router.route('/')
-    .get(moviesController.findAll)
-    .post(moviesController.bodyValidator, moviesController.create);
+    .post(productsController.addProduct)
+    .get(productsController.getProducts)
 
-router.route('/:id')
-    .get(moviesController.findOne)
-    .put(moviesController.bodyValidator, moviesController.update)
-    .delete(moviesController.delete);
+router.route('/:productID')
+    .get(productsController.getProduct)
+    // .delete(productsController.deleteProduct)
+
+router.route('/:productID/reviews')
+    // .post(productsController.addReview)
+
+router.route('/:productID/reviews/:reviewID/comments/:commentID')
+    // .delete(productsController.deleteComment)
+
+router.route('/:productID/discounts')
+    // .post(productsController.addDiscount)
 
 router.all('*', (req, res) => {
-    res.status(404).json({ message: 'MOVIES: what???' }); //send a predefined error message
+     res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
 })
 
 //export this router
