@@ -60,10 +60,10 @@ module.exports = {
             //Verifies if the token is provided, using the checkToken middleware
             await checkToken(req, res)
 
-            // Verify if the product is an admin
+            // Verify if the user is an admin
             await verifyAdmin(req, res);
 
-            // If we've reached this point, the product is an admin
+            // If we've reached this point, the user is an admin
 
             if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.category) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
@@ -85,6 +85,30 @@ module.exports = {
             } else {
                 res.status(400).send({ messsage: "Please fill all the required fields" });
             }
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Plese try again later",
+                details: error,
+            });
+        }
+    },
+    deleteProduct: async (req, res) => {
+        try {
+            //Verifies if the token is provided, using the checkToken middleware
+            // await checkToken(req, res)
+
+            // Verify if the user is an admin
+            // await verifyAdmin(req, res);
+
+            // If we've reached this point, the user is an admin
+
+            //Destroys the Product if it exists
+            if (await Product.findOne({ where: { productID: req.params.productID }})) {
+                await Product.destroy({ where: { productID: req.params.productID }})
+            }else{
+                res.status(404).send({ message: "Product Not Found."})
+            }
+            res.status(204).send({ message: "Product deleted successfully."})
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Plese try again later",

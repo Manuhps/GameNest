@@ -10,7 +10,7 @@ router.route('/')
 
 router.route('/:productID')
     .get(productsController.getProduct)
-    // .delete(productsController.deleteProduct)
+    .delete(productsController.deleteProduct)
 
 router.route('/:productID/reviews')
     // .post(productsController.addReview)
