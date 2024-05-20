@@ -17,7 +17,7 @@ router.route('/me')
     .patch(usersController.editProfile)
 
 router.route('/:userID')
-// .patch(usersController.banUser)
+    .patch(usersController.banUser)
 
 router.all('*', (req, res) => {
      res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
