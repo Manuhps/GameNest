@@ -44,18 +44,11 @@ module.exports = {
                         email: req.body.email,
                         password: req.body.password,
                     });
-                    await user.save();
                     const token = await SignToken(user.id);
-                    res
-                        .status(201)
-                        .send({ message: "Registered Successfuly", token: token })
+                    res.status(201).send({ message: "Registered Successfuly", token: token })
                 }
             } else {
-                res
-                    .status(400)
-                    .send({
-                        messsage: "Please fill all the required fields",
-                    });
+                res.status(400).send({ messsage: "Please fill all the required fields" });
             }
         } catch (error) {
             res.status(500).send({

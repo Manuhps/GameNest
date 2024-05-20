@@ -44,10 +44,10 @@ const User = sequelize.define("User",
             allowNull: false,
             defaultValue: 0
         },
-        // profileImg: {
-        //     type: DataTypes.STRING,
-
-        // }
+        profileImg: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
     },
     
 );
