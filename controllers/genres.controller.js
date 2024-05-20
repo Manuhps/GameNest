@@ -1,36 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const genre = require('../models/genre.model'); 
-const { verifyAdmin } = require("../middlewares/jwt");
+const { SignToken, verifyAdmin, } = require("../middlewares/jwt");
+const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     findAllGenre : async (req, res) => {
         try {
             /*
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
-        
+            await checkToken(req, res)
+
             await verifyAdmin(req, res);
             */
         
-            const page = req.query.page ? parseInt(req.query.page) : 0;
-        
-            if (page < 0 || !Number.isInteger(page)) {
-            return res.status(400).send({ message: "Page must be 0 or a positive integer" });
-            }
-        
-            const limit = 5; 
-        
-            const offset = page * limit;
-        
-            const genres = await genre.findAll({
-                offset: offset,
-                limit: limit
-            });
+            const genres = await paginatedResults(req, res, 5, genre) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
-            const nextPage = `/users?page=${page + 1}`;
-            const prevPage = page > 0 ? `/users?page=${page - 1}` : null;
+            // Construct links for pagination
+            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
             const links = [
                 { rel: "createGenre", href: "/genre", method: "POST" },
@@ -52,31 +38,18 @@ module.exports = {
         /*try {
             // Validação de requisição
             
-            if (!req.body.genre || typeof req.body.genre !== 'string') {
-                return res.status(400).send({
-                    message: "Genre name must be a non-empty string"
-                });
-            }
-
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
+            await checkToken(req, res)
 
             await verifyAdmin(req, res);
-
-            const existingGenre = await Genre.findOne({ GenreName: req.body.genre }); 
-    
-            // Se o gênero já existir, retorna um erro 409 (Conflito)
-            if (existingGenre) {
-                return res.status(409).send({
-                    message: "A genre with that name already exists."
-                });
-            }
             */
     
-
+            if (req.body.genreName) {
+                if (await genre.findOne({ where: { genreName: req.body.genreName } })) {
+                    res.status(409).send({ message: "Genre already exists" });
+                }
+            }
         
-            if (!req.body) {
+            if (!req.body.genreName) {
                 return res.status(400).send({
                     message: "Genre content can not be empty"
                 });
@@ -103,9 +76,7 @@ module.exports = {
     deleteGenre : async (req, res) => {
         try {
             /*
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-              }
+            await checkToken(req, res)
 
             await verifyAdmin(req, res);
             */
