@@ -40,7 +40,15 @@ const Product = sequelize.define("Product",
         platform: {
             type: DataTypes.STRING,
             allowNull: true
-        }
+        },
+        genres: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        gameModes: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
     }
 );
 

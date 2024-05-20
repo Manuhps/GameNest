@@ -1,6 +1,6 @@
 const { Product } = require("../models/index");
 const { compareHash } = require("../middlewares/bcrypt");
-const { SignToken, verifyAdmin, verifyUser } = require("../middlewares/jwt");
+const { SignToken, verifyAdmin, verifyproduct } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken")
 const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
@@ -16,9 +16,9 @@ module.exports = {
             // Construct HATEOAS links
             // const links = [
             //     { rel: "login", href: "/products/login", method: "POST" },
-            //     { rel: "register", href: "/users", method: "POST" },
-            //     { rel: "editProfile", href: "/users/me", method: "PATCH" },
-            //     { rel: "banUser", href: "/users/:userID", method: "PATCH" },
+            //     { rel: "register", href: "/products", method: "POST" },
+            //     { rel: "editProfile", href: "/products/me", method: "PATCH" },
+            //     { rel: "banproduct", href: "/products/:productID", method: "PATCH" },
             //     { rel: "nextPage", href: nextPage, method: "GET" },
             //     { rel: "prevPage", href: prevPage, method: "GET" }
             // ];
@@ -56,6 +56,40 @@ module.exports = {
         }
     },
     addProduct: async (req, res) => {
-        
+        try {
+            //Verifies if the token is provided, using the checkToken middleware
+            await checkToken(req, res)
+
+            // Verify if the product is an admin
+            await verifyAdmin(req, res);
+
+            // If we've reached this point, the product is an admin
+
+            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.category) {
+                if (await Product.findOne({ where: { name: req.body.name } })) {
+                    res.status(409).send({ message: "This product already exists. Please add a different product." });
+                } else {
+                    await Product.create({
+                        name: req.body.name,
+                        desc: req.body.desc,
+                        basePrice: req.body.basePrice,
+                        stock: req.body.stock,
+                        img: req.body.img || null,
+                        platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default
+                        genres: req.body.genres || null,
+                        gameModes: req.body.gameModes || null,
+                        category: req.body.category
+                    });
+                    res.status(201).send({ message: "New Product Added With Success."})
+                }
+            } else {
+                res.status(400).send({ messsage: "Please fill all the required fields" });
+            }
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Plese try again later",
+                details: error,
+            });
+        }
     }
 }
