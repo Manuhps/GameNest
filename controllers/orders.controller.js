@@ -48,6 +48,34 @@ module.exports = {
             });
         }
     },
+    createOrder: async (req, res) => {
+        try {
+            if (!req.headers.authorization) {
+                return res.status(401).send({ message: "No access token provided" });
+            }
+    
+            await verifyUser(req, res);
+    
+            const order = {
+                userID: req.body.userID,
+                totalPrice: req.body.totalPrice,
+                state: req.body.state,
+                products: req.body.products,
+                date: req.body.date, // add date field
+                deliverDate: req.body.deliverDate // add deliverDate field
+            };
+    
+            const data = await Order.create(order);
+            res.send({
+                message: "Order created successfully",
+                order: data // send the entire order data in the response
+            });
+        } catch (err) {
+            res.status(500).send({
+                message: err.message || "Something went wrong while creating order."
+            });
+        }
+    },
     updateOrderStatus: async (req, res) => {
         try {
             if (!req.headers.authorization) {
