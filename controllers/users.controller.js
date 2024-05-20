@@ -8,6 +8,9 @@ module.exports = {
     login: async (req, res) => {
         try {
             const user = await User.findOne({ where: { username: req.body.username } });
+            if (user.isBanned) {
+                res.status(403).send({ message: "You are currently banned. You can not access this feature…" })
+            }
             if (req.body.password && req.body.username) {
                 //Verifies if the password matches the user's password'
                 const passwordIsValid = await compareHash(user.password, req.body.password);
@@ -190,7 +193,6 @@ module.exports = {
             if (!user) {
                 return res.status(404).send({ message: "User Not Found" })
             }
-
             const isBanned = req.body.isBanned
 
             //Set the user as banned or Unbanned
