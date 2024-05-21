@@ -1,7 +1,6 @@
 const { User } = require("../models/index");
 const { compareHash } = require("../middlewares/bcrypt");
-const { SignToken, verifyAdmin, verifyUser } = require("../middlewares/jwt");
-const { checkToken } = require("../middlewares/checkToken")
+const { SignToken } = require("../middlewares/jwt");
 const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
@@ -13,7 +12,7 @@ module.exports = {
             }
             if (req.body.password && req.body.username) {
                 //Verifies if the password matches the user's password'
-                const passwordIsValid = await compareHash(user.password, req.body.password);
+                const passwordIsValid = compareHash(user.password, req.body.password);
                 if (passwordIsValid) {
                     //Calls the SignToken function that creates the token
                     const token = await SignToken(user.userID);
@@ -25,12 +24,10 @@ module.exports = {
                 res.status(400).send({ message: "Please fill all the required fields.", });
             }
         } catch (error) {
-            res
-                .status(500)
-                .send({
-                    message: "Something went wrong. Plese try again later",
-                    details: error,
-                });
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            });
         }
     },
     register: async (req, res) => {
@@ -44,7 +41,7 @@ module.exports = {
                         email: req.body.email,
                         password: req.body.password,
                     });
-                    const token = await SignToken(user.id);
+                    const token = await SignToken(user.userID);
                     res.status(201).send({ message: "Registered Successfuly", token: token })
                 }
             } else {
@@ -59,14 +56,6 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
-            //Verifies if the token is provided, using the checkToken middleware
-            await checkToken(req, res)
-
-            // Verify if the user is an admin
-            await verifyAdmin(req, res);
-
-            // If we've reached this point, the user is an admin
-
             // Pagination
             const users = await paginatedResults(req, res, 10, User) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
@@ -82,7 +71,6 @@ module.exports = {
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-
             // Return the list of users
             res.status(200).send({ users: users, links: links });
         } catch (error) {
@@ -94,18 +82,16 @@ module.exports = {
     },
     editProfile: async (req, res) => {
         try {
-            //Verifies is the token is provided, using the checkToken middleware
-            await checkToken(req, res)
+            // Get the user ID from res.locals set by verifyUser middleware
+            const userID = res.locals.userID;
 
-            // Verify the user's token
-            const decodedToken = await verifyUser(req, res, next);
+            // Find the user by ID
+            const user = await User.findByPk(userID);
 
-            // Check if the user exists
-            const user = await User.findByPk(decodedToken.id);
+            // If user is not found, return error
             if (!user) {
-                return res.status(404).send({ message: "User Not Found" });
+                res.status(404).send({ message: "User Not Found" });
             }
-
             // Update the user's data with the values from the request body, if provided
             if (req.body.username) user.username = req.body.username;
             if (req.body.password) user.password = req.body.password;
@@ -120,9 +106,8 @@ module.exports = {
             // Return a success response
             res.status(200).send({ message: "Data successfully updated" });
         } catch (error) {
-            // Handle errors
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                res.status(401).send({ message: "Your token has expired! Please login again." });
             }
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
@@ -132,37 +117,31 @@ module.exports = {
     },
     getSelf: async (req, res) => {
         try {
-            //Verifies if the token is provided, using the checkToken middleware
-            await checkToken(req, res)
+            // Get the user ID from res.locals set by verifyUser middleware
+            const userID = res.locals.userID;
 
-            // Verify the token
-            await verifyUser(req, res, async () => {
-                // Get the user ID from res.locals set by verifyUser middleware
-                const userID = res.locals.userID;
+            // Find the user by ID
+            const user = await User.findByPk(userID);
 
-                // Find the user by ID
-                const user = await User.findByPk(userID);
+            // If user is not found, return error
+            if (!user) {
+                res.status(404).send({ message: "User Not Found" });
+            }
 
-                // If user is not found, return error
-                if (!user) {
-                    return res.status(404).send({ message: "User Not Found" });
-                }
+            // Build Path for nextPage and previousPage pagination
+            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
-                // Build Path for nextPage and previousPage pagination
-                let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+            // Construct links for other related actions
+            const links = [
+                { rel: "login", href: "/users/login", method: "POST" },
+                { rel: "register", href: "/users", method: "POST" },
+                { rel: "banUser", href: "/users/:userID", method: "PATCH" },
+                { rel: "nextPage", href: nextPage, method: "GET" },
+                { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
 
-                // Construct links for other related actions
-                const links = [
-                    { rel: "login", href: "/users/login", method: "POST" },
-                    { rel: "register", href: "/users", method: "POST" },
-                    { rel: "banUser", href: "/users/:userID", method: "PATCH" },
-                    { rel: "nextPage", href: nextPage, method: "GET" },
-                    { rel: "prevPage", href: prevPage, method: "GET" }
-                ];
-
-                // Return the user's information
-                res.status(200).send({ user: user, links: links });
-            });
+            // Return the user's information
+            res.status(200).send({ user: user, links: links });
         } catch (error) {
             // Handle errors
             res.status(500).send({
@@ -173,14 +152,8 @@ module.exports = {
     },
     banUser: async (req, res) => {
         try {
-            //Verifies if the token is provided
-            await checkToken(req, res)
-
-            //Verifies if the user is an admin
-            await verifyAdmin(req, res)
-
-            //Get the user to be banned's using it's id provided in the url
-            const userID= req.params.userID
+            //Get the user to be banned using it's id provided in the url
+            const userID = req.params.userID
             const user = await User.findByPk(userID)
 
             if (!user) {

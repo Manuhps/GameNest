@@ -2,22 +2,23 @@ const express = require('express');
 const router = express.Router();
 
 // import users controller
-const usersController = require("../controllers/users.controller");
+const { login, getUsers, register, getSelf, editProfile, banUser } = require("../controllers/users.controller");
+const { verifyUser, verifyAdmin, SignToken } = require("../middlewares/jwt");
+const { checkToken } = require("../middlewares/checkToken")
 
 router.route('/')
-    .post(usersController.register)
-    .get(usersController.getUsers)
+    .post(register)
+    .get(checkToken, verifyAdmin, getUsers)
 
 router.route('/login')
-    .post(usersController.login)
-
-
+    .post(login)
+    
 router.route('/me')
-    .get(usersController.getSelf)
-    .patch(usersController.editProfile)
+    .get(checkToken, verifyUser, getSelf)
+    .patch(checkToken, verifyUser, editProfile)
 
 router.route('/:userID')
-    .patch(usersController.banUser)
+    .patch(checkToken, verifyAdmin, banUser)
 
 router.all('*', (req, res) => {
      res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
