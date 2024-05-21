@@ -12,7 +12,7 @@ const GameMode = sequelize.define("GameMode",
         gameModeName: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: { notNull: { msg: "Game Mode Name can not be empty or null!" } }
+           //validate: { notNull: { msg: "Game Mode Name can not be empty or null!" } }
         }
     }
 );
