@@ -83,13 +83,13 @@ module.exports = {
             }
     
             // Salva o gênero no banco de dados
-            const gameMode = new gameMode({
+            const gameModes = new gameMode({
                 gameModeName: req.body.gameModeName,
             });
     
             
             try {
-                const data = await gameMode.save();
+                const data = await gameModes.save();
                 res.status(201).send({
                     message:"New game mode created with success."
                 });

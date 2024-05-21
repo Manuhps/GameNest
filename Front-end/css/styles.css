@@ -168,6 +168,17 @@ p {
   margin-bottom: 1rem;
 }
 
+.small-card {
+  max-width: 250px; /* Ajuste para o tamanho desejado */
+  max-height: 450px; /* Ajuste para o tamanho desejado */
+  margin: 0 auto; /* top, right, bottom, left */
+}
+
+.col {
+  padding-left: 0.5rem; /* Ajuste para o tamanho desejado */
+  padding-right: 0.5rem; /* Ajuste para o tamanho desejado */
+}
+
 abbr[title] {
   -webkit-text-decoration: underline dotted;
           text-decoration: underline dotted;
