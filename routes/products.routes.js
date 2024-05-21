@@ -2,24 +2,33 @@ const express = require('express');
 const router = express.Router();
 
 // import products controller
-const productsController = require("../controllers/products.controller");
+const { addProduct, getProducts, getProduct, deleteProduct, addReview } = require("../controllers/products.controller");
+
+//import jwt middleware
+const { verifyUser, verifyAdmin } = require("../middlewares/jwt")
+
+//import checkToken middleware
+const { checkToken } = require("../middlewares/checkToken")
+
+//import checkProduct middleware
+const { checkProduct } = require("../middlewares/checkProduct")
 
 router.route('/')
-    .post(productsController.addProduct)
-    .get(productsController.getProducts)
+    .post(checkToken, verifyAdmin, addProduct)
+    .get(getProducts)
 
 router.route('/:productID')
-    .get(productsController.getProduct)
-    .delete(productsController.deleteProduct)
+    .get(checkProduct, getProduct)
+    .delete(checkToken, verifyAdmin, checkProduct, deleteProduct)
 
 router.route('/:productID/reviews')
-    // .post(productsController.addReview)
+    // .post(checkProduct, addReview)
 
 router.route('/:productID/reviews/:reviewID/comments/:commentID')
-    // .delete(productsController.deleteComment)
+    // .delete(deleteComment)
 
 router.route('/:productID/discounts')
-    // .post(productsController.addDiscount)
+    // .post(addDiscount)
 
 router.all('*', (req, res) => {
      res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
