@@ -11,7 +11,7 @@ router.route('/')
 
 
 router.all('*', (req, res) => {
-    res.status(404).json({ message: 'orders: what???' }); //send a predefined error message
+    res.status(404).json({ message: '404 Not found' }); //send a predefined error message
 })
 
 //export this router
