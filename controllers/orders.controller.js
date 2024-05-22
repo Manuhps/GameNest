@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Order = require('../models/orders.model');
-const { compareHash } = require("./bcrypt");
-const { SignToken, verifyUser } = require("./jwt");
+const Order = require('../models/order.model');
 const ORDER_STATUS = Order.ORDER_STATUS;
 
 module.exports = {
     getAllOrders: async (req, res) => {
         try {
+            
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
@@ -48,34 +47,32 @@ module.exports = {
             });
         }
     },
+    
     createOrder: async (req, res) => {
         try {
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
+            if (!req.body.cardName && req.body.cardNumber && req.body.cardExpiryDate && req.body.state) {
+                return res.status(400).send({
+                    message: "Please fill all the required fields"
+                });
+            
+            } else {
+                await Order.create({
+                    cardName: req.body.cardName,
+                    cardNumber: req.body.cardNumber,
+                    cardExpiryDate: req.body.cardExpiryDate,
+                    state: req.body.state,
+                });
+                res.status(201).send({ message: "Order placed with success." })
             }
     
-            await verifyUser(req, res);
-    
-            const order = {
-                userID: req.body.userID,
-                totalPrice: req.body.totalPrice,
-                state: req.body.state,
-                products: req.body.products,
-                date: req.body.date, // add date field
-                deliverDate: req.body.deliverDate // add deliverDate field
-            };
-    
-            const data = await Order.create(order);
-            res.send({
-                message: "Order created successfully",
-                order: data // send the entire order data in the response
-            });
-        } catch (err) {
+        } catch (error) {
             res.status(500).send({
-                message: err.message || "Something went wrong while creating order."
+                message: "Something went wrong. Plese try again later",
+                details: error,
             });
         }
     },
+
     updateOrderStatus: async (req, res) => {
         try {
             if (!req.headers.authorization) {

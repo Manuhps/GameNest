@@ -1,18 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const genre = require('../models/genre.model'); 
-const { SignToken, verifyAdmin, } = require("../middlewares/jwt");
 const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     findAllGenre : async (req, res) => {
         try {
-            /*
-            await checkToken(req, res)
-
-            await verifyAdmin(req, res);
-            */
-        
+            
+    
             const genres = await paginatedResults(req, res, 5, genre) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
             // Construct links for pagination
@@ -35,33 +30,34 @@ module.exports = {
     },
           
     createGenre : async (req, res) => {
-        /*try {
+        try {
             // Validação de requisição
             
-            await checkToken(req, res)
 
-            await verifyAdmin(req, res);
-            */
-    
-            if (req.body.genreName) {
-                if (await genre.findOne({ where: { genreName: req.body.genreName } })) {
-                    res.status(409).send({ message: "Genre already exists" });
-                }
-            }
-        
+            // Verifica se o gênero é vazio antes de qualquer coisa
             if (!req.body.genreName) {
                 return res.status(400).send({
-                    message: "Genre content can not be empty"
+                    message: "Genre content cannot be empty"
                 });
             }
-    
+
+
+            if (req.body.genreName) {
+                const existingGenre = await genre.findOne({ where: { genreName: req.body.genreName } });
+                    if (existingGenre) {
+                        return res.status(409).send({ message: "Genre already exists" });
+                    }
+            }
+
+
+
             // Salva o gênero no banco de dados
             const genres = new genre({
                 genreName: req.body.genreName,
             });
     
             
-            try {
+            
                 const data = await genres.save();
                 res.status(201).send({
                     message:"New genre created with success."
@@ -75,11 +71,9 @@ module.exports = {
 
     deleteGenre : async (req, res) => {
         try {
-            /*
-            await checkToken(req, res)
+            
 
-            await verifyAdmin(req, res);
-            */
+            
 
             let result = await genre.destroy({ where: { genreID: req.params.genreID}})
             if (result == 1)
