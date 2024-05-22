@@ -5,6 +5,12 @@ const { paginatedResults, generatePaginationPath } = require("../middlewares/pag
 
 module.exports = {
     login: async (req, res) => {
+        // await User.create({
+        //     username: 'admin',
+        //     email: 'admin@example.com',
+        //     password: 'admin',
+        //     role: 'admin'
+        // })
         try {
             const user = await User.findOne({ where: { username: req.body.username } });
             if (user.isBanned) {
@@ -176,4 +182,4 @@ module.exports = {
             })
         }
     }
-}; 
+};

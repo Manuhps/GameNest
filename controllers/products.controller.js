@@ -1,6 +1,4 @@
-const { Product } = require("../models/index");
-const { verifyAdmin } = require("../middlewares/jwt");
-const { checkToken } = require("../middlewares/checkToken")
+const { Product, Order, Review, OrderProduct } = require("../models/index");
 const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
@@ -33,9 +31,8 @@ module.exports = {
     },
     getProduct: async (req, res) => {
         try {
-            //Get the product from it's id
-            const product = res.locals.product
-
+            const productID = req.params.productID;
+            const product = await Product.findByPk(productID);
             //Return the product
             res.status(200).send({ product: product })
 
@@ -90,7 +87,60 @@ module.exports = {
             });
         }
     },
-    // addReview: async (req, res) => {
+    addReview: async (req, res) => {
+        try {
+            const productID = req.params.productID
+            const userID = res.locals.userID
 
-    // }
+            if (!req.body.rating) {
+                res.status(400).send({ message: "Please select a rating"})
+            }
+
+            //Verify if the order's state is delievered
+            const order = await Order.findOne({
+                where: {
+                  userID: userID,
+                  state: 'delivered'
+                }
+                // include: [
+                //   {
+                //     model: Product,
+                //     through: {
+                //       model: OrderProduct,
+
+                //     }
+                //   }
+                // ]
+            })
+
+            console.log(order);
+            if (!order) {
+                res.status(403).send({ message: "You can only review a product after you've received it." });
+            }
+
+            // // Verify if the user has already reviewed this product
+            // const existingReview = await Review.findOne({
+            //     where: { userID: userID, productID: productID }
+            // });
+
+            // if (existingReview) {
+            //     res.status(403).send({ message: "You have already reviewed this product." });
+            // }
+
+            //Adding the review after everything is validated
+            await Review.create({
+                userID: userID,
+                productID: productID,
+                rating: req.body.rating,
+                comment: req.body.comment || null
+            });
+
+            res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!"})
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            });
+        }
+    }
 }

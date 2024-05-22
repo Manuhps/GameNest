@@ -22,7 +22,7 @@ router.route('/:productID')
     .delete(checkToken, verifyAdmin, checkProduct, deleteProduct)
 
 router.route('/:productID/reviews')
-    // .post(checkProduct, addReview)
+    .post(checkToken, verifyUser, checkProduct, addReview)
 
 router.route('/:productID/reviews/:reviewID/comments/:commentID')
     // .delete(deleteComment)
