@@ -2,16 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 // import controller middleware
-const ordersController = require("../controllers/orders.controller");
+const { createOrder } = require("../controllers/orders.controller");
+const { verifyAdmin } = require("../middlewares/jwt");
+const { checkToken } = require("../middlewares/checkToken")
 
 router.route('/')
-    .get(ordersController.findAll)
-    .post(ordersController.bodyValidator, ordersController.create);
+    .post(checkToken, verifyAdmin, createOrder);
 
-router.route('/:id')
-    .get(ordersController.findOne)
-    .put(ordersController.bodyValidator, ordersController.update)
-    .delete(ordersController.delete);
 
 router.all('*', (req, res) => {
     res.status(404).json({ message: 'orders: what???' }); //send a predefined error message

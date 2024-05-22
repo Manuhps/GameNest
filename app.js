@@ -12,6 +12,7 @@ app.use('/gameModes', require('./routes/gameModes.routes'))
 app.use('/genres', require('./routes/genres.routes'))
 app.use('/categories', require('./routes/categories.routes'))
 app.use('/products', require('./routes/products.routes'))
+app.use('/orders', require('./routes/orders.routes'))
 
 app.listen(process.env.PORT, () => 
     console.log(`Server running at http://${process.env.HOST}:${process.env.PORT}/`)
