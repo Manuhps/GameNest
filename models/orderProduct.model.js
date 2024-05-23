@@ -1,13 +1,28 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection')
 
-const OrderProduct = sequelize.define("OrderProduct",
-    {
-        quantity: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+const orderProduct = sequelize.define("orderProduct",
+{
+    orderID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Order', // 'Orders' would also work
+            key: 'orderID'
         }
+    },
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
+}
 );
 
-module.exports = OrderProduct;
+orderProduct.associate = function(models) {
+orderProduct.belongsTo(models.Order, {
+    foreignKey: 'orderID',
+    as: 'order'
+});
+};
+
+module.exports = orderProduct;
