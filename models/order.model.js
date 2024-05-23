@@ -34,4 +34,12 @@ const Order = sequelize.define("Order",
     }
 );
 
+Order.associate = function(models) {
+    Order.hasMany(models.OrderProduct, {
+        foreignKey: 'orderID',
+        as: 'orderProducts'
+    });
+};
+
+
 module.exports = Order;

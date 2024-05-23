@@ -10,9 +10,9 @@ module.exports = {
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
-
+    
             await verifyUser(req, res);
-
+    
             const orders = await Order.findAll();
             res.send(orders);
         } catch (err) {
@@ -26,10 +26,16 @@ module.exports = {
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: "No access token provided" });
             }
-
+    
             await verifyUser(req, res);
-
-            const order = await Order.findByPk(req.params.id);
+    
+            const order = await Order.findByPk(req.params.id, {
+                include: [{
+                    model: orderProduct,
+                    as: 'orderProducts'
+                }]
+            });
+    
             if (!order) {
                 return res.status(404).send({
                     message: "Order not found with id " + req.params.id
@@ -50,7 +56,7 @@ module.exports = {
     
     createOrder: async (req, res) => {
         try {
-            if (!req.body.cardName && req.body.cardNumber && req.body.cardExpiryDate && req.body.state) {
+            if (!req.body.cardName || !req.body.cardNumber || !req.body.cardExpiryDate || !req.body.state) {
                 return res.status(400).send({
                     message: "Please fill all the required fields"
                 });
@@ -67,12 +73,11 @@ module.exports = {
     
         } catch (error) {
             res.status(500).send({
-                message: "Something went wrong. Plese try again later",
+                message: "Something went wrong. Please try again later",
                 details: error,
             });
         }
     },
-
     updateOrderStatus: async (req, res) => {
         try {
             if (!req.headers.authorization) {
