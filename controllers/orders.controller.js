@@ -6,13 +6,6 @@ const ORDER_STATUS = Order.ORDER_STATUS;
 module.exports = {
     getAllOrders: async (req, res) => {
         try {
-            
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
-    
-            await verifyUser(req, res);
-    
             const orders = await Order.findAll();
             res.send(orders);
         } catch (err) {
@@ -23,12 +16,6 @@ module.exports = {
     },
     getOrder: async (req, res) => {
         try {
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
-    
-            await verifyUser(req, res);
-    
             const order = await Order.findByPk(req.params.id, {
                 include: [{
                     model: orderProduct,
@@ -80,12 +67,6 @@ module.exports = {
     },
     updateOrderStatus: async (req, res) => {
         try {
-            if (!req.headers.authorization) {
-                return res.status(401).send({ message: "No access token provided" });
-            }
-
-            await verifyUser(req, res);
-
             if (!req.body.status || !Object.values(ORDER_STATUS).includes(req.body.status)) {
                 return res.status(400).send({
                     message: "Invalid order status"
