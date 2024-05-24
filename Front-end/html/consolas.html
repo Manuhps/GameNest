@@ -65,8 +65,41 @@
                 </div>
             </div>
         </header>
+        <!-- Sidebar de filtros -->
+        <aside class="filter-section col-md-3 mt-3 mt-md-0">
+            <h5>Preço</h5>
+            <input type="range" class="form-range" min="11" max="285" id="priceRange">
+            <p>11€ - 285€</p>
+            <h5>Marcas</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="brandAsus">
+                <label class="form-check-label" for="brandAsus">Asus (1)</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="brandConceptronic">
+                <label class="form-check-label" for="brandConceptronic">Conceptronic (1)</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="brandDucky">
+                <label class="form-check-label" for="brandDucky">Ducky (5)</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="brandEwent">
+                <label class="form-check-label" for="brandEwent">Ewent (1)</label>
+            </div>
+            <button class="btn btn-link p-0">Ver mais</button>
+            <h5>Conectividade</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="wired">
+                <label class="form-check-label" for="wired">Com Cabo (83)</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="wireless">
+                <label class="form-check-label" for="wireless">Sem Fios (4)</label>
+            </div>
+        </aside>
         <!-- Section-->
-        <br><br>
+        <div class="col-md-8 ms-auto mt-0">
         <h1 align="center">Consolas</h1>
         <section class="py-2">
             <div class="container px-4 px-lg-5 mt-5">
@@ -291,6 +324,7 @@
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
+                                </div>
                             </div>
                         </div>
                     </div>

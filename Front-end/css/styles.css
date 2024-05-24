@@ -155,6 +155,16 @@ h4, .h4 {
   }
 }
 
+.filter-section {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  min-width: 250px;
+}
+.filter-section h5 {
+  margin-top: 20px;
+}
+
 h5, .h5 {
   font-size: 1.25rem;
 }
