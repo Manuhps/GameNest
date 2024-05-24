@@ -1,19 +1,62 @@
 const express = require('express');
 const router = express.Router();
-const Order = require('../models/order.model');
-const ORDER_STATUS = Order.ORDER_STATUS;
+const Order = require('../models/order.model'); 
+const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
-    getAllOrders: async (req, res) => {
+    getOrders: async (req, res) => {
         try {
-            const orders = await Order.findAll();
-            res.send(orders);
+            const orders = await paginatedResults(req, res, 5, Order) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
+
+            // Construct links for pagination
+            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+
+            const links = [
+                { rel: "createOrder", href: "/orders", method: "POST" },
+                { rel: "getCurrent", href: "/orders/current", method: "GET" },
+                { rel: "nextPage", href: nextPage, method: "GET" },
+                { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
+
+            console.log('success');
+            res.status(200).send({orders: orders, links: links});
         } catch (err) {
             res.status(500).send({
-                message: err.message || "Something went wrong while getting list of orders."
+                message: err.message || "Something went wrong. Please try again later."
+            });
+        }   
+    },
+
+    getCurrentOrder: async (req, res) => {
+        try {
+
+            const userID = res.locals.userID;
+
+            const links = [
+                { rel: "createOrder", href: "/orders", method: "POST" },
+                { rel: "getOrders", href: "/orders", method: "GET" },
+            ];
+
+            const currentOrder = await Order.findOne({
+                where: {
+                    userID: userID,
+                    state: 'cart' 
+                }
+            });
+
+            if (!currentOrder) {
+                return res.status(404).send({ message: "No current order found" });
+            }
+
+            res.status(200).send({ currentOrder: currentOrder, links: links });
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error.message,
             });
         }
     },
+
     getOrder: async (req, res) => {
         try {
             const order = await Order.findByPk(req.params.id, {
@@ -43,6 +86,9 @@ module.exports = {
     
     createOrder: async (req, res) => {
         try {
+
+            const userID = res.locals.userID
+            
             if (!req.body.cardName || !req.body.cardNumber || !req.body.cardExpiryDate || !req.body.state) {
                 return res.status(400).send({
                     message: "Please fill all the required fields"
@@ -54,6 +100,7 @@ module.exports = {
                     cardNumber: req.body.cardNumber,
                     cardExpiryDate: req.body.cardExpiryDate,
                     state: req.body.state,
+                    userID: userID
                 });
                 res.status(201).send({ message: "Order placed with success." })
             }
@@ -65,6 +112,7 @@ module.exports = {
             });
         }
     },
+    
     updateOrderStatus: async (req, res) => {
         try {
             if (!req.body.status || !Object.values(ORDER_STATUS).includes(req.body.status)) {
@@ -88,5 +136,32 @@ module.exports = {
                 message: "Error updating Order with id=" + req.params.id
             });
         }
-    }
+    },
+    /*
+    // Função delete apenas para ajudar nos testes de post de orders e não ficar demasiadas linhas na tabela na base de dados
+
+    deleteOrder: async (req, res) => {
+        try {
+            
+            let result = await Order.destroy({ where: { orderID: req.params.orderID}})
+            if (result == 1)
+                return res.status(201).send({
+                    message: `Category deleted successfully.`
+             
+                });
+            else {
+                res
+                    .status(404)
+                    .send({
+                        messsage: "Category not found",
+                    });
+            }
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later.",
+                details: error,
+            });
+        }
+    },
+    */
 };
