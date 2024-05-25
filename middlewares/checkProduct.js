@@ -3,7 +3,7 @@ const { Product } = require('../models/index')
 module.exports = {
     checkProduct: async(req, res, next) => {
         try {
-            const productID = req.params;
+            const productID = req.params.productID;
             const product = await Product.findByPk(productID);
             if (!product) {
                 res.status(404).send({ message: "Product Not Found" });

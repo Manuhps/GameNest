@@ -7,12 +7,15 @@ module.exports = {
         try {
             const bearer = req.headers.authorization.split(" ")[1];
             const payload = jwt.verify(bearer, secret);
-            const user = await User.findByPk(payload.id);
+            if (!payload) {
+                return res.status(401).send({ message: "Token failed verification" });
+            }
+            const user = await User.findByPk(payload.userID);
             if (user != null) {
-                res.locals.userID = payload.id;
+                res.locals.userID = payload.userID;
                 next();
             } else {
-                res.status(401).send({ message: "Invalid Credentials" });
+                return res.status(401).send({ message: "Invalid Credentials" });
             }
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
@@ -27,13 +30,13 @@ module.exports = {
             const user = await User.findByPk(payload.id);
             if (user != null) {
                 if (user.role == 'admin') {
-                    res.locals.userID = payload.id;
+                    res.locals.userID = payload.userID;
                     next();
                 } else {
-                    res.status(403).send({ message: "This action requires admin privileges." });
+                    return res.status(403).send({ message: "This action requires admin privileges." });
                 }
             } else {
-                res.status(401).send({ message: "User does not exist" });
+                return res.status(401).send({ message: "User does not exist" });
             }
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {

@@ -8,7 +8,7 @@ module.exports = {
         // await User.create({
         //     username: 'admin',
         //     email: 'admin@example.com',
-        //     password: 'admin',
+        //     password: 'Esmad',
         //     role: 'admin'
         // })
         try {
@@ -18,7 +18,7 @@ module.exports = {
             }
             if (req.body.password && req.body.username) {
                 //Verifies if the password matches the user's password'
-                const passwordIsValid = compareHash(user.password, req.body.password);
+                const passwordIsValid = await compareHash(user.password, req.body.password);
                 if (passwordIsValid) {
                     //Calls the SignToken function that creates the token
                     const token = await SignToken(user.userID);
