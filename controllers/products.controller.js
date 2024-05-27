@@ -5,22 +5,20 @@ module.exports = {
     getProducts: async (req, res) => {
         try {
             // Pagination
-            //const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
-            const products= await Product.findAll()
-            console.log(products);
-            // Construct links for pagination
-            // let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+            const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
+           /* // Construct links for pagination
+             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
-            // Construct HATEOAS links
-            // const links = [
-            //     { rel: "login", href: "/products/login", method: "POST" },
-            //     { rel: "register", href: "/products", method: "POST" },
-            //     { rel: "editProfile", href: "/products/me", method: "PATCH" },
-            //     { rel: "banproduct", href: "/products/:productID", method: "PATCH" },
-            //     { rel: "nextPage", href: nextPage, method: "GET" },
-            //     { rel: "prevPage", href: prevPage, method: "GET" }
-            // ];
-
+             //Construct HATEOAS links
+             const links = [
+                 { rel: "login", href: "/products/login", method: "POST" },
+                 { rel: "register", href: "/products", method: "POST" },
+                 { rel: "editProfile", href: "/products/me", method: "PATCH" },
+                 { rel: "banproduct", href: "/products/:productID", method: "PATCH" },
+                 { rel: "nextPage", href: nextPage, method: "GET" },
+               { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
+*/
             // Return the list of products
             res.status(200).send({ products: products });
         } catch (error) {
