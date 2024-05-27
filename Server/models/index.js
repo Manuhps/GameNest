@@ -1,4 +1,4 @@
-// const sequelize = require('../connection');
+// const sequelize = require('../../connection');
 
 const Location = require('./location.model');
 const User = require('./user.model');
