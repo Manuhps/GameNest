@@ -1,6 +1,4 @@
 // URL da API que retorna os produtos
-console.log('index.js loaded');
-
 
 const container = document.querySelector('.row.gx-4.gx-lg-5.row-cols-2.row-cols-md-3.row-cols-xl-4.justify-content-center');
 
@@ -27,7 +25,7 @@ fetch('http://127.0.0.1:8080/products')
                                 </div>
                                 <span class="text-muted text-decoration-line-through">${product.basePrice}</span>
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="produto.html?id=${product.id}">View options</a></div>
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="products.html?id=${product.productID}">View options</a></div>
                             </div>
                             </div>
                         </div>
@@ -38,5 +36,3 @@ fetch('http://127.0.0.1:8080/products')
         container.innerHTML = productCards;
     })
     .catch(error => console.error('Erro ao buscar produtos:', error));
-
-    console.log('index.js loaded');
