@@ -8,10 +8,10 @@ app.use(cors()); //enable ALL CORS requests (client requests from other domain)
 
 app.use(express.json()); //enable parsing JSON body data
 
-app.use(express.static(path.join(__dirname, 'Front-end')));
+app.use(express.static(path.join(__dirname, 'Client', 'js')));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Front-end', 'index.html'));
+    res.sendFile(path.join(__dirname, 'Client', 'index.html'));
 });
 
 
