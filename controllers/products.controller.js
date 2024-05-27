@@ -93,21 +93,23 @@ module.exports = {
             const userID = res.locals.userID
 
             if (!req.body.rating) {
-                res.status(400).send({ message: "Please select a rating"})
+                res.status(400).send({ message: "Please select a rating" })
             }
-            //Verify if the order's state is delievered
-            const order = await Order.findOne({
-                where: {
-                  userID: userID,
-                  state: 'delivered'
-                },
-                include: [
-                  {
-                    model: Product, 
-                    through: { model: OrderProduct }
-                  }
-                ]
+
+            const order = Order.findAll({
+                where: { state: 'delivered', userID: userID }
             })
+
+            //Verify if the order's state is delievered
+            // const order = await OrderProduct.findAll({
+            //     where: { productID: productID },
+            //     include: [
+            //         {
+            //             model: Order,
+            //             where: { userID: userID, state: 'delievered' }
+            //         }
+            //     ]
+            // })
             console.log(order);
             if (!order) {
                 res.status(403).send({ message: "You can only review a product after you've received it." });
@@ -126,7 +128,7 @@ module.exports = {
                 rating: req.body.rating,
                 comment: req.body.comment || null
             });
-            res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!"})
+            res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!" })
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later",

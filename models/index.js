@@ -11,7 +11,6 @@ const GameMode = require('./gameMode.model');
 const Order = require('./order.model'); 
 const Review = require('./review.model');
 const OrderProduct = require('./orderProduct.model');
-const PointsTransaction = require('./pointsTransaction.model');
 
 // Category.hasOne(SubCategory, {foreignKey: 'categoryID'});  // One category can have one subcategory.  
 // SubCategory.belongsTo(Category, {foreignKey: 'categoryID'});  // One subcategory has one category.
@@ -43,12 +42,6 @@ const PointsTransaction = require('./pointsTransaction.model');
 // Order.belongsToMany(Product, { through: OrderProduct, foreignKey: 'productID'});  // Creates intermediary table between Order and Product.
 // Product.belongsToMany(Order, { through: OrderProduct, foreignKey: 'orderID' });  // Creates intermediary table between Order and Product.
 
-// PointsTransaction.belongsTo(User, {foreignKey: 'userID'}) // Each points transaction is associated to one User
-// User.hasMany(PointsTransaction, {foreignKey: 'userID'}) // Each User can have many Points Transactions
-
-// PointsTransaction.belongsTo(Order, {foreignKey: 'orderID'}) // Each points transaction is associated to one Order
-// Order.hasMany(PointsTransaction, {foreignKey: 'orderID'}) // Each points transaction is associated toOrder can have many Points Transactions (receiving or paying points)
-
 // sequelize.sync({'logging': false, 'force': true});
 
-module.exports = { User, Product, Order, Category, SubCategory, Discount, OrderProduct, Location, Review, Genre, GameMode, PointsTransaction};
+module.exports = { User, Product, Order, Category, SubCategory, Discount, OrderProduct, Location, Review, Genre, GameMode };
