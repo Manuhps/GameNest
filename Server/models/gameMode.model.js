@@ -1,20 +1,20 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../connection');
+const sequelize = require('../../connection')
 
-const Genre = sequelize.define("Genre",
+const GameMode = sequelize.define("GameMode",
     {
-        genreID: {
+        gameModeID: {
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        genreName: {
+        gameModeName: {
             type: DataTypes.STRING,
             allowNull: false,
-            //validate: { notNull: { msg: "Genre Name can not be empty or null!" } }
+           //validate: { notNull: { msg: "Game Mode Name can not be empty or null!" } }
         }
     }
 );
 
-module.exports = Genre;
+module.exports = GameMode;
