@@ -5,8 +5,9 @@ module.exports = {
     getProducts: async (req, res) => {
         try {
             // Pagination
-            const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
-
+            //const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
+            const products= await Product.findAll()
+            console.log(products);
             // Construct links for pagination
             // let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
