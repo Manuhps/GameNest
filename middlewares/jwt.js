@@ -10,9 +10,9 @@ module.exports = {
             if (!payload) {
                 return res.status(401).send({ message: "Token failed verification" });
             }
-            const user = await User.findByPk(payload.userID);
+            const user = await User.findByPk(payload.id);
             if (user != null) {
-                res.locals.userID = payload.userID;
+                res.locals.userID = payload.id;
                 next();
             } else {
                 return res.status(401).send({ message: "Invalid Credentials" });
@@ -27,7 +27,7 @@ module.exports = {
         try {
             const bearer = req.headers.authorization.split(" ")[1];
             const payload = jwt.verify(bearer, secret);
-            const user = await User.findByPk(payload.id);
+            const user = await User.findByPk(payload.userID);
             if (user != null) {
                 if (user.role == 'admin') {
                     res.locals.userID = payload.userID;
