@@ -31,6 +31,7 @@ module.exports = {
         try {
 
             const userID = res.locals.userID;
+            console.log(userID)
 
             const links = [
                 { rel: "createOrder", href: "/orders", method: "POST" },
@@ -86,25 +87,20 @@ module.exports = {
     
     createOrder: async (req, res) => {
         try {
+            const userID = res.locals.userID;
+            console.log(userID); 
 
-            const userID = res.locals.userID
-            
-            if (!req.body.cardName || !req.body.cardNumber || !req.body.cardExpiryDate || !req.body.state) {
+            if (!req.body.state) {
                 return res.status(400).send({
                     message: "Please fill all the required fields"
                 });
-            
             } else {
                 await Order.create({
-                    cardName: req.body.cardName,
-                    cardNumber: req.body.cardNumber,
-                    cardExpiryDate: req.body.cardExpiryDate,
                     state: req.body.state,
                     userID: userID
                 });
-                res.status(201).send({ message: "Order placed with success." })
+                res.status(201).send({ message: "Order placed with success." });
             }
-    
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
@@ -112,6 +108,7 @@ module.exports = {
             });
         }
     },
+
     
     updateOrderStatus: async (req, res) => {
         try {
@@ -137,7 +134,7 @@ module.exports = {
             });
         }
     },
-    /*
+    
     // Função delete apenas para ajudar nos testes de post de orders e não ficar demasiadas linhas na tabela na base de dados
 
     deleteOrder: async (req, res) => {
@@ -146,14 +143,14 @@ module.exports = {
             let result = await Order.destroy({ where: { orderID: req.params.orderID}})
             if (result == 1)
                 return res.status(201).send({
-                    message: `Category deleted successfully.`
+                    message: `Order deleted successfully.`
              
                 });
             else {
                 res
                     .status(404)
                     .send({
-                        messsage: "Category not found",
+                        messsage: "Order not found",
                     });
             }
         } catch (error) {
@@ -163,5 +160,5 @@ module.exports = {
             });
         }
     },
-    */
+    
 };
