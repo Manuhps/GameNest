@@ -29,7 +29,7 @@ module.exports = {
             const payload = jwt.verify(bearer, secret);
             const user = await User.findByPk(payload.id);
             if (user != null) {
-                if (user.role === 'admin') {
+                if (user.role == 'admin') {
                     res.locals.userID = payload.id;
                     next();
                 } else {

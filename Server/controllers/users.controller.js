@@ -40,7 +40,7 @@ module.exports = {
         try {
             if (req.body.password && req.body.username && req.body.email) {
                 if (await User.findOne({ where: { email: req.body.email } })) {
-                    res.status(409).send({ message: "User already exists" });
+                    return res.status(409).send({ message: "User already exists" });
                 } else {
                     const user = await User.create({
                         username: req.body.username,
@@ -62,28 +62,36 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
-            // Pagination
-            const users = await paginatedResults(req, res, 10, User) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
-
-            // Construct nextPage and previousPage links for pagination
-            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
-
             // Construct HATEOAS links
             const links = [
                 { rel: "login", href: "/users/login", method: "POST" },
                 { rel: "register", href: "/users", method: "POST" },
                 { rel: "editProfile", href: "/users/me", method: "PATCH" },
-                { rel: "banUser", href: "/users/:userID", method: "PATCH" },
-                { rel: "nextPage", href: nextPage, method: "GET" },
-                { rel: "prevPage", href: prevPage, method: "GET" }
-            ];
-            // Return the list of users
-            res.status(200).send({ users: users, links: links });
-        } catch (error) {
-            res.status(500).send({
+                { rel: "banUser", href: "/users/:userID", method: "PATCH" }
+            ]
+            const { offset, limit } = req.query;
+            let query = {
+                where: {},
+                attributes: {
+                    exclude: ["password"],
+                },
+            }
+            if (offset && limit) {
+                query.offset = parseInt(offset)
+                query.limit = parseInt(limit)
+            }
+            const users = await User.findAll(query)
+            if (users) {
+                return res.status(200).send({
+                    users: users,
+                    links: links
+                })
+            }
+        }catch(error) {
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
-                details: error,
-            });
+                details: error
+            })
         }
     },
     editProfile: async (req, res) => {
@@ -134,16 +142,10 @@ module.exports = {
                 res.status(404).send({ message: "User Not Found" });
             }
 
-            // Build Path for nextPage and previousPage pagination
-            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
-
             // Construct links for other related actions
             const links = [
                 { rel: "login", href: "/users/login", method: "POST" },
-                { rel: "register", href: "/users", method: "POST" },
-                { rel: "banUser", href: "/users/:userID", method: "PATCH" },
-                { rel: "nextPage", href: nextPage, method: "GET" },
-                { rel: "prevPage", href: prevPage, method: "GET" }
+                { rel: "register", href: "/users", method: "POST" }
             ];
 
             // Return the user's information

@@ -95,9 +95,13 @@ module.exports = {
                 res.status(400).send({ message: "Please select a rating" })
             }
 
-            const order = Order.findAll({
-                where: { state: 'delivered', userID: userID }
-            })
+            // const order = Order.findAll({
+            //     where: { state: 'delivered', userID: userID },
+            //     include: [{ 
+            //         model: OrderProduct,
+            //         where: { productID: productID }
+            //     }]
+            // })
 
             //Verify if the order's state is delievered
             // const order = await OrderProduct.findAll({
