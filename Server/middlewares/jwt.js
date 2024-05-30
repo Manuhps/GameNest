@@ -41,10 +41,11 @@ module.exports = {
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
                 return res.status(401).send({ message: "Your token has expired! Please login again." });
-            }        }
+            }
+        }
     },
     SignToken: async (userID) => {
         const payload = { id: userID };
         return jwt.sign(payload, secret);
-    },
+    }
 };
