@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/order.model'); 
-const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
+const { generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     getOrders: async (req, res) => {
         try {
-            const orders = await paginatedResults(req, res, 5, Order) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
@@ -110,27 +109,31 @@ module.exports = {
     },
 
     
-    updateOrderStatus: async (req, res) => {
+    updateOrder: async (req, res) => {
         try {
-            if (!req.body.status || !Object.values(ORDER_STATUS).includes(req.body.status)) {
-                return res.status(400).send({
-                    message: "Invalid order status"
-                });
+            const userID = res.locals.userID;
+            
+            const order = await Order.findOne({ where: { userID, state: 'cart' } });
+
+            if (!order) {
+                return res.status(404).send({ message: "Current order not found." });
             }
 
-            const num = await Order.update({ state: req.body.status }, { where: { orderID: req.params.id } });
-            if (num == 1) {
-                res.send({
-                    message: "Order status was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Order with id=${req.params.id}. Maybe Order was not found or req.body is empty!`
-                });
-            }
-        } catch (err) {
+            const { state, deliverDate, cardName, cardNumber, cardExpiryDate } = req.body;
+
+            order.state = state || order.state;
+            order.deliverDate = deliverDate || order.deliverDate;
+            order.cardName = cardName || order.cardName;
+            order.cardNumber = cardNumber || order.cardNumber;
+            order.cardExpiryDate = cardExpiryDate || order.cardExpiryDate;
+
+            await order.save();
+
+            res.status(200).send({ message: "Order updated successfully." });
+        } catch (error) {
             res.status(500).send({
-                message: "Error updating Order with id=" + req.params.id
+                message: "Something went wrong. Please try again later.",
+                details: error,
             });
         }
     },
