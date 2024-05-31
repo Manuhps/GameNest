@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const genre = require('../models/genre.model'); 
-const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
+const { generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     findAllGenre : async (req, res) => {
         try {
             
-    
-            const genres = await paginatedResults(req, res, 5, genre) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
 
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
