@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const password = document.getElementById('password').value;
 
         // Envia os dados de login para o backend
-        fetch('/users/login', {
+        fetch('http://127.0.0.1:8080/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -21,20 +21,25 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to login');
+                throw new Error('Falha ao fazer login');
             }
             return response.json();
         })
         .then(data => {
-            // Se o login for bem-sucedido, redirecione para a página de perfil ou faça alguma outra ação
-            console.log('Login successful', data);
-            // Por exemplo, redirecionar para a página de perfil:
-            // window.location.href = '/profile';
+            // Se o login for bem-sucedido, armazene o token de autenticação e redirecione para a página inicial
+            console.log('Login bem-sucedido', data);
+            window.location.href = '/index.html'; // Redireciona para a página inicial
+
+            // Substitui o botão de login por um ícone de perfil
+            const loginButton = document.getElementById('loginButton');
+            loginButton.style.display = 'none'; // Esconde o botão de login
+            const profileIcon = document.getElementById('profileIcon');
+            profileIcon.style.display = 'block'; // Mostra o ícone de perfil
         })
         .catch(error => {
-            console.error('Login failed:', error);
+            console.error('Falha ao fazer login:', error);
             // Exiba uma mensagem de erro para o usuário
-            alert('Login failed. Please check your username and password and try again.');
+            alert('Falha ao fazer login. Por favor, verifique seu nome de usuário e senha e tente novamente.');
         });
     });
 });
