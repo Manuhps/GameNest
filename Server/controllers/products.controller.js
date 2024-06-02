@@ -1,4 +1,4 @@
-const { Product, Order, Review, OrderProduct } = require("../models/index");
+const { Product, Order, Review, OrderProduct, Discount } = require("../models/index");
 const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
@@ -83,7 +83,7 @@ module.exports = {
             res.status(500).send({
                 message: "Something went wrong. Plese try again later",
                 details: error,
-            });
+            })
         }
     },
     addReview: async (req, res) => {
@@ -95,13 +95,13 @@ module.exports = {
                 res.status(400).send({ message: "Please select a rating" })
             }
 
-            // const order = Order.findAll({
-            //     where: { state: 'delivered', userID: userID },
-            //     include: [{ 
-            //         model: OrderProduct,
-            //         where: { productID: productID }
-            //     }]
-            // })
+            const order = Order.findAll({
+                where: { state: 'delivered', userID: userID },
+                include: [{ 
+                    model: OrderProduct,
+                    where: { productID: productID }
+                }]
+            })
 
             //Verify if the order's state is delievered
             // const order = await OrderProduct.findAll({
@@ -109,7 +109,7 @@ module.exports = {
             //     include: [
             //         {
             //             model: Order,
-            //             where: { userID: userID, state: 'delievered' }
+            //             where: { userID: userID, state: 'delivered' }
             //         }
             //     ]
             // })
@@ -137,6 +137,24 @@ module.exports = {
                 message: "Something went wrong. Please try again later",
                 details: error,
             });
+        }
+    },
+    addDiscount: async (req, res) => {
+        try {
+            const productID = req.params.productID
+            const { startDate, endDate, percentage } = req.body
+            await Discount.create({
+                productID: productID,
+                startDate: startDate,
+                endDate: endDate,
+                percentage: percentage
+            })
+            return res.status(201).send({message: "New Discount Added With Success"})
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            })
         }
     }
 }
