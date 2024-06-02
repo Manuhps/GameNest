@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../connection')
 
+
 const Discount = sequelize.define("Discount",
     {
         discountID: {

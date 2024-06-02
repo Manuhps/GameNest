@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // import products controller
-const { addProduct, getProducts, getProduct, deleteProduct, addReview } = require("../controllers/products.controller");
+const { addProduct, getProducts, getProduct, deleteProduct, addReview, addDiscount } = require("../controllers/products.controller");
 
 //import jwt middleware
 const { verifyUser, verifyAdmin } = require("../middlewares/jwt")
@@ -12,6 +12,9 @@ const { checkToken } = require("../middlewares/checkToken")
 
 //import checkProduct middleware
 const { checkProduct } = require("../middlewares/checkProduct")
+
+//import checkDiscount middleware
+const { checkDiscount } = require("../middlewares/checkDiscount")
 
 router.route('/')
     .post(checkToken, verifyAdmin, addProduct)
@@ -28,7 +31,7 @@ router.route('/:productID/reviews/:reviewID/comments/:commentID')
     // .delete(deleteComment)
 
 router.route('/:productID/discounts')
-    // .post(addDiscount)
+    .post(checkToken, verifyAdmin, checkProduct, checkDiscount, addDiscount)
 
 router.all('*', (req, res) => {
      res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
