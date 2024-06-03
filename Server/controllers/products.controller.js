@@ -1,26 +1,40 @@
 const { Product, Order, Review, OrderProduct, Discount } = require("../models/index");
-const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
 
 module.exports = {
     getProducts: async (req, res) => {
         try {
             // Pagination
-            const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
-           /* // Construct links for pagination
-             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+            // const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
+            // // Construct links for pagination
+            //   let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+ 
+            //   //Construct HATEOAS links
+            //   const links = [
+            //       { rel: "login", href: "/products/login", method: "POST" },
+            //       { rel: "register", href: "/products", method: "POST" },
+            //       { rel: "editProfile", href: "/products/me", method: "PATCH" },
+            //       { rel: "banproduct", href: "/products/:productID", method: "PATCH" },
+            //       { rel: "nextPage", href: nextPage, method: "GET" },
+            //       { rel: "prevPage", href: prevPage, method: "GET" }
+            // ];
 
-             //Construct HATEOAS links
-             const links = [
-                 { rel: "login", href: "/products/login", method: "POST" },
-                 { rel: "register", href: "/products", method: "POST" },
-                 { rel: "editProfile", href: "/products/me", method: "PATCH" },
-                 { rel: "banproduct", href: "/products/:productID", method: "PATCH" },
-                 { rel: "nextPage", href: nextPage, method: "GET" },
-               { rel: "prevPage", href: prevPage, method: "GET" }
-            ];
-*/
-            // Return the list of products
-            res.status(200).send({ products: products });
+            const { offset, limit } = req.query;
+            let query = {
+                where: {},
+            }
+
+            if (offset && limit) {
+                query.offset = parseInt(offset)
+                query.limit = parseInt(limit)
+            }
+
+            const products = await Product.findAll(query)
+            if (products) {
+                return res.status(200).send({
+                    products: products,
+                    // links: links
+                })
+            }
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
@@ -66,7 +80,7 @@ module.exports = {
             }
         } catch (error) {
             res.status(500).send({
-                message: "Something went wrong. Plese try again later",
+                message: "Something went wrong. Please try again later",
                 details: error,
             });
         }
@@ -81,7 +95,7 @@ module.exports = {
             res.status(204).send({ message: "Product deleted successfully." })
         } catch (error) {
             res.status(500).send({
-                message: "Something went wrong. Plese try again later",
+                message: "Something went wrong. Please try again later",
                 details: error,
             })
         }
@@ -95,24 +109,17 @@ module.exports = {
                 res.status(400).send({ message: "Please select a rating" })
             }
 
-            const order = Order.findAll({
-                where: { state: 'delivered', userID: userID },
-                include: [{ 
-                    model: OrderProduct,
-                    where: { productID: productID }
-                }]
-            })
-
             //Verify if the order's state is delievered
-            // const order = await OrderProduct.findAll({
-            //     where: { productID: productID },
-            //     include: [
-            //         {
-            //             model: Order,
-            //             where: { userID: userID, state: 'delivered' }
-            //         }
-            //     ]
-            // })
+            const order = await OrderProduct.findAll({
+                where: { productID: productID },
+                include: [
+                    {
+                        model: Order,
+                        where: { userID: userID, state: 'delivered' }
+                    }
+                ]
+            })
+        
             console.log(order);
             if (!order) {
                 res.status(403).send({ message: "You can only review a product after you've received it." });
@@ -121,9 +128,11 @@ module.exports = {
             const existingReview = await Review.findOne({
                 where: { userID: userID, productID: productID }
             });
+
             if (existingReview) {
-                res.status(403).send({ message: "You have already reviewed this product." });
+                return res.status(403).send({ message: "You have already reviewed this product." });
             }
+
             //Adding the review after everything is validated
             await Review.create({
                 userID: userID,
@@ -131,7 +140,8 @@ module.exports = {
                 rating: req.body.rating,
                 comment: req.body.comment || null
             });
-            res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!" })
+
+            return res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!" })
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
@@ -149,12 +159,43 @@ module.exports = {
                 endDate: endDate,
                 percentage: percentage
             })
-            return res.status(201).send({message: "New Discount Added With Success"})
+            return res.status(201).send({ message: "New Discount Added With Success" })
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
             })
         }
+    },
+    deleteDiscount: async (req, res) => {
+        try {
+            const productID = req.params.productID
+            const discountID = req.params.discountID
+
+            await Discount.destroy({ where: { discountID: discountID, productID: productID} })
+            
+            return res.status(204).send({ message: "Discount deleted successfully" })
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            })
+        }
+    },
+    deleteComment: async (req, res) => {
+        try {
+            const { reviewID } = req.params
+
+            const review = await Review.findByPk(reviewID)
+            review.comment = null
+            await review.save()
+            
+            return res.status(204).send({ message: "Comment deleted successfully" })
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            })
+        } 
     }
 }

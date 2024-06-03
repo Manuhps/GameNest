@@ -39,8 +39,14 @@ GameMode.belongsToMany(Product, { through: 'ProductGameMode', foreignKey: 'gameM
 Product.hasMany(Discount, {foreignKey: 'productID'});  // One product can have many discounts (but only one at a time).
 Discount.belongsTo(Product, {foreignKey: 'productID'});  // Each discount has only one product.
 
-Order.belongsToMany(Product, { through: OrderProduct, foreignKey: 'productID'});  // Creates intermediary table between Order and Product.
-Product.belongsToMany(Order, { through: OrderProduct, foreignKey: 'orderID' });  // Creates intermediary table between Order and Product.
+Order.belongsToMany(Product, { through: OrderProduct, foreignKey: 'orderID'});  // Creates intermediary table between Order and Product.
+Product.belongsToMany(Order, { through: OrderProduct, foreignKey: 'productID' });  // Creates intermediary table between Order and Product.
+
+OrderProduct.belongsTo(Order, {foreignKey: 'orderID'}); // Creates intermediary table between
+Order.hasMany(OrderProduct, {foreignKey: 'orderID'}); //
+
+OrderProduct.belongsTo(Product, {foreignKey: 'productID'}); // Creates intermediary table between
+Product.hasMany(OrderProduct, {foreignKey: 'productID'}); //
 
 sequelize.sync({'logging': false, 'force': false});
 
