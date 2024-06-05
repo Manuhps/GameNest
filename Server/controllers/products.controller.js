@@ -1,10 +1,10 @@
 const { Product, Order, Review, OrderProduct, Discount } = require("../models/index");
+const { paginate } = require('../middlewares/pagination')
+const {Op} =  require('sequelize')
 
 module.exports = {
     getProducts: async (req, res) => {
         try {
-            // Pagination
-            // const products = await paginatedResults(req, res, 12, Product) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of products
             // // Construct links for pagination
             //   let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
  
@@ -18,23 +18,47 @@ module.exports = {
             //       { rel: "prevPage", href: prevPage, method: "GET" }
             // ];
 
-            const { offset, limit } = req.query;
-            let query = {
-                where: {},
+            const { price, rating, categoryID, subCategoryID, name} = req.query
+            let where = {}
+            let order = []
+
+            if (categoryID) {
+                where.categoryID = categoryID
+            }
+            if (subCategoryID) {
+                where.subCategoryID = subCategoryID
+            }
+            if (name) {
+                where.name = { [Op.like]: `%${name}%` } //Accepts not only the exact name but also similar names
+            }                                            //that contain the name string  
+
+            //Order by price
+            if (price) {
+                if (price === 'higher') {
+                    order.push(['price', 'DESC'])
+                } else if (price === 'lower') {
+                    order.push(['price', 'ASC'])
+                }
+            }
+            //Order by rating
+            if (rating) {
+                if (rating === 'higher') {
+                    order.push(['rating', 'DESC']);
+                } else if (rating === 'lower') {
+                    order.push(['rating', 'ASC']);
+                }
             }
 
-            if (offset && limit) {
-                query.offset = parseInt(offset)
-                query.limit = parseInt(limit)
-            }
+            //Uses paginate function to get results 
+            const productsData = await paginate(Product, { order, where })
 
-            const products = await Product.findAll(query)
-            if (products) {
+            if (productsData) {
                 return res.status(200).send({
-                    products: products,
-                    // links: links
+                    pagination: productsData.pagination,
+                    data: productsData.data
                 })
             }
+
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
@@ -58,7 +82,7 @@ module.exports = {
     },
     addProduct: async (req, res) => {
         try {
-            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.category) {
+            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
                     res.status(409).send({ message: "This product already exists. Please add a different product." });
                 } else {
@@ -71,7 +95,7 @@ module.exports = {
                         platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default
                         genres: req.body.genres || null,
                         gameModes: req.body.gameModes || null,
-                        category: req.body.category
+                        categoryID: req.body.categoryID
                     });
                     res.status(201).send({ message: "New Product Added With Success." })
                 }
@@ -120,7 +144,6 @@ module.exports = {
                 ]
             })
         
-            console.log(order);
             if (!order) {
                 res.status(403).send({ message: "You can only review a product after you've received it." });
             }
