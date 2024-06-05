@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             // Se o login for bem-sucedido, armazene o token de autenticação e redirecione para a página inicial
             console.log('Login bem-sucedido', data);
-            window.location.href = '/index.html'; // Redireciona para a página inicial
+            window.location.replace = 'http://127.0.0.1:8080/index.html'; // Redireciona para a página inicial
 
             // Substitui o botão de login por um ícone de perfil
             const loginButton = document.getElementById('loginButton');

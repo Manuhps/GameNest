@@ -27,9 +27,7 @@ module.exports = {
         try {
             const bearer = req.headers.authorization.split(" ")[1];
             const payload = jwt.verify(bearer, secret);
-            console.log(payload.id);
             const user = await User.findByPk(payload.id);
-            console.log(user);
             if (user != null) {
                 if (user.role == 'admin') {
                     res.locals.userID = payload.id;
