@@ -38,8 +38,6 @@ const Order = sequelize.define("Order", {
             key: 'userID'
         }
     }
-}, {
-    timestamps: true
 });
 
 module.exports = Order;

@@ -12,7 +12,7 @@ router.route('/')
 
 router.route('/current')
     .get(checkToken, verifyUser, getCurrentOrder)
-    .put(checkToken, verifyUser, updateOrder)
+    .patch(checkToken, verifyUser, updateOrder)
 
 router.route('/:orderID')
     .delete(checkToken, verifyAdmin, deleteOrder)
