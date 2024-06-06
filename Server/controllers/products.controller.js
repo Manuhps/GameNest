@@ -18,7 +18,7 @@ module.exports = {
             //       { rel: "prevPage", href: prevPage, method: "GET" }
             // ];
 
-            const { price, rating, categoryID, subCategoryID, name} = req.query
+            const { basePrice, rating, categoryID, subCategoryID, name} = req.query
             let where = {}
             let order = []
 
@@ -32,12 +32,12 @@ module.exports = {
                 where.name = { [Op.like]: `%${name}%` } //Accepts not only the exact name but also similar names
             }                                            //that contain the name string  
 
-            //Order by price
-            if (price) {
-                if (price === 'higher') {
-                    order.push(['price', 'DESC'])
-                } else if (price === 'lower') {
-                    order.push(['price', 'ASC'])
+            //Order by basePrice
+            if (basePrice) {
+                if (basePrice === 'higher') {
+                    order.push(['basePrice', 'DESC'])
+                } else if (basePrice === 'lower') {
+                    order.push(['basePrice', 'ASC'])
                 }
             }
             //Order by rating
@@ -82,14 +82,14 @@ module.exports = {
     },
     addProduct: async (req, res) => {
         try {
-            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID) {
+            if (req.body.name && req.body.desc && req.body.basebasePrice && req.body.stock && req.body.categoryID) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
                     res.status(409).send({ message: "This product already exists. Please add a different product." });
                 } else {
                     await Product.create({
                         name: req.body.name,
                         desc: req.body.desc,
-                        basePrice: req.body.basePrice,
+                        basebasePrice: req.body.basebasePrice,
                         stock: req.body.stock,
                         img: req.body.img || null,
                         platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default

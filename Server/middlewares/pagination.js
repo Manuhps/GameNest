@@ -11,29 +11,18 @@ module.exports = {
         
         return nextPage, prevPage
     },
-    paginate: async (model, req, options = {}) => {
-        const { offset, limit } = req.query;
-        console.log(offset, limit);
+    paginate: async (model, options = {}) => {
         let query = {
             where: options.where || {},
             attributes: options.attributes || {},
-            order: options.order || []
+            order: options.order || [],
+            offset: options.offset ? parseInt(options.offset): undefined,
+            limit: options.limit ? parseInt(options.limit): undefined,
         }
-        console.log(query);
-        if (offset && limit) {
-            query.offset = parseInt(offset)
-            query.limit = parseInt(limit)
-        }
-        console.log(query);
-        if (order) {
-            query.order.push(order)
-        }
-        const results = await model.findAll(query)
-        console.log("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-        console.log(results);
+        const results = await model.findAndCountAll(query)
         const totalItems = results.count;
-        const totalPages = Math.ceil(totalItems / (limit ? parseInt(limit) : totalItems));
-        const currentPage = offset ? Math.floor(parseInt(offset) / parseInt(limit)) + 1 : 1;
+        const totalPages = Math.ceil(totalItems / (query.limit ? parseInt(query.limit) : totalItems));
+        const currentPage = query.offset ? Math.floor(parseInt(query.offset) / parseInt(query.limit)) + 1 : 1;
         return {
             pagination: {
                 totalItems,
