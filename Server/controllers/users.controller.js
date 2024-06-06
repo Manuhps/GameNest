@@ -69,13 +69,13 @@ module.exports = {
                 { rel: "editProfile", href: "/users/me", method: "PATCH" },
                 { rel: "banUser", href: "/users/:userID", method: "PATCH" }
             ]
-
-            const users = await paginate(User, req, {
+            const users = await paginate(User, {
                 attributes: {
                     exclude: ["password"],
                 },
+                offset: req.query.offset,
+                limit: req.query.limit
             })
-
             if (users) {
                 return res.status(200).send({users, links})
             }
