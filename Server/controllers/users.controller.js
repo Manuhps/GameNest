@@ -1,7 +1,7 @@
 const { User } = require("../models/index");
 const { compareHash } = require("../middlewares/bcrypt");
 const { SignToken } = require("../middlewares/jwt");
-const { paginate, generatePaginationPath } = require("../middlewares/pagination")
+const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 module.exports = {
     login: async (req, res) => {
