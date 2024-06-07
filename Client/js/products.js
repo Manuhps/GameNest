@@ -1,3 +1,20 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Verifique o estado de login do usuário
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        // Oculta o botão de login
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) loginButton.style.display = 'none';
+
+        // Mostra o ícone de perfil
+        const profileIcon = document.getElementById('profileIcon');
+        if (profileIcon) profileIcon.style.display = 'block';
+
+        // Mostra o botão de logout
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) logoutButton.style.display = 'block';
+    }
+});
+
 const productSection = document.querySelector('.row.gx-4.gx-lg-5.align-items-center');
 
 // Suponha que você tenha o ID do produto
