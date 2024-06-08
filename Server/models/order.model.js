@@ -18,7 +18,7 @@ const Order = sequelize.define("Order", {
         allowNull: true,
     },
     cardNumber: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true
     },
     cardExpiryDate: {
@@ -38,8 +38,6 @@ const Order = sequelize.define("Order", {
             key: 'userID'
         }
     }
-}, {
-    timestamps: true
 });
 
 module.exports = Order;

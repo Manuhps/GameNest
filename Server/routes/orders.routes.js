@@ -7,12 +7,12 @@ const { verifyAdmin, verifyUser } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken");
 
 router.route('/')
-    .get(checkToken, verifyAdmin, getOrders)
+    .get(checkToken, verifyUser, getOrders)
     .post(checkToken, verifyUser, createOrder)
 
 router.route('/current')
     .get(checkToken, verifyUser, getCurrentOrder)
-    .put(checkToken, verifyUser, updateOrder)
+    .patch(checkToken, verifyUser, updateOrder)
 
 router.route('/:orderID')
     .delete(checkToken, verifyAdmin, deleteOrder)

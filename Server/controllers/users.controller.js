@@ -1,7 +1,7 @@
 const { User } = require("../models/index");
 const { compareHash } = require("../middlewares/bcrypt");
 const { SignToken } = require("../middlewares/jwt");
-const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
+const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 module.exports = {
     login: async (req, res) => {
@@ -69,24 +69,17 @@ module.exports = {
                 { rel: "editProfile", href: "/users/me", method: "PATCH" },
                 { rel: "banUser", href: "/users/:userID", method: "PATCH" }
             ]
-            const { offset, limit } = req.query;
-            let query = {
-                where: {},
+            const users = await paginate(User, {
                 attributes: {
                     exclude: ["password"],
                 },
-            }
-            if (offset && limit) {
-                query.offset = parseInt(offset)
-                query.limit = parseInt(limit)
-            }
-            const users = await User.findAll(query)
+                offset: req.query.offset,
+                limit: req.query.limit
+            })
             if (users) {
-                return res.status(200).send({
-                    users: users,
-                    links: links
-                })
+                return res.status(200).send({users, links})
             }
+
         }catch(error) {
             return res.status(500).send({
                 message: "Something went wrong. Please try again later",
