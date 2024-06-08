@@ -18,7 +18,7 @@ const Order = sequelize.define("Order", {
         allowNull: true,
     },
     cardNumber: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true
     },
     cardExpiryDate: {
