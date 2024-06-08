@@ -1,80 +1,72 @@
 const express = require('express');
 const router = express.Router();
-const gameMode = require('../models/gameMode.model');
-const { paginatedResults, generatePaginationPath } = require("../middlewares/pagination")
+const GameMode = require('../models/gameMode.model');
+const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 module.exports = {
-    findAllGameMode : async (req, res) => {
+    findAllGameMode: async (req, res) => {
         try {
-            
-            const gameModes = await paginatedResults(req, res, 5, gameMode) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
-
+            const gameModes = await paginate(GameMode) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of users
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
-
             const links = [
                 { rel: "createGameMode", href: "/gameMode", method: "POST" },
                 { rel: "deleteGame", href: "/categories/:gameModeID", method: "DELETE" },
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-
-            console.log('success');
-            res.status(200).send({gameMode: gameModes, links: links});
+            res.status(200).send(
+                {
+                    pagination: gameModes.pagination,
+                    data: gameModes.data,
+                    links: links
+                });
         } catch (err) {
             res.status(500).send({
                 message: err.message || "Something went wrong. Please try again later."
             });
-        }  
+        }
     },
-
-    createGameMode : async (req, res) => {
-        
-            if (!req.body) {
+    createGameMode: async (req, res) => {
+        try {
+            //Verify if the gameMode is empty
+            if (!req.body.gameModeName) {
                 return res.status(400).send({
-                    message: "Game mode must be a non-empty string"
+                    message: "GameMode content cannot be empty"
                 });
             }
-
             if (req.body.gameModeName) {
-                const existingGameMode = await gameMode.findOne({ where: { gameModeName: req.body.gameModeName } });
-                    if (existingGameMode) {
-                        return res.status(409).send({ message: "Game mode already exists" });
-                    }
+                const existingGameMode = await GameMode.findOne({ where: { gameModeName: req.body.gameModeName } });
+                if (existingGameMode) {
+                    return res.status(409).send({ message: "GameMode already exists" });
+                }
             }
-
-    
-            // Salva o game mode no banco de dados
-            const gameModes = new gameMode({
+            // Create and Save GameMode in the databsae
+            await GameMode.create({
                 gameModeName: req.body.gameModeName,
             });
-    
-            
-            try {
-                const data = await gameModes.save();
-                res.status(201).send({
-                    message:"New game mode created with success."
-                });
-            } catch (err) {
-                res.status(500).send({
-                    message: err.message || "Something went wrong. Please try again later."
-                });
-            }
+            res.status(201).send({
+                message: "New GameMode created with success."
+            });
+        } catch (err) {
+            res.status(500).send({
+                message: err.message || "Something went wrong. Please try again later."
+            });
+        }
     },
 
-    deleteGameMode : async (req, res) => {
+    deleteGameMode: async (req, res) => {
         try {
-            let result = await gameMode.destroy({ where: { gameModeID: req.params.gameModeID}})
+            let result = await GameMode.destroy({ where: { gameModeID: req.params.gameModeID } })
             if (result == 1)
                 return res.status(201).send({
-                     msg: `Game Mode deleted successfully.`
-            
+                    msg: `Game Mode deleted successfully.`
                 });
             else {
                 res
                     .status(404)
                     .send({
-                        messsage: "Game mode not found",
+                        messsage: "Game Mode not found",
                     });
             }
         }
@@ -84,7 +76,5 @@ module.exports = {
                 details: error,
             });
         }
-    }   
+    }
 }
-
-
