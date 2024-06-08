@@ -26,20 +26,45 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            // Se o login for bem-sucedido, armazene o token de autenticação e redirecione para a página inicial
-            console.log('Login bem-sucedido', data);
-            window.location.replace = 'http://127.0.0.1:8080/index.html'; // Redireciona para a página inicial
+           // Se o login for bem-sucedido, armazene o token de autenticação e redirecione para a página inicial
+           console.log('Login bem-sucedido', data);
 
-            // Substitui o botão de login por um ícone de perfil
-            const loginButton = document.getElementById('loginButton');
-            loginButton.style.display = 'none'; // Esconde o botão de login
-            const profileIcon = document.getElementById('profileIcon');
-            profileIcon.style.display = 'block'; // Mostra o ícone de perfil
-        })
-        .catch(error => {
-            console.error('Falha ao fazer login:', error);
-            // Exiba uma mensagem de erro para o usuário
-            alert('Falha ao fazer login. Por favor, verifique seu nome de usuário e senha e tente novamente.');
+           // Armazene o estado de login do usuário
+           localStorage.setItem('isLoggedIn', 'true'); 
+
+           // Oculta o botão de login
+           const loginButton = document.getElementById('loginButton');
+           if (loginButton) loginButton.style.display = 'none';
+
+           // Mostra o botão de logout
+           const logoutButton = document.getElementById('logoutButton');
+           if (logoutButton) logoutButton.style.display = 'block';
+
+           // Mostra o ícone de perfil
+           const profileIcon = document.getElementById('profileIcon');
+           if (profileIcon) profileIcon.style.display = 'block';
+
+           window.location.href = '../index.html'; // Redireciona para a página inicial
         });
     });
+});
+
+document.getElementById('logoutButton').addEventListener('click', function () {
+    // Limpe o estado de login do usuário
+    localStorage.removeItem('isLoggedIn');
+
+    // Mostra o botão de login
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) loginButton.style.display = 'block';
+
+    // Oculta o botão de logout
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) logoutButton.style.display = 'none';
+
+    // Oculta o ícone de perfil
+    const profileIcon = document.getElementById('profileIcon');
+    if (profileIcon) profileIcon.style.display = 'none';
+
+    // Redireciona para a página de login
+    window.location.href = 'index.html';
 });

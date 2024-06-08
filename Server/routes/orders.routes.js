@@ -7,7 +7,7 @@ const { verifyAdmin, verifyUser } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken");
 
 router.route('/')
-    .get(checkToken, verifyAdmin, getOrders)
+    .get(checkToken, verifyUser, getOrders)
     .post(checkToken, verifyUser, createOrder)
 
 router.route('/current')
