@@ -30,7 +30,14 @@ module.exports = {
                 res.status(400).send({ message: "Please fill all the required fields.", });
             }
         } catch (error) {
-            res.status(500).send({
+            if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
             });
@@ -54,10 +61,17 @@ module.exports = {
                 res.status(400).send({ messsage: "Please fill all the required fields" });
             }
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Plese try again later",
-                details: error,
-            });
+            if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
+            }
+            return res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error
+            })
         }
     },
     getUsers: async (req, res) => {
@@ -77,10 +91,10 @@ module.exports = {
                 limit: req.query.limit
             })
             if (users) {
-                return res.status(200).send({users, links})
+                return res.status(200).send({ users, links })
             }
 
-        }catch(error) {
+        } catch (error) {
             return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error
@@ -171,7 +185,14 @@ module.exports = {
             //Returns a success message
             res.status(200).send({ message: "Data Successfully Updated" })
         } catch (error) {
-            res.status(500).send({
+            if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error
             })

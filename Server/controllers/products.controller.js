@@ -24,7 +24,7 @@ module.exports = {
             let where = {}
             let order = []
             let include = []
-            let attributes = ['name', 'basePrice', 'stock', 'rating', 'img']
+            let attributes = ['productID', 'name', 'basePrice', 'stock', 'rating', 'img']
             //Filter by category
             if (categoryID) {
                 where.categoryID=categoryID
@@ -175,10 +175,15 @@ module.exports = {
                 res.status(400).send({ messsage: "Please fill all the required fields" });
             }
         } catch (error) {
-            res.status(500).send({
+            if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => err.message)
+                return res.status(400).json({ errors: messages })
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
-            });
+            })
         }
     },
     deleteProduct: async (req, res) => {
