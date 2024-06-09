@@ -20,8 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (logoutButton) logoutButton.style.display = 'block';
     }
 });
-
-
         // Show profile icon
         const profileIcon = document.getElementById('profileIcon');
         if (profileIcon) profileIcon.style.display = 'block';
@@ -35,14 +33,14 @@ let page = 1;
 const limit = 10;
 const container = document.querySelector('.row.gx-4.gx-lg-5.row-cols-2.row-cols-md-3.row-cols-xl-4.justify-content-center');
 
-function fetchProducts(page, categoryID) {
+function fetchProducts(page, limit) {
     const offset = (page - 1) * limit;
 
     fetch(`http://127.0.0.1:8080/products?offset=${offset}&limit=${limit}`)
         .then(response => response.json())
         .then(data => {
-            if (data && data.data) { // Changed from data.products to data.data
-                const products = data.data; // Changed from data.products to data.data
+            if (data && data.data) {
+                const products = data.data;
                 let productCards = '';
                 products.forEach(product => {
                     console.log(product);
@@ -54,7 +52,7 @@ function fetchProducts(page, categoryID) {
                                 <div class="card-body p-4">
                                     <div class="text-center">
                                         <h5 class="fw-bolder">${product.name}</h5>
-                                         <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="products.html?id=${product.productID}">View options</a></div>
+                                         <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="./html/products.html?id=${product.productID}">View options</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -94,19 +92,5 @@ function fetchProducts(page, categoryID) {
         }
     });
 
-    fetchProducts(1,1);
-                                <span class="text-muted text-decoration-line-through">${product.basePrice}</span>
-                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="html/products.html?id=${product.productID}">View options</a></div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = productCards;
-    })
-    .catch(error => console.error('Erro ao buscar produtos:', error));
-
-    
+fetchProducts(page, limit);
+});
