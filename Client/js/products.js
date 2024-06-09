@@ -1,4 +1,5 @@
-/*document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
+
     // Verifique o estado de login do usuário
     if (localStorage.getItem('isLoggedIn') === 'true') {
         // Oculta o botão de login
@@ -14,7 +15,7 @@
         if (logoutButton) logoutButton.style.display = 'block';
     }
 });
-*/
+
 const productSection = document.querySelector('.row.gx-4.gx-lg-5.align-items-center');
 
 let params = new URLSearchParams(window.location.search);

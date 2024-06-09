@@ -12,7 +12,10 @@ const User = sequelize.define("User",
         },
         username: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                len: [2, 30]
+            }
         },
         email: {
             type: DataTypes.STRING,
@@ -25,19 +28,25 @@ const User = sequelize.define("User",
         address: DataTypes.STRING,
         password: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false,
             set(value) {
                 const hashedPassword = bcrypt.hashSync(value,10)
                 this.setDataValue('password',hashedPassword)
-            }
+            },
         },
         role: {
             type: DataTypes.STRING,
-            defaultValue: 'user'
+            defaultValue: 'user',
+            validate: {
+                isIn: [['user'], ['admin']]
+            }
         },
         isBanned: {
             type: DataTypes.BOOLEAN,
-            defaultValue: false
+            defaultValue: false,
+            validate: {
+                isIn: [[true, false]] //Ensures that the value can only be true or false (1 or 0)
+            }
         }, 
         points: {
             type: DataTypes.INTEGER,
@@ -46,7 +55,10 @@ const User = sequelize.define("User",
         },
         profileImg: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            validate: {
+                isUrl: true
+            }
         }
     },
 );

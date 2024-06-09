@@ -1,9 +1,26 @@
-/*document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     // Check user's login status
     if (localStorage.getItem('isLoggedIn') === 'true') {
         // Hide login button
         const loginButton = document.getElementById('loginButton');
         if (loginButton) loginButton.style.display = 'none';
+document.addEventListener('DOMContentLoaded', function () {
+    // Verifique o estado de login do usuário
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        // Oculta o botão de login
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) loginButton.style.display = 'none';
+
+        // Mostra o ícone de perfil
+        const profileIcon = document.getElementById('profileIcon');
+        if (profileIcon) profileIcon.style.display = 'block';
+
+        // Mostra o botão de logout
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) logoutButton.style.display = 'block';
+    }
+});
+
 
         // Show profile icon
         const profileIcon = document.getElementById('profileIcon');
@@ -13,7 +30,7 @@
         const logoutButton = document.getElementById('logoutButton');
         if (logoutButton) logoutButton.style.display = 'block';
     }
-*/
+
 let page = 1;
 const limit = 10;
 const container = document.querySelector('.row.gx-4.gx-lg-5.row-cols-2.row-cols-md-3.row-cols-xl-4.justify-content-center');
@@ -78,3 +95,18 @@ function fetchProducts(page, categoryID) {
     });
 
     fetchProducts(1,1);
+                                <span class="text-muted text-decoration-line-through">${product.basePrice}</span>
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="html/products.html?id=${product.productID}">View options</a></div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = productCards;
+    })
+    .catch(error => console.error('Erro ao buscar produtos:', error));
+
+    

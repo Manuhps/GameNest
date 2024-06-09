@@ -20,7 +20,6 @@ module.exports = {
             offset: options.offset ? parseInt(options.offset): undefined,
             limit: options.limit ? parseInt(options.limit): undefined,
         }
-        console.log(query)
         const results = await model.findAndCountAll(query)
         const totalItems = results.count
         const totalPages = Math.ceil(totalItems / (query.limit ? parseInt(query.limit) : totalItems))

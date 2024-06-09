@@ -1,4 +1,4 @@
-const { Product, Order, Review, OrderProduct, Discount } = require("../models/index");
+const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode } = require("../models/index");
 const { paginate } = require('../utilities/pagination')
 const {Op} = require('sequelize')
 const sequelize = require('sequelize')
@@ -19,14 +19,13 @@ module.exports = {
             //       { rel: "prevPage", href: prevPage, method: "GET" }
             // ];
 
-            const { curPrice, rating, categoryID, subCategoryID, name } = req.query
+            const { curPrice, rating, categoryID, subCategoryID, name, date, genreID, gameModeID } = req.query
             const currentDate = new Date().setHours(0, 0, 0, 0)
             let where = {}
             let order = []
             let include = []
-            let attributes = ['name', 'basePrice', 'stock', 'rating', 'img', 'categoryID', 'platform']
+            let attributes = ['productID', 'name', 'basePrice', 'stock', 'rating', 'img']
             //Filter by category
-            console.log('categoryID',categoryID)
             if (categoryID) {
                 where.categoryID=categoryID
             }
@@ -38,6 +37,28 @@ module.exports = {
             if (name) {
                 where.name = { [Op.like]: `%${name}%` } //Accepts not only the exact name but also similar names
             }                                           //that contain the name string
+            //Filter by genre
+            if (genreID) {
+                include.push({
+                    model: Genre,
+                    attributes: ['genreName'],
+                    through: { attributes: [] },
+                    where: {
+                        genreID: genreID
+                    }
+                })
+            }
+            //Filter by gameMode
+            if (gameModeID) {
+                include.push({
+                    model: GameMode,
+                    attributes: ['gameModeName'],
+                    through: { attributes: [] },
+                    where: {
+                        gameModeID: gameModeID
+                    }
+                })
+            }
             include.push(
                 {
                     model: Discount,
@@ -63,9 +84,17 @@ module.exports = {
             //Order by rating
             if (rating) {
                 if (rating === 'higher') {
-                    order.push(['rating', 'DESC']);
-                } else if (rating === 'lower') {
                     order.push(['rating', 'ASC']);
+                } else if (rating === 'lower') {
+                    order.push(['rating', 'DESC']);
+                }
+            }
+            //Order by date created
+            if (date) {
+                if (date === 'higher') {
+                    order.push(['createdAt', 'DESC'])
+                } else if (date === 'lower') {
+                    order.push(['createdAt', 'ASC'])
                 }
             }
             //Uses paginate function to get results 
@@ -101,31 +130,60 @@ module.exports = {
     },
     addProduct: async (req, res) => {
         try {
-            if (req.body.name && req.body.desc && req.body.curPrice && req.body.stock && req.body.categoryID) {
+            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
-                    res.status(409).send({ message: "This product already exists. Please add a different product." });
+                    return res.status(409).send({ message: "This product already exists. Please add a different product." });
                 } else {
-                    await Product.create({
+                    const product= await Product.create({
                         name: req.body.name,
                         desc: req.body.desc,
-                        curPrice: req.body.curPrice,
+                        basePrice: req.body.basePrice,
                         stock: req.body.stock,
                         img: req.body.img || null,
                         platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default
-                        genres: req.body.genres || null,
-                        gameModes: req.body.gameModes || null,
-                        categoryID: req.body.categoryID
+                        categoryID: req.body.categoryID,
                     });
+                    //Adds genres to intermediate table
+                    if (req.body.genres && req.body.genres.length > 0) {
+                        const genres = await Genre.findAll(
+                            { 
+                                where: { 
+                                    genreID: {
+                                       [Op.in]: req.body.genres 
+                                    }
+                                }
+                            }
+                        );
+                        await product.addGenres(genres);
+                    }
+                     //Adds gameModes to intermediate table
+                     if (req.body.gameModes && req.body.gameModes.length > 0) {
+                        const gameModes = await GameMode.findAll(
+                            { 
+                                where: { 
+                                    gameModeID: {
+                                       [Op.in]: req.body.gameModes
+                                    }
+                                }
+                            }
+                        );
+                        await product.addGameModes(gameModes);
+                    }
                     res.status(201).send({ message: "New Product Added With Success." })
                 }
             } else {
                 res.status(400).send({ messsage: "Please fill all the required fields" });
             }
         } catch (error) {
-            res.status(500).send({
+            if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => err.message)
+                return res.status(400).json({ errors: messages })
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
-            });
+            })
         }
     },
     deleteProduct: async (req, res) => {
