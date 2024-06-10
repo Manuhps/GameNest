@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Order, OrderProduct, Product } = require("../models/index");
-const { generatePaginationPath } = require("../middlewares/pagination")
+const { generatePaginationPath, paginate } = require("../utilities/pagination")
 
 const validStates = ['empty', 'cart', 'pending', 'shipping', 'delivered'];
 
@@ -12,40 +12,36 @@ module.exports = {
             const userID = res.locals.userID;
 
             // Construct links for pagination
-            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
 
-            const links = [
-                { rel: "createOrder", href: "/orders", method: "POST" },
-                { rel: "getCurrent", href: "/orders/current", method: "GET" },
-                { rel: "nextPage", href: nextPage, method: "GET" },
-                { rel: "prevPage", href: prevPage, method: "GET" }
-            ];
 
-            const { offset, limit } = req.query;
-            let query = {
-                where: {},
-            }
+        // Execute a paginação
+        const ordersData = await paginate(Order, {
+            where: { userID: userID },  // Supondo que você tenha o ID do usuário na requisição
+            include: [{ model: OrderProduct }]
+        });
 
-            if (offset && limit) {
-                query.offset = parseInt(offset)
-                query.limit = parseInt(limit)
-            }
+        // Gere os links de paginação
+        let { nextPage, prevPage } = await generatePaginationPath(req, res);
 
-            const orders = await Order.findAll({
-                where: { userID: userID },
-                include: [
-                    {
-                        model: OrderProduct
-                    }
-                ]
-            });
+        // Crie os links para a resposta
+        const links = [
+            { rel: "createOrder", href: "/orders", method: "POST" },
+            { rel: "getCurrent", href: "/orders/current", method: "GET" },
+            { rel: "nextPage", href: nextPage, method: "GET" },
+            { rel: "prevPage", href: prevPage, method: "GET" }
+        ];
 
-            if (orders.length === 0) {
-                return res.status(404).send({ message: "No orders found." });
-            }
+        // Verifique se há pedidos
+        if (ordersData.data.length === 0) {
+            return res.status(404).send({ message: "No orders found." });
+        }
 
-            console.log('success');
-            res.status(200).send({orders: orders, links: links});
+        // Envie a resposta com os pedidos e os links de paginação
+        res.status(200).send({
+            pagination: ordersData.pagination,
+            data: ordersData.data,
+            links: links
+        });
         } catch (err) {
             res.status(500).send({
                 message: err.message || "Something went wrong. Please try again later."
@@ -150,12 +146,19 @@ module.exports = {
             if (state && !validStates.includes(state)) {
                 return res.status(400).send({ message: "Invalid state provided." });
             }
-    
+
             // Validate deliverDate
             if (deliverDate && !/^(\d{4})-(\d{2})-(\d{2})$/.test(deliverDate)) {
                 return res.status(400).send({ message: "Invalid deliverDate format. It must be a valid date." });
             }
-    
+        
+            //Checks if the dates are before the current date
+            const currentDate= new Date().setHours(0,0,0,0)
+
+            if (new Date(deliverDate) < currentDate) {
+                return res.status(400).send({ message: "Deliver Date can't be before the current day" })
+            }
+
             // Validate cardName
             if (cardName && typeof cardName !== 'string') {
                 return res.status(400).send({ message: "Invalid cardName format. It must be a string." });
@@ -202,9 +205,71 @@ module.exports = {
 
         // Save the updated order
         await order.save();
+        if (products && Array.isArray(products)) {
+
+            // Add new products to the order
+            const orderProducts = products.map(product => ({
+                orderID: order.orderID,
+                productID: product.productID,
+                quantity: product.quantity
+            }));
+
+            await OrderProduct.bulkCreate(orderProducts);
+        }
         res.status(200).send({ message: "Order updated successfully." });
     
             // Restante do código para atualizar a order
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later.",
+                details: error,
+            });
+        }
+    },
+
+    updateProductQuantity: async (req, res) => {
+        try {
+            const userID = res.locals.userID;
+            const productID = parseInt(req.params.productID, 10);
+            const { action } = req.body;
+
+            if (!productID || !['increment', 'decrement'].includes(action)) {
+                return res.status(400).send({ message: "Please insert valid values" });
+            }
+
+            const currentOrder = await Order.findOne({
+                where: { userID: userID, state: 'cart' },
+                include: [
+                    {
+                        model: OrderProduct,
+                        where: { productID: productID }
+                    }
+                ]
+            });
+
+            if (!currentOrder) {
+                return res.status(404).send({ message: "Product Not Found" });
+            }
+
+            const orderProduct = currentOrder.OrderProducts[0];
+
+            if (action === 'increment') {
+                const product = await Product.findByPk(productID);
+                if (orderProduct.quantity + 1 > product.stock) {
+                    return res.status(400).send({ message: "Not enough stock available" });
+                }
+                orderProduct.quantity += 1;
+            } else if (action === 'decrement') {
+                orderProduct.quantity -= 1;
+                if (orderProduct.quantity <= 0) {
+                    await orderProduct.destroy();
+                } else {
+                    await orderProduct.save();
+                }
+            }
+
+            await orderProduct.save();
+            return res.status(200).send({ message: "Data successfully updated" });
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later.",
