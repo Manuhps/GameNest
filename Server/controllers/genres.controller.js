@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Genre = require('../models/genre.model');
-const { generatePaginationPath } = require("../utilities/pagination")
+const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 module.exports = {
     findAllGenre: async (req, res) => {
@@ -42,6 +42,14 @@ module.exports = {
                     return res.status(409).send({ message: "Genre already exists" });
                 }
             }
+
+            const regex = /^[A-Za-z\s]+$/;
+            if (!regex.test(req.body.genreName)) {
+                return res.status(400).send({
+                    message: "Genre name must be a string"
+                });
+            }
+
             // Salva o gênero no banco de dados
             await Genre.create({
                 genreName: req.body.genreName,

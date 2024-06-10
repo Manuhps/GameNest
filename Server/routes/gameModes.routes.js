@@ -10,7 +10,7 @@ router.route('/')
     .get(checkToken, verifyAdmin, findAllGameMode)
     .post(checkToken, verifyAdmin, createGameMode);
 
-router.route('/:categoryID')
+router.route('/:gameModeID')
     .delete(checkToken, verifyAdmin, deleteGameMode);
 
 router.all('*', (req, res) => {

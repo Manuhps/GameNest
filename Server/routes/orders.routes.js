@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // import controller middleware
-const { getOrders, createOrder, getCurrentOrder, updateOrder, updateProductQuantity, deleteOrder } = require("../controllers/orders.controller");
+const { getOrders, createOrder, getCurrentOrder, updateOrder, updateProductQuantity, deleteOrderProduct, deleteOrder } = require("../controllers/orders.controller");
 const { verifyAdmin, verifyUser } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken");
 
@@ -15,7 +15,8 @@ router.route('/current')
     .patch(checkToken, verifyUser, updateOrder)
 
 router.route('/current/products/:productID')
-    .patch(checkToken, verifyAdmin, updateProductQuantity)
+    .patch(checkToken, verifyUser, updateProductQuantity)
+    .delete(checkToken, verifyUser, deleteOrderProduct)
 
 router.route('/:orderID')
     .delete(checkToken, verifyAdmin, deleteOrder)
@@ -26,4 +27,3 @@ router.all('*', (req, res) => {
 
 //export this router
 module.exports = router;
-

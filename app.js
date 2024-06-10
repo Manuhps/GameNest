@@ -21,11 +21,11 @@ app.get('/', (req, res) => {
 
 
 app.use('/users', require('./Server/routes/users.routes'))
-//app.use('/gameModes', require('./Server/routes/gameModes.routes'))
-//app.use('/genres', require('./Server/routes/genres.routes'))
-//app.use('/categories', require('./Server/routes/categories.routes'))
+app.use('/gameModes', require('./Server/routes/gameModes.routes'))
+app.use('/genres', require('./Server/routes/genres.routes'))
+app.use('/categories', require('./Server/routes/categories.routes'))
 app.use('/products', require('./Server/routes/products.routes'))
-//app.use('/orders', require('./Server/routes/orders.routes'))
+app.use('/orders', require('./Server/routes/orders.routes'))
 
 app.listen(process.env.PORT, () => 
    console.log(`Server running at http://${process.env.HOST}:${process.env.PORT}/`)

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Order, OrderProduct, Product } = require("../models/index");
-const { generatePaginationPath, paginate } = require("../utilities/pagination")
+const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 const validStates = ['empty', 'cart', 'pending', 'shipping', 'delivered'];
 
@@ -11,19 +11,13 @@ module.exports = {
 
             const userID = res.locals.userID;
 
-            // Construct links for pagination
-
-
-        // Execute a paginação
         const ordersData = await paginate(Order, {
-            where: { userID: userID },  // Supondo que você tenha o ID do usuário na requisição
+            where: { userID: userID },  
             include: [{ model: OrderProduct }]
         });
 
-        // Gere os links de paginação
-        let { nextPage, prevPage } = await generatePaginationPath(req, res);
+        let nextPage, prevPage = await generatePaginationPath(req, res);
 
-        // Crie os links para a resposta
         const links = [
             { rel: "createOrder", href: "/orders", method: "POST" },
             { rel: "getCurrent", href: "/orders/current", method: "GET" },
@@ -31,12 +25,10 @@ module.exports = {
             { rel: "prevPage", href: prevPage, method: "GET" }
         ];
 
-        // Verifique se há pedidos
         if (ordersData.data.length === 0) {
             return res.status(404).send({ message: "No orders found." });
         }
 
-        // Envie a resposta com os pedidos e os links de paginação
         res.status(200).send({
             pagination: ordersData.pagination,
             data: ordersData.data,
@@ -95,6 +87,18 @@ module.exports = {
                 return res.status(400).send({ message: "Invalid state provided." });
             }
     
+            if (req.body.state === 'cart') {
+                const existingCartOrder = await Order.findOne({
+                    where: {
+                        userID: userID,
+                        state: 'cart'
+                    }
+                });
+                if (existingCartOrder) {
+                    return res.status(400).send({ message: "There is already an existing order with state 'cart' for this user." });
+                }
+            }
+
             // Verificar se todos os produtos existem
             const products = req.body.products;
             for (const product of products) {
@@ -206,19 +210,29 @@ module.exports = {
         // Save the updated order
         await order.save();
         if (products && Array.isArray(products)) {
+            for (const product of products) {
+                const orderProduct = await OrderProduct.findOne({
+                    where: {
+                        orderID: order.orderID,
+                        productID: product.productID
+                    }
+                });
 
-            // Add new products to the order
-            const orderProducts = products.map(product => ({
-                orderID: order.orderID,
-                productID: product.productID,
-                quantity: product.quantity
-            }));
-
-            await OrderProduct.bulkCreate(orderProducts);
+                if (orderProduct) {
+                    // If the product already exists in the order, return an error message
+                    return res.status(400).send({ message: `Product with ID ${product.productID} is already in the cart.` });
+                } else {
+                    // Add new product to the order
+                    await OrderProduct.create({
+                        orderID: order.orderID,
+                        productID: product.productID,
+                        quantity: product.quantity
+                    });
+                }
+            }
         }
         res.status(200).send({ message: "Order updated successfully." });
     
-            // Restante do código para atualizar a order
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later.",
@@ -274,6 +288,40 @@ module.exports = {
             res.status(500).send({
                 message: "Something went wrong. Please try again later.",
                 details: error,
+            });
+        }
+    },
+
+    deleteOrderProduct: async (req, res) => {
+        try {
+            const userID = res.locals.userID;
+            const productID = parseInt(req.params.productID, 10);
+
+            // Find the current order in the cart state for the user
+            const currentOrder = await Order.findOne({
+                where: { userID: userID, state: 'cart' },
+                include: [
+                    {
+                        model: OrderProduct,
+                        where: { productID: productID }
+                    }
+                ]
+            });
+
+            if (!currentOrder) {
+                return res.status(404).send({ message: "Product not found in current order" });
+            }
+
+            const orderProduct = currentOrder.OrderProducts[0];
+
+            // Delete the product from the order
+            await orderProduct.destroy();
+
+            return res.status(200).send({ message: "Product removed from current order successfully" });
+        } catch (error) {
+            res.status(500).send({
+                message: "Something went wrong. Please try again later.",
+                details: error.message,
             });
         }
     },

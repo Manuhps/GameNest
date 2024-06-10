@@ -41,6 +41,14 @@ module.exports = {
                     return res.status(409).send({ message: "GameMode already exists" });
                 }
             }
+
+            const regex = /^[A-Za-z\s]+$/;
+            if (!regex.test(req.body.gameModeName)) {
+                return res.status(400).send({
+                    message: "GameMode name must be a string"
+                });
+            }
+
             // Create and Save GameMode in the databsae
             await GameMode.create({
                 gameModeName: req.body.gameModeName,
