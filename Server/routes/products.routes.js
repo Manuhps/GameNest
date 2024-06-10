@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // import products controller
-const { addProduct, getProducts, getProduct, deleteProduct, addReview, addDiscount, deleteDiscount, deleteComment } = require("../controllers/products.controller");
+const { addProduct, getProducts, getProduct, deleteProduct, addReview, addDiscount, deleteDiscount, deleteComment, editProduct } = require("../controllers/products.controller");
 
 //import jwt middleware
 const { verifyUser, verifyAdmin } = require("../middlewares/jwt")
@@ -33,6 +33,7 @@ router.route('/')
 router.route('/:productID')
     .get(checkProduct, getProduct)
     .delete(checkToken, verifyAdmin, checkProduct, deleteProduct)
+    .patch(checkToken, verifyAdmin, checkProduct, editProduct)
 
 router.route('/:productID/reviews')
     .post(checkToken, verifyUser, checkProduct, addReview)

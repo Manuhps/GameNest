@@ -1,6 +1,6 @@
 const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode } = require("../models/index");
 const { paginate } = require('../utilities/pagination')
-const {Op} = require('sequelize')
+const { Op } = require('sequelize')
 const sequelize = require('sequelize')
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
             let attributes = ['productID', 'name', 'basePrice', 'stock', 'rating', 'img']
             //Filter by category
             if (categoryID) {
-                where.categoryID=categoryID
+                where.categoryID = categoryID
             }
             //Filter by subCategory
             if (subCategoryID) {
@@ -107,7 +107,6 @@ module.exports = {
                 })
             }
         } catch (error) {
-            console.log(error);
             res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
@@ -119,7 +118,7 @@ module.exports = {
             const productID = req.params.productID;
             const product = await Product.findByPk(productID);
             //Return the product
-            res.status(200).send({ product: product })
+            return res.status(200).send({ product: product })
 
         } catch (error) {
             res.status(500).send({
@@ -134,7 +133,7 @@ module.exports = {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
                     return res.status(409).send({ message: "This product already exists. Please add a different product." });
                 } else {
-                    const product= await Product.create({
+                    const product = await Product.create({
                         name: req.body.name,
                         desc: req.body.desc,
                         basePrice: req.body.basePrice,
@@ -146,23 +145,23 @@ module.exports = {
                     //Adds genres to intermediate table
                     if (req.body.genres && req.body.genres.length > 0) {
                         const genres = await Genre.findAll(
-                            { 
-                                where: { 
+                            {
+                                where: {
                                     genreID: {
-                                       [Op.in]: req.body.genres 
+                                        [Op.in]: req.body.genres
                                     }
                                 }
                             }
                         );
                         await product.addGenres(genres);
                     }
-                     //Adds gameModes to intermediate table
-                     if (req.body.gameModes && req.body.gameModes.length > 0) {
+                    //Adds gameModes to intermediate table
+                    if (req.body.gameModes && req.body.gameModes.length > 0) {
                         const gameModes = await GameMode.findAll(
-                            { 
-                                where: { 
+                            {
+                                where: {
                                     gameModeID: {
-                                       [Op.in]: req.body.gameModes
+                                        [Op.in]: req.body.gameModes
                                     }
                                 }
                             }
@@ -179,6 +178,8 @@ module.exports = {
                 // Capture Sequelize Validation Errors
                 const messages = error.errors.map(err => err.message)
                 return res.status(400).json({ errors: messages })
+            }else if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
             }
             return res.status(500).send({
                 message: "Something went wrong. Please try again later",
@@ -195,7 +196,10 @@ module.exports = {
 
             res.status(204).send({ message: "Product deleted successfully." })
         } catch (error) {
-            res.status(500).send({
+            if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
             })
@@ -205,11 +209,9 @@ module.exports = {
         try {
             const productID = req.params.productID
             const userID = res.locals.userID
-
             if (!req.body.rating) {
-                res.status(400).send({ message: "Please select a rating" })
+                return res.status(400).send({ message: "Please select a rating" })
             }
-
             //Verify if the order's state is delievered
             const order = await OrderProduct.findAll({
                 where: { productID: productID },
@@ -220,9 +222,8 @@ module.exports = {
                     }
                 ]
             })
-
             if (!order) {
-                res.status(403).send({ message: "You can only review a product after you've received it." });
+                return res.status(403).send({ message: "You can only review a product after you've received it." });
             }
             // Verify if the user has already reviewed this product
             const existingReview = await Review.findOne({
@@ -232,18 +233,25 @@ module.exports = {
             if (existingReview) {
                 return res.status(403).send({ message: "You have already reviewed this product." });
             }
-
             //Adding the review after everything is validated
             await Review.create({
                 userID: userID,
                 productID: productID,
                 rating: req.body.rating,
                 comment: req.body.comment || null
-            });
-
+            })
             return res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!" })
         } catch (error) {
-            res.status(500).send({
+            if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
+            }else if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
             });
@@ -261,7 +269,16 @@ module.exports = {
             })
             return res.status(201).send({ message: "New Discount Added With Success" })
         } catch (error) {
-            res.status(500).send({
+            if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
+            }else if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
             })
@@ -276,7 +293,11 @@ module.exports = {
 
             return res.status(204).send({ message: "Discount deleted successfully" })
         } catch (error) {
-            res.status(500).send({
+            if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
+            }
+            return res.status(500).send({
+                
                 message: "Something went wrong. Please try again later",
                 details: error,
             })
@@ -292,10 +313,46 @@ module.exports = {
 
             return res.status(204).send({ message: "Comment deleted successfully" })
         } catch (error) {
-            res.status(500).send({
+            if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
+            }
+            return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
             })
+        }
+    },
+    editProduct: async (req, res) => {
+        try {
+            // Get the productID ID from url
+            const productID = req.params.productID;
+            // Find the product by ID
+            const product = await Product.findByPk(productID);
+            // Update the product's data with the values from the request body, if provided
+            if (req.body.name) product.name = req.body.name;
+            if (req.body.desc) product.desc = req.body.desc;
+            if (req.body.basePrice) product.basePrice = req.body.basePrice;
+            if (req.body.stock) product.stock = req.body.stock;
+            if (req.body.img) product.img = req.body.img;
+            if (req.body.platform) product.platform = req.body.platform;
+            // Save the changes to the database
+            await product.save();
+            // Return a success response
+            return res.status(200).send({ message: "Data successfully updated" });
+        } catch (error) {
+            if (error.name === "JsonWebTokenError") {
+                return res.status(401).send({ message: "Your token has expired! Please login again." });
+            }else if (error.name === 'SequelizeValidationError') {
+                // Capture Sequelize Validation Errors
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
+            }
+            return res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            });
         }
     }
 }
