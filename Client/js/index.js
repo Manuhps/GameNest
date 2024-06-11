@@ -30,20 +30,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 let page = 1;
-const limit = 10;
 const container = document.querySelector('.row.gx-4.gx-lg-5.row-cols-2.row-cols-md-3.row-cols-xl-4.justify-content-center');
 
-function fetchProducts(page, limit) {
+function fetchProducts(page, limit = 12) { // Add limit parameter with a default value of 12
     const offset = (page - 1) * limit;
 
     fetch(`http://127.0.0.1:8080/products?offset=${offset}&limit=${limit}`)
         .then(response => response.json())
         .then(data => {
             if (data && data.data) {
-                const products = data.data;
+                const products = data.data.slice(0, limit); // Limit the number of products to 'limit'
                 let productCards = '';
                 products.forEach(product => {
-                    console.log(product);
                     productCards += `
                         <div class="col mb-5">
                             <div class="card h-100">
@@ -52,6 +50,7 @@ function fetchProducts(page, limit) {
                                 <div class="card-body p-4">
                                     <div class="text-center">
                                         <h5 class="fw-bolder">${product.name}</h5>
+                                        <span id="sale-price">${product.curPrice}</span>
                                          <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="./html/products.html?id=${product.productID}">View options</a></div>
                                     </div>
                                 </div>
@@ -61,36 +60,36 @@ function fetchProducts(page, limit) {
                 });
                 container.innerHTML = productCards;
 
-                    // Check if pagination data exists
-                    if (data.pagination) {
-                        const { totalPages, currentPage } = data.pagination;
+                // Check if pagination data exists
+                if (data.pagination) {
+                    const { totalPages, currentPage } = data.pagination;
 
-                        let paginationLinks = '';
-                        for (let i = 1; i <= totalPages; i++) {
-                            // Add 'active' class to the current page link
-                            const activeClass = i === currentPage ? 'active' : '';
-                            paginationLinks += `<a href="?page=${i}" class="${activeClass}">${i}</a>`;
-                        }
-
-                        // Add pagination links to the DOM
-                        document.querySelector('#paginationContainer').innerHTML = paginationLinks;
+                    let paginationLinks = '';
+                    for (let i = 1; i <= totalPages; i++) {
+                        // Add 'active' class to the current page link
+                        const activeClass = i === currentPage ? 'active' : '';
+                        paginationLinks += `<a href="?page=${i}" class="${activeClass}">${i}</a>`;
                     }
+
+                    // Add pagination links to the DOM
+                    document.querySelector('#paginationContainer').innerHTML = paginationLinks;
                 }
-            })
-            .catch(error => console.error('Erro ao buscar produtos:', error));
-    }
+            }
+        })
+        .catch(error => console.error('Erro ao buscar produtos:', error));
+}
 
-    document.querySelector('#nextPage').addEventListener('click', () => {
-        page++;
+document.querySelector('#nextPage').addEventListener('click', () => {
+    page++;
+    fetchProducts(page);
+});
+
+document.querySelector('#prevPage').addEventListener('click', () => {
+    if (page > 1) {
+        page--;
         fetchProducts(page);
-    });
+    }
+});
 
-    document.querySelector('#prevPage').addEventListener('click', () => {
-        if (page > 1) {
-            page--;
-            fetchProducts(page);
-        }
-    });
-
-fetchProducts(page, limit);
+fetchProducts(page, 12);
 });
