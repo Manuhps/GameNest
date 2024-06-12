@@ -41,6 +41,14 @@ module.exports = {
                     return res.status(409).send({ message: "Category already exists" });
                 }
             }
+
+            const regex = /^[A-Za-z\s]+$/;
+            if (!regex.test(req.body.categoryName)) {
+                return res.status(400).send({
+                    message: "Category name must be a string"
+                });
+            }
+
             //Create and Save in the database
             await Category.create({
                 categoryName: req.body.categoryName,
@@ -54,6 +62,7 @@ module.exports = {
             });
         }
     },
+
     deleteCategory: async (req, res) => {
         try {
             let result = await Category.destroy({ where: { categoryID: req.params.categoryID } })

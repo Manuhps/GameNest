@@ -6,10 +6,42 @@ const { paginate, generatePaginationPath } = require("../utilities/pagination")
 const validStates = ['empty', 'cart', 'pending', 'shipping', 'delivered'];
 
 module.exports = {
-    getOrders: async (req, res) => {
+    getAllOrders: async (req, res) => {
+        try {
+            const ordersData = await paginate(Order, { 
+                include: [{ model: OrderProduct }]
+            });
+
+            // Construct links for pagination
+            let nextPage, prevPage = await generatePaginationPath(req, res);
+
+            const links = [
+                { rel: "createOrder", href: "/orders", method: "POST" },
+                { rel: "getCurrent", href: "/orders/current", method: "GET" },
+                { rel: "nextPage", href: nextPage, method: "GET" },
+                { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
+    
+            if (ordersData.data.length === 0) {
+                return res.status(404).send({ message: "No orders found." });
+            }
+    
+            res.status(200).send({
+                pagination: ordersData.pagination,
+                data: ordersData.data,
+                links: links
+            });
+            } catch (err) {
+                res.status(500).send({
+                    message: err.message || "Something went wrong. Please try again later."
+                });
+            }   
+        },
+
+    getOrdersMe: async (req, res) => {
         try {
 
-            const userID = res.locals.userID;
+        const userID = res.locals.userID;
 
         const ordersData = await paginate(Order, {
             where: { userID: userID },  
@@ -75,6 +107,7 @@ module.exports = {
     createOrder: async (req, res) => {
         try {
             const userID = res.locals.userID;
+            const { state } = req.body;
     
             if (!req.body.state || !req.body.products || !Array.isArray(req.body.products) || req.body.products.length === 0) {
                 return res.status(400).send({
@@ -112,6 +145,10 @@ module.exports = {
                 if (product.quantity > productExists.stock) {
                     return res.status(400).send({ message: `Quantity for product ${product.productID} exceeds available stock.` });
                 }
+                if (['pending', 'shipping', 'delivered'].includes(state)) {
+                    productExists.stock -= product.quantity;
+                    await productExists.save();
+                }
                 
             }
     
@@ -125,7 +162,8 @@ module.exports = {
             const orderProducts = products.map(product => ({
                 orderID: order.orderID,
                 productID: product.productID,
-                quantity: product.quantity
+                quantity: product.quantity,
+                salePrice: product.salePrice
             }));
     
             await OrderProduct.bulkCreate(orderProducts);
@@ -194,6 +232,20 @@ module.exports = {
                 }
             }
 
+            if (['pending', 'shipping', 'delivered'].includes(state)) {
+                const currentOrder = await Order.findOne({ where: { userID, state: 'cart' } });
+                if (currentOrder) {
+                    const orderProducts = await OrderProduct.findAll({ where: { orderID: currentOrder.orderID } });
+                    for (const orderProduct of orderProducts) {
+                        const product = await Product.findByPk(orderProduct.productID);
+                        if (product) {
+                            product.stock -= orderProduct.quantity;
+                            await product.save();
+                        }
+                    }
+                }
+            }
+
             // Find the order
         const order = await Order.findOne({ where: { userID, state: 'cart' } });
         if (!order) {
@@ -226,7 +278,8 @@ module.exports = {
                     await OrderProduct.create({
                         orderID: order.orderID,
                         productID: product.productID,
-                        quantity: product.quantity
+                        quantity: product.quantity,
+                        salePrice: product.salePrice
                     });
                 }
             }
