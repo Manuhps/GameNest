@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Category, SubCategory } = require('../models/index');
-const { generatePaginationPath } = require("../utilities/pagination")
+const { generatePaginationPath, paginate } = require("../utilities/pagination")
 
 module.exports = {
     findAllCategory: async (req, res) => {
@@ -94,7 +94,7 @@ module.exports = {
                 });
         } catch (error) {
             res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
+                message: error.message || "Something went wrong. Please try again later."
             });
         }
     },

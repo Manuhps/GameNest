@@ -11,35 +11,56 @@ const Product = sequelize.define("Product",
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                len: [2, 100]
+            }
         },
         desc: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                len: [10, 500]
+            }
         },
         basePrice: {
             type: DataTypes.DECIMAL(8,2),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isNumeric: true,
+                min: 0,
+                max: 10000
+            }
         },
         stock: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isInt: true
+            }
         },
         rating: {
             type: DataTypes.DECIMAL(3, 1),
             allowNull: true,
             validate: {
+                isNumeric: true,
                 min: 1, 
                 max: 5 
             }
         },
         img: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            validate: {
+                isUrl: true
+            }
         },
         platform: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            validate: {
+                len: [3, 40]
+            }
         }
     }
 );

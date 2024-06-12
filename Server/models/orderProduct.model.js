@@ -7,17 +7,21 @@ const OrderProduct = sequelize.define("OrderProduct",
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    salePrice: {
+        type: DataTypes.DECIMAL(8,2),
+        allowNull: false
+    },
     orderID: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Order',  // Nome do modelo como string
+            model: 'Order', 
             key: 'orderID'
         }
     },
     productID: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Product',  // Nome do modelo como string
+            model: 'Product', 
             key: 'productID'
         }
     }
