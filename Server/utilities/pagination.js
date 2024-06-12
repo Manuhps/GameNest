@@ -17,8 +17,24 @@ module.exports = {
             attributes: options.attributes || {},
             order: options.order || [],
             include: options.include || [],
+            group: options.group || [],
             offset: options.offset ? parseInt(options.offset): undefined,
             limit: options.limit ? parseInt(options.limit): undefined,
+        }
+
+        if (query.group) {
+            const results = await model.findAll(query)
+            const totalItems = results.length
+            const totalPages = Math.ceil(totalItems / (query.limit ? parseInt(query.limit) : totalItems))
+            const currentPage = query.offset ? Math.floor(parseInt(query.offset) / parseInt(query.limit)) + 1 : 1
+            return {
+                pagination: {
+                    totalItems,
+                    totalPages,
+                    currentPage
+                },
+                data: results
+            }
         }
         const results = await model.findAndCountAll(query)
         const totalItems = results.count

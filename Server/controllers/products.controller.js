@@ -140,8 +140,8 @@ module.exports = {
                         stock: req.body.stock,
                         img: req.body.img || null,
                         platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default
-                        categoryID: req.body.categoryID,
-                    });
+                        categoryID: req.body.categoryID
+                    })
                     //Adds genres to intermediate table
                     if (req.body.genres && req.body.genres.length > 0) {
                         const genres = await Genre.findAll(
@@ -152,7 +152,7 @@ module.exports = {
                                     }
                                 }
                             }
-                        );
+                        )
                         await product.addGenres(genres);
                     }
                     //Adds gameModes to intermediate table
@@ -168,16 +168,18 @@ module.exports = {
                         );
                         await product.addGameModes(gameModes);
                     }
-                    res.status(201).send({ message: "New Product Added With Success." })
+                    return res.status(201).send({ message: "New Product Added With Success." })
                 }
-            } else {
-                res.status(400).send({ messsage: "Please fill all the required fields" });
+            }else {
+                return res.status(400).send({ messsage: "Please fill all the required fields" });
             }
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
-                const messages = error.errors.map(err => err.message)
-                return res.status(400).json({ errors: messages })
+                const messages = error.errors.map(err => ({
+                    message: `Invalid Data Format on ${err.path}`
+                }))
+                return res.status(400).send({ errors: messages })
             }else if (error.name === "JsonWebTokenError") {
                 return res.status(401).send({ message: "Your token has expired! Please login again." });
             }
@@ -194,7 +196,7 @@ module.exports = {
             //Destroys the Product if it exists
             await Product.destroy({ where: { productID: product.productID } })
 
-            res.status(204).send({ message: "Product deleted successfully." })
+            return res.status(204).send({ message: "Product deleted successfully." })
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
                 return res.status(401).send({ message: "Your token has expired! Please login again." });
@@ -352,7 +354,7 @@ module.exports = {
             return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
-            });
+            })
         }
     }
 }

@@ -25,7 +25,6 @@ const { checkReview } = require("../middlewares/checkReview")
 //import checkComment middleware
 const { checkComment } = require("../middlewares/checkComment")
 
-
 router.route('/')
     .post(checkToken, verifyAdmin, addProduct)
     .get(getProducts)
