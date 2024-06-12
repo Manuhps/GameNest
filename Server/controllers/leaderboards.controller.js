@@ -1,4 +1,4 @@
-const { User, Order, OrderProduct } = require("../models/index");
+const { User, Order, OrderProduct, Review } = require("../models/index");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
 const sequelize = require('sequelize')
 
@@ -54,6 +54,32 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
+            return res.status(500).send({
+                message: "Something went wrong. Please try again later",
+                details: error,
+            })
+        }
+    },
+    getMostReviews: async (req, res) => {
+        try {
+            const usersMostReviews = await paginate(User, {
+                attributes: ['username', [sequelize.fn('count', sequelize.literal('Reviews.reviewID')), 'totalReviews']],
+                include: [
+                    {
+                        model: Review,
+                        attributes: []
+                    }
+                ],
+                order: [[sequelize.literal('totalReviews'), 'DESC']],
+                group: ['username']
+            })
+            if (usersMostReviews) {
+                return res.status(200).send({
+                    pagination: usersMostReviews.pagination,
+                    data: usersMostReviews.data
+                })
+            }
+        } catch (error) {
             return res.status(500).send({
                 message: "Something went wrong. Please try again later",
                 details: error,
