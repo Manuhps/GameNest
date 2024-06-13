@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
            const profileIcon = document.getElementById('profileIcon');
            if (profileIcon) profileIcon.style.display = 'block';
 
-           window.location.href = '../index.html'; // Redireciona para a página inicial
+           window.location.href = '/'; // Redireciona para a página inicial
         });
     });
 });
@@ -66,5 +66,5 @@ document.getElementById('logoutButton').addEventListener('click', function () {
     if (profileIcon) profileIcon.style.display = 'none';
 
     // Redireciona para a página de login
-    window.location.href = 'index.html';
+    window.location.href = '/';
 });
