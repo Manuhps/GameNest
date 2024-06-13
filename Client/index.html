@@ -21,7 +21,6 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -48,11 +47,12 @@
                             Login
                         </button>
                     </a>
-                   <!-- Botão de Perfil -->
+                   <a href="html/profile.html">
                         <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon" style="display: none;">
                             <i class="bi-person-fill me-1"></i>
                              Profile
                         </button>
+                    </a>
                         <!-- Botão de Logout -->
                         <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton" style="display: none;">
                             <i class="bi-person-fill me-1"></i>
@@ -71,6 +71,44 @@
                 </div>
             </div>
         </header>
+        <!-- Início da área de filtragem -->
+<div class="filter-area">
+    <h2>Filtrar Produtos</h2>
+    <form id="filterForm">
+        <div class="form-group">
+            <label for="search">Pesquisa:</label>
+            <input type="text" id="search" name="search">
+        </div>
+        <div class="form-group">
+            <label for="category">Categoria:</label>
+            <select id="category" name="category">
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="price">Preço Minimo:</label>
+            <input type="number" id="price-min" name="price-min" min="0">
+        </div>
+        <div class="form-group">
+            <label for="price">Preço Máximo:</label>
+            <input type="number" id="price-max" name="price-min" min="0">
+        </div>
+        <div class="form-group">
+            <label for="gameMode">Game Mode:</label>
+            <select id="gameMode" name="gameMode">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="genre">Gênero:</label>
+            <select id="genre" name="genre">
+                <option value="">Todos</option>
+                <!-- As opções serão preenchidas dinamicamente com JavaScript -->
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+</div>
+<!-- Fim da área de filtragem -->
         <!-- Section-->
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
