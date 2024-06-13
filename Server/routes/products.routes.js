@@ -5,23 +5,17 @@ const router = express.Router();
 const { addProduct, getProducts, getProduct, deleteProduct, addReview, addDiscount, deleteDiscount, deleteComment, editProduct } = require("../controllers/products.controller");
 
 //import jwt middleware
-const { verifyUser, verifyAdmin } = require("../middlewares/jwt")
-
+const { verifyUser, verifyAdmin } = require("../utilities/jwt")
 //import checkToken middleware
 const { checkToken } = require("../middlewares/checkToken")
-
 //import checkProduct middleware
 const { checkProduct } = require("../middlewares/checkProduct")
-
 //import checkDiscount middleware
 const { checkDiscount } = require("../middlewares/checkDiscount")
-
 //import checkDiscountExists middleware
 const { checkDiscountExists } = require("../middlewares/checkDiscountExists")
-
 //import checkReview middleware
 const { checkReview } = require("../middlewares/checkReview")
-
 //import checkComment middleware
 const { checkComment } = require("../middlewares/checkComment")
 

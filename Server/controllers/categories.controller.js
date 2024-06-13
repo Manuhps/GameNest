@@ -95,14 +95,14 @@ module.exports = {
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-            res.status(200).send(
+            return res.status(200).send(
                 {
                     pagination: subCategories.pagination,
                     data: subCategories.data,
                     links: links
                 });
         } catch (error) {
-            res.status(500).send({
+            return res.status(500).send({
                 message: error.message || "Something went wrong. Please try again later."
             });
         }

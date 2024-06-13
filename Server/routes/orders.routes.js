@@ -3,7 +3,7 @@ const router = express.Router();
 
 // import controller middleware
 const { getAllOrders, getOrdersMe, createOrder, getCurrentOrder, updateOrder, updateProductQuantity, deleteOrderProduct, deleteOrder } = require("../controllers/orders.controller");
-const { verifyAdmin, verifyUser } = require("../middlewares/jwt");
+const { verifyAdmin, verifyUser } = require("../utilities/jwt");
 const { checkToken } = require("../middlewares/checkToken");
 
 router.route('/')
