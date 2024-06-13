@@ -1,24 +1,20 @@
 const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode } = require("../models/index");
-const { paginate } = require('../utilities/pagination')
+const { handleServerError, handleConflictError, handleSequelizeValidationError, handleJsonWebTokenError, handleBadRequest, handleForbiddenRequest } = require("../utilities/errors");
+const { getProductLinks } = require("../utilities/hateoas");
+const { paginate, generatePaginationPath } = require('../utilities/pagination')
 const { Op } = require('sequelize')
 const sequelize = require('sequelize')
 
 module.exports = {
     getProducts: async (req, res) => {
         try {
-            // // Construct links for pagination
-            //   let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
-
-            //   //Construct HATEOAS links
-            //   const links = [
-            //       { rel: "login", href: "/products/login", method: "POST" },
-            //       { rel: "register", href: "/products", method: "POST" },
-            //       { rel: "editProfile", href: "/products/me", method: "PATCH" },
-            //       { rel: "banproduct", href: "/products/:productID", method: "PATCH" },
-            //       { rel: "nextPage", href: nextPage, method: "GET" },
-            //       { rel: "prevPage", href: prevPage, method: "GET" }
-            // ];
-
+            // Construct links for pagination
+            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+            const nextPageLink = { rel: "nextPage", href: nextPage, method: "GET" }
+            const prevPageLink = { rel: "prevPage", href: prevPage, method: "GET" }
+            //Construct HATEOAS links
+            const links = getProductLinks("getProducts")
+            links.push(nextPageLink, prevPageLink)
             const { curPrice, rating, categoryID, subCategoryID, name, date, genreID, gameModeID } = req.query
             const currentDate = new Date().setHours(0, 0, 0, 0)
             let where = {}
@@ -99,39 +95,38 @@ module.exports = {
             }
             //Uses paginate function to get results 
             const productsData = await paginate(Product, { order, where, include, attributes })
-
             if (productsData) {
                 return res.status(200).send({
                     pagination: productsData.pagination,
-                    data: productsData.data
+                    data: productsData.data,
+                    links: links
                 })
             }
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
     getProduct: async (req, res) => {
         try {
             const productID = req.params.productID;
             const product = await Product.findByPk(productID);
+            const links = getProductLinks("getProduct")
             //Return the product
-            return res.status(200).send({ product: product })
+            return res.status(200).send(
+                { 
+                    product: product,
+                    links: links 
+                })
 
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
     addProduct: async (req, res) => {
         try {
             if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
-                    return res.status(409).send({ message: "This product already exists. Please add a different product." });
+                    handleConflictError(res, "This product already exists. Please add a different product.")
                 } else {
                     const product = await Product.create({
                         name: req.body.name,
@@ -171,40 +166,29 @@ module.exports = {
                     return res.status(201).send({ message: "New Product Added With Success." })
                 }
             }else {
-                return res.status(400).send({ messsage: "Please fill all the required fields" });
+                handleBadRequest(res, "Please fill all the required fields")
             }
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
-                const messages = error.errors.map(err => ({
-                    message: `Invalid Data Format on ${err.path}`
-                }))
-                return res.status(400).send({ errors: messages })
+                handleSequelizeValidationError(error, res)
             }else if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     deleteProduct: async (req, res) => {
         try {
             const product = res.locals.product
-
             //Destroys the Product if it exists
             await Product.destroy({ where: { productID: product.productID } })
-
             return res.status(204).send({ message: "Product deleted successfully." })
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     addReview: async (req, res) => {
@@ -212,7 +196,7 @@ module.exports = {
             const productID = req.params.productID
             const userID = res.locals.userID
             if (!req.body.rating) {
-                return res.status(400).send({ message: "Please select a rating" })
+                handleBadRequest(res, "Please select a rating")
             }
             //Verify if the order's state is delievered
             const order = await OrderProduct.findAll({
@@ -225,7 +209,7 @@ module.exports = {
                 ]
             })
             if (!order) {
-                return res.status(403).send({ message: "You can only review a product after you've received it." });
+                handleForbiddenRequest(res, "You can only review a product after you've received it.")
             }
             // Verify if the user has already reviewed this product
             const existingReview = await Review.findOne({
@@ -233,7 +217,7 @@ module.exports = {
             });
 
             if (existingReview) {
-                return res.status(403).send({ message: "You have already reviewed this product." });
+                handleForbiddenRequest(res, "You have already reviewed this product.")
             }
             //Adding the review after everything is validated
             await Review.create({
@@ -245,18 +229,12 @@ module.exports = {
             return res.status(201).send({ message: "Review added successfully. Thank you for taking your time to review the product!" })
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }else if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
-                const messages = error.errors.map(err => ({
-                    message: `Invalid Data Format on ${err.path}`
-                }))
-                return res.status(400).send({ errors: messages })
+                handleSequelizeValidationError(error, res)
             }
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
     addDiscount: async (req, res) => {
@@ -272,43 +250,30 @@ module.exports = {
             return res.status(201).send({ message: "New Discount Added With Success" })
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }else if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
-                const messages = error.errors.map(err => ({
-                    message: `Invalid Data Format on ${err.path}`
-                }))
-                return res.status(400).send({ errors: messages })
+                handleSequelizeValidationError(error, res)
             }
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     deleteDiscount: async (req, res) => {
         try {
             const productID = req.params.productID
             const discountID = req.params.discountID
-
             await Discount.destroy({ where: { discountID: discountID, productID: productID } })
-
             return res.status(204).send({ message: "Discount deleted successfully" })
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }
-            return res.status(500).send({
-                
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     deleteComment: async (req, res) => {
         try {
             const { reviewID } = req.params
-
             const review = await Review.findByPk(reviewID)
             review.comment = null
             await review.save()
@@ -316,12 +281,9 @@ module.exports = {
             return res.status(204).send({ message: "Comment deleted successfully" })
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     editProduct: async (req, res) => {
@@ -343,18 +305,12 @@ module.exports = {
             return res.status(200).send({ message: "Data successfully updated" });
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
-                return res.status(401).send({ message: "Your token has expired! Please login again." });
+                handleJsonWebTokenError(res)
             }else if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
-                const messages = error.errors.map(err => ({
-                    message: `Invalid Data Format on ${err.path}`
-                }))
-                return res.status(400).send({ errors: messages })
+                handleSequelizeValidationError(error, res)
             }
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     }
 }

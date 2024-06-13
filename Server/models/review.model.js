@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../connection')
-const updateProductRating = require('../hooks/updateProductRating')
+const updateProductRating = require('../hooks/updateProductRating');
+const addPointsOnReview = require('../hooks/addPointsOnReview');
 
 const Review = sequelize.define("Review",
     {
@@ -28,6 +29,7 @@ const Review = sequelize.define("Review",
 Review.addHook('afterCreate', async (review, options) => {
     try {
         await updateProductRating(review.productID);
+        await addPointsOnReview(review.userID)
     } catch (error) {
         console.error('Error in afterCreate hook:', error);
         throw error;
