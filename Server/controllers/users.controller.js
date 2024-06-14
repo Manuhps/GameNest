@@ -1,7 +1,7 @@
 const { User } = require("../models/index");
 const { compareHash } = require("../utilities/bcrypt");
 const { handleForbiddenRequest, handleInvalidRequest, handleBadRequest, handleServerError, handleSequelizeValidationError, handleConflictError, handleJsonWebTokenError, handleNotFoundError } = require("../utilities/errors");
-const { SignToken } = require("../utilities/jwt");
+const { SignToken } = require("../middlewares/jwt");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 module.exports = {

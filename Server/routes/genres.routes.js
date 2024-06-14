@@ -3,7 +3,7 @@ const router = express.Router();
 
 // import genres controller 
 const { findAllGenre, createGenre, deleteGenre } = require("../controllers/genres.controller");
-const { verifyAdmin } = require("../utilities/jwt");
+const { verifyAdmin } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken")
 
 router.route('/')

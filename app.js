@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Client', './index.html'));
 });
 
-
 app.use('/users', require('./Server/routes/users.routes'))
 app.use('/gameModes', require('./Server/routes/gameModes.routes'))
 app.use('/genres', require('./Server/routes/genres.routes'))
@@ -31,3 +30,5 @@ app.use('/leaderboards', require('./Server/routes/leaderboards.routes'))
 app.listen(process.env.PORT, () => 
    console.log(`Server running at http://${process.env.HOST}:${process.env.PORT}/`)
 );
+
+module.exports= app

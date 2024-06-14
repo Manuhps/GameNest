@@ -3,7 +3,7 @@ const router = express.Router();
 
 // import categories controller 
 const { findAllGameMode, createGameMode, deleteGameMode } = require("../controllers/gameMode.controller");
-const { verifyAdmin } = require("../utilities/jwt");
+const { verifyAdmin } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken")
 
 router.route('/')

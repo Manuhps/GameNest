@@ -3,13 +3,13 @@ const router = express.Router();
 
 // import categories controller 
 const { findAllCategory, createCategory, deleteCategory, getSubCategories, addSubCategory, delSubCategory } = require("../controllers/categories.controller");
-const { verifyAdmin } = require("../utilities/jwt");
+const { verifyAdmin } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken")
 const { checkSubCategoryExists, checkSubCategory } = require("../middlewares/checkSubCategory")
 const { checkCategory } = require("../middlewares/checkCategory")
 
 router.route('/')
-    .get(checkToken, verifyAdmin, findAllCategory)
+    .get(checkToken, findAllCategory)
     .post(checkToken, verifyAdmin, createCategory)
 
 router.route('/:categoryID')

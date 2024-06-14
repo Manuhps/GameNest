@@ -5,7 +5,7 @@ const router = express.Router();
 const { addProduct, getProducts, getProduct, deleteProduct, addReview, addDiscount, deleteDiscount, deleteComment, editProduct } = require("../controllers/products.controller");
 
 //import jwt middleware
-const { verifyUser, verifyAdmin } = require("../utilities/jwt")
+const { verifyUser, verifyAdmin } = require("../middlewares/jwt")
 //import checkToken middleware
 const { checkToken } = require("../middlewares/checkToken")
 //import checkProduct middleware
@@ -38,10 +38,10 @@ router.route('/:productID/discounts')
     .post(checkToken, verifyAdmin, checkProduct, checkDiscount, addDiscount)
 
 router.route('/:productID/discounts/:discountID')
-    .delete(checkToken, verifyAdmin, checkProduct, checkDiscountExists, deleteDiscount) 
+    .delete(checkToken, verifyAdmin, checkProduct, checkDiscountExists, deleteDiscount)
 
 router.all('*', (req, res) => {
-     res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
+    res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
 })
 
 //export this router
