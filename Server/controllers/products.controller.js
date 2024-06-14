@@ -1,4 +1,4 @@
-const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode } = require("../models/index");
+const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode, User } = require("../models/index");
 const { handleServerError, handleConflictError, handleSequelizeValidationError, handleJsonWebTokenError, handleBadRequest, handleForbiddenRequest } = require("../utilities/errors");
 const { getProductLinks } = require("../utilities/hateoas");
 const { paginate, generatePaginationPath } = require('../utilities/pagination')
@@ -8,13 +8,6 @@ const sequelize = require('sequelize')
 module.exports = {
     getProducts: async (req, res) => {
         try {
-            // Construct links for pagination
-            let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
-            const nextPageLink = { rel: "nextPage", href: nextPage, method: "GET" }
-            const prevPageLink = { rel: "prevPage", href: prevPage, method: "GET" }
-            //Construct HATEOAS links
-            const links = getProductLinks("getProducts")
-            links.push(nextPageLink, prevPageLink)
             const { curPrice, rating, categoryID, subCategoryID, name, date, genreID, gameModeID } = req.query
             const currentDate = new Date().setHours(0, 0, 0, 0)
             let where = {}
@@ -93,9 +86,17 @@ module.exports = {
                     order.push(['createdAt', 'ASC'])
                 }
             }
+            // Construct links for pagination
+            // let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
+            // const nextPageLink = { rel: "nextPage", href: nextPage, method: "GET" }
+            // const prevPageLink = { rel: "prevPage", href: prevPage, method: "GET" }
+            //Construct HATEOAS links
+            const links = await getProductLinks(req, "getProducts", res)
+            // links.push(nextPageLink, prevPageLink)
             //Uses paginate function to get results 
             const productsData = await paginate(Product, { order, where, include, attributes })
             if (productsData) {
+                console.log(links);
                 return res.status(200).send({
                     pagination: productsData.pagination,
                     data: productsData.data,
@@ -110,12 +111,12 @@ module.exports = {
         try {
             const productID = req.params.productID;
             const product = await Product.findByPk(productID);
-            const links = getProductLinks("getProduct")
+            const links = getProductLinks(req, "getProduct")
             //Return the product
             return res.status(200).send(
-                { 
+                {
                     product: product,
-                    links: links 
+                    links: links
                 })
 
         } catch (error) {
@@ -165,14 +166,14 @@ module.exports = {
                     }
                     return res.status(201).send({ message: "New Product Added With Success." })
                 }
-            }else {
+            } else {
                 handleBadRequest(res, "Please fill all the required fields")
             }
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
                 handleSequelizeValidationError(error, res)
-            }else if (error.name === "JsonWebTokenError") {
+            } else if (error.name === "JsonWebTokenError") {
                 handleJsonWebTokenError(res)
             }
             handleServerError(error, res)
@@ -230,7 +231,7 @@ module.exports = {
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
                 handleJsonWebTokenError(res)
-            }else if (error.name === 'SequelizeValidationError') {
+            } else if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
                 handleSequelizeValidationError(error, res)
             }
@@ -251,7 +252,7 @@ module.exports = {
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
                 handleJsonWebTokenError(res)
-            }else if (error.name === 'SequelizeValidationError') {
+            } else if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
                 handleSequelizeValidationError(error, res)
             }
@@ -306,7 +307,7 @@ module.exports = {
         } catch (error) {
             if (error.name === "JsonWebTokenError") {
                 handleJsonWebTokenError(res)
-            }else if (error.name === 'SequelizeValidationError') {
+            } else if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
                 handleSequelizeValidationError(error, res)
             }

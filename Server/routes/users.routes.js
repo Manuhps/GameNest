@@ -3,7 +3,7 @@ const router = express.Router();
 
 // import users controller
 const { login, getUsers, register, getSelf, editProfile, banUser } = require("../controllers/users.controller");
-const { verifyUser, verifyAdmin } = require("../utilities/jwt");
+const { verifyUser, verifyAdmin } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken")
 
 router.route('/')
