@@ -1,10 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Check user's login status
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-        // Hide login button
-        const loginButton = document.getElementById('loginButton');
-        if (loginButton) loginButton.style.display = 'none';
-document.addEventListener('DOMContentLoaded', function () {
     // Verifique o estado de login do usuário
     if (localStorage.getItem('isLoggedIn') === 'true') {
         // Oculta o botão de login
@@ -20,15 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (logoutButton) logoutButton.style.display = 'block';
     }
 });
-        // Show profile icon
-        const profileIcon = document.getElementById('profileIcon');
-        if (profileIcon) profileIcon.style.display = 'block';
-
-        // Show logout button
-        const logoutButton = document.getElementById('logoutButton');
-        if (logoutButton) logoutButton.style.display = 'block';
-    }
-});
 
 function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -38,20 +23,16 @@ function updateCartCount() {
     }
 }
 
-function addToCart(product, id) {
+function addToCart(product) {
+    // If the user is not logged in, show the login modal and return
+    let userIsLoggedIn = localStorage.getItem('isLoggedIn');
 
-    console.log('addToCart function called with id:', id);
-    
-     // If the user is not logged in, show the login modal and return
-     let userIsLoggedIn = localStorage.getItem('isLoggedIn');
-     console.log('User is logged in:', userIsLoggedIn);
-     if (userIsLoggedIn !== 'true') {
-         let loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {});
-         console.log('Showing login modal');
-         loginModal.show();
-         return;
-     }
-    
+    if (userIsLoggedIn !== 'true') {
+        let loginModal = new bootstrap.Modal(document.getElementById('loginModal1'), {});
+        loginModal.show();
+        return;
+    }
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     // Find the product in the cart
@@ -70,9 +51,7 @@ function addToCart(product, id) {
             quantity: 1
         });
     }
-    
 
-    // Save the cart back to localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
 
     // Update the cart count
@@ -80,9 +59,11 @@ function addToCart(product, id) {
     if (cartElement) {
         cartElement.textContent = cart.reduce((total, item) => total + item.quantity, 0);
     }
-
     updateCartCount();
 }
+
+
+
 
 function generateCart() {
     // Get the cart from localStorage
@@ -102,8 +83,6 @@ function generateCart() {
     let cartElement = document.getElementById('cart');
     if (cartElement) {
         cartElement.textContent = cart.reduce((total, item) => total + item.quantity, 0);
-    } else {
-        console.error('Cart element does not exist');
     }
 }
 
@@ -178,6 +157,7 @@ function loadCart() {
 }
 
 function checkOut() {
+
     let userIsLoggedIn = localStorage.getItem('isLoggedIn');
 
     if (userIsLoggedIn === 'true') {
@@ -186,10 +166,11 @@ function checkOut() {
         checkoutModal.show();
     } else {
         // Se o usuário não estiver logado, mostre o modal de login
-        let loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {});
+        let loginModal = new bootstrap.Modal(document.getElementById('loginModal1'), {});
         loginModal.show();
     }
 }
+
 
 function redirectToLogin() {
     window.location.href = 'login.html';
