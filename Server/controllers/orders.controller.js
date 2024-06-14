@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Order, OrderProduct, Product } = require("../models/index");
+const { Order, OrderProduct, Product, User } = require("../models/index");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 const validStates = ['empty', 'cart', 'pending', 'shipping', 'delivered'];
@@ -107,33 +107,15 @@ module.exports = {
     createOrder: async (req, res) => {
         try {
             const userID = res.locals.userID;
-            const { state } = req.body;
+            const { products } = req.body;
     
-            if (!req.body.state || !req.body.products || !Array.isArray(req.body.products) || req.body.products.length === 0) {
+            if (!products || !Array.isArray(products) || products.length === 0) {
                 return res.status(400).send({
-                    message: "Please fill all the required fields and provide at least one product."
+                    message: "Please provide at least one product."
                 });
             }
     
-            // Validação do estado fornecido
-            if (!validStates.includes(req.body.state)) {
-                return res.status(400).send({ message: "Invalid state provided." });
-            }
-    
-            if (req.body.state === 'cart') {
-                const existingCartOrder = await Order.findOne({
-                    where: {
-                        userID: userID,
-                        state: 'cart'
-                    }
-                });
-                if (existingCartOrder) {
-                    return res.status(400).send({ message: "There is already an existing order with state 'cart' for this user." });
-                }
-            }
-
-            // Verificar se todos os produtos existem
-            const products = req.body.products;
+            // Verificar se todos os produtos existem e validar quantidade
             for (const product of products) {
                 const productExists = await Product.findByPk(product.productID);
                 if (!productExists) {
@@ -145,20 +127,26 @@ module.exports = {
                 if (product.quantity > productExists.stock) {
                     return res.status(400).send({ message: `Quantity for product ${product.productID} exceeds available stock.` });
                 }
-                if (['pending', 'shipping', 'delivered'].includes(state)) {
-                    productExists.stock -= product.quantity;
-                    await productExists.save();
-                }
-                
             }
     
-            // Cria a ordem
+            // Verificar se já existe uma order em estado 'cart' para o usuário
+            const existingCartOrder = await Order.findOne({
+                where: {
+                    userID: userID,
+                    state: 'cart'
+                }
+            });
+            if (existingCartOrder) {
+                return res.status(400).send({ message: "There is already an existing order with state 'cart' for this user." });
+            }
+    
+            // Criar a ordem com estado 'cart'
             const order = await Order.create({
-                state: req.body.state,
+                state: 'cart',
                 userID: userID
             });
     
-            // Adiciona produtos à ordem
+            // Adicionar produtos à ordem
             const orderProducts = products.map(product => ({
                 orderID: order.orderID,
                 productID: product.productID,
@@ -177,7 +165,6 @@ module.exports = {
             });
         }
     },
-
     
     updateOrder: async (req, res) => {
         try {
@@ -232,6 +219,8 @@ module.exports = {
                 }
             }
 
+            let pointsToAdd = 0;
+
             if (['pending', 'shipping', 'delivered'].includes(state)) {
                 const currentOrder = await Order.findOne({ where: { userID, state: 'cart' } });
                 if (currentOrder) {
@@ -241,6 +230,7 @@ module.exports = {
                         if (product) {
                             product.stock -= orderProduct.quantity;
                             await product.save();
+                            pointsToAdd += (orderProduct.salePrice * orderProduct.quantity) / 2;  
                         }
                     }
                 }
@@ -284,6 +274,13 @@ module.exports = {
                 }
             }
         }
+
+        if (['pending', 'shipping', 'delivered'].includes(state)) {
+            const user = await User.findByPk(userID);
+            user.points += pointsToAdd;
+            await user.save();
+        }
+
         res.status(200).send({ message: "Order updated successfully." });
     
         } catch (error) {
