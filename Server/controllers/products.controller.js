@@ -160,7 +160,7 @@ module.exports = {
     },
     addProduct: async (req, res) => {
         try {
-            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID && req.body.subCategoryID) {
+            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
                     handleConflictError(res, "This product already exists. Please add a different product.")
                 } else {
@@ -172,7 +172,7 @@ module.exports = {
                         img: req.body.img || null,
                         platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default
                         categoryID: req.body.categoryID,
-                        subCategoryID: req.body.subCategoryID
+                        subCategoryID: req.body.subCategoryID || null
                     })
                     //Adds genres to intermediate table
                     if (req.body.genres && req.body.genres.length > 0) {
