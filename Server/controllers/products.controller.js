@@ -1,5 +1,5 @@
-const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode, User } = require("../models/index");
-const { handleServerError, handleConflictError, handleSequelizeValidationError, handleJsonWebTokenError, handleBadRequest, handleForbiddenRequest } = require("../utilities/errors");
+const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode, SubCategory, Category } = require("../models/index");
+const { handleServerError, handleConflictError, handleSequelizeValidationError, handleJsonWebTokenError, handleBadRequest, handleForbiddenRequest, handleNotFoundError } = require("../utilities/errors");
 const { getProductLinks } = require("../utilities/hateoas");
 const { paginate, generatePaginationPath } = require('../utilities/pagination')
 const { Op } = require('sequelize')
@@ -16,11 +16,39 @@ module.exports = {
             let attributes = ['productID', 'name', 'basePrice', 'stock', 'rating', 'img']
             //Filter by category
             if (categoryID) {
+                const category = Category.findByPk(categoryID)
+                if (!category) {
+                    handleNotFoundError(res, "Category Not Found")
+                }
                 where.categoryID = categoryID
             }
             //Filter by subCategory
-            if (subCategoryID) {
-                where.subCategoryID = subCategoryID
+            if (categoryID && subCategoryID ) {
+                const category = Category.findByPk(categoryID)
+                if (!category) {
+                    handleNotFoundError(res, "Category Not Found")
+                }
+                const subCategory = SubCategory.findByPk(subCategoryID)
+                if (!subCategory) {
+                    handleNotFoundError(res, "SubCategory Not Found")
+                }
+                const subCategoryBelong= await SubCategory.findOne({ 
+                    where: { 
+                        subCategoryID: subCategoryID, 
+                        categoryID: categoryID
+                    }
+                })
+                if (!subCategoryBelong) {
+                    handleBadRequest(res, "SubCategory Does Not Belong to the Specified Category")
+                }
+                include.push({
+                    model: SubCategory,
+                    attributes: ["subCategoryName"],
+                    through: {attributes: []},
+                    where: {
+                        subCategoryID: subCategoryID
+                    }
+                })
             }
             //Filter/Search by name
             if (name) {
@@ -28,6 +56,10 @@ module.exports = {
             }                                           //that contain the name string
             //Filter by genre
             if (genreID) {
+                const genre = Genre.findByPk(genreID)
+                if (!genre) {
+                    handleNotFoundError(res, "Genre Not Found")
+                }
                 include.push({
                     model: Genre,
                     attributes: ['genreName'],
@@ -39,6 +71,10 @@ module.exports = {
             }
             //Filter by gameMode
             if (gameModeID) {
+                const gameMode = GameMode.findByPk(gameModeID)
+                if (!gameMode) {
+                    handleNotFoundError(res, "GameMode Not Found")
+                }
                 include.push({
                     model: GameMode,
                     attributes: ['gameModeName'],
@@ -96,7 +132,6 @@ module.exports = {
             //Uses paginate function to get results 
             const productsData = await paginate(Product, { order, where, include, attributes })
             if (productsData) {
-                console.log(links);
                 return res.status(200).send({
                     pagination: productsData.pagination,
                     data: productsData.data,
@@ -111,21 +146,21 @@ module.exports = {
         try {
             const productID = req.params.productID;
             const product = await Product.findByPk(productID);
-            const links = getProductLinks(req, "getProduct")
+            const links = await getProductLinks(req, "getProduct", res)
             //Return the product
             return res.status(200).send(
                 {
                     product: product,
                     links: links
-                })
-
+                }
+            )
         } catch (error) {
             handleServerError(error, res)
         }
     },
     addProduct: async (req, res) => {
         try {
-            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID) {
+            if (req.body.name && req.body.desc && req.body.basePrice && req.body.stock && req.body.categoryID && req.body.subCategoryID) {
                 if (await Product.findOne({ where: { name: req.body.name } })) {
                     handleConflictError(res, "This product already exists. Please add a different product.")
                 } else {
@@ -136,7 +171,8 @@ module.exports = {
                         stock: req.body.stock,
                         img: req.body.img || null,
                         platform: req.body.platform || null,   //If the parameter is not sent in the body it's value is set to null or [] by default
-                        categoryID: req.body.categoryID
+                        categoryID: req.body.categoryID,
+                        subCategoryID: req.body.subCategoryID
                     })
                     //Adds genres to intermediate table
                     if (req.body.genres && req.body.genres.length > 0) {

@@ -18,27 +18,28 @@ const { checkDiscountExists } = require("../middlewares/checkDiscountExists")
 const { checkReview } = require("../middlewares/checkReview")
 //import checkComment middleware
 const { checkComment } = require("../middlewares/checkComment")
+const { checkIsBanned } = require('../middlewares/checkIsBanned')
 
 router.route('/')
-    .post(checkToken, verifyAdmin, addProduct)
+    .post(checkToken, verifyAdmin, checkIsBanned, addProduct)
     .get(getProducts)
 
 router.route('/:productID')
     .get(checkProduct, getProduct)
-    .delete(checkToken, verifyAdmin, checkProduct, deleteProduct)
-    .patch(checkToken, verifyAdmin, checkProduct, editProduct)
+    .delete(checkToken, verifyAdmin, checkIsBanned, checkProduct, deleteProduct)
+    .patch(checkToken, verifyAdmin, checkIsBanned, checkProduct, editProduct)
 
 router.route('/:productID/reviews')
-    .post(checkToken, verifyUser, checkProduct, addReview)
+    .post(checkToken, verifyUser, checkIsBanned, checkProduct, addReview)
 
 router.route('/:productID/reviews/:reviewID/comment')
-    .delete(checkToken, verifyAdmin, checkProduct, checkReview, checkComment, deleteComment)
+    .delete(checkToken, verifyAdmin, checkIsBanned, checkProduct, checkReview, checkComment, deleteComment)
 
 router.route('/:productID/discounts')
-    .post(checkToken, verifyAdmin, checkProduct, checkDiscount, addDiscount)
+    .post(checkToken, verifyAdmin, checkIsBanned, checkProduct, checkDiscount, addDiscount)
 
 router.route('/:productID/discounts/:discountID')
-    .delete(checkToken, verifyAdmin, checkProduct, checkDiscountExists, deleteDiscount)
+    .delete(checkToken, verifyAdmin, checkIsBanned, checkProduct, checkDiscountExists, deleteDiscount)
 
 router.all('*', (req, res) => {
     res.status(404).json({ message: '404 Not Found' }); //send a predefined error message

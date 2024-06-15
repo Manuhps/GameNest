@@ -21,6 +21,9 @@ Location.hasMany(User, {foreignKey: 'postalCode'});  // One location can have ma
 Product.belongsTo(Category, {foreignKey: 'categoryID'});  // One product can have one category. 
 Category.hasMany(Product, {foreignKey: 'categoryID'});  // One category can have many products.
 
+Product.belongsTo(SubCategory, {foreignKey: 'subCategoryID'});  // One product can have one subCategory. 
+SubCategory.hasMany(Product, {foreignKey: 'subCategoryID'});  // One subCategory can be associated to many products.
+
 Product.hasMany(Review, {foreignKey: 'productID'});  // One product can have many reviews.
 Review.belongsTo(Product, {foreignKey: 'productID'});  // Each review has only one product.
 
@@ -42,11 +45,11 @@ Discount.belongsTo(Product, {foreignKey: 'productID'});  // Each discount has on
 Order.belongsToMany(Product, { through: OrderProduct, foreignKey: 'orderID'});  // Creates intermediary table between Order and Product.
 Product.belongsToMany(Order, { through: OrderProduct, foreignKey: 'productID' });  // Creates intermediary table between Order and Product.
 
-OrderProduct.belongsTo(Order, {foreignKey: 'orderID'}); // Creates intermediary table between
-Order.hasMany(OrderProduct, {foreignKey: 'orderID'}); //
+OrderProduct.belongsTo(Order, {foreignKey: 'orderID'});
+Order.hasMany(OrderProduct, {foreignKey: 'orderID'});
 
-OrderProduct.belongsTo(Product, {foreignKey: 'productID'}); // Creates intermediary table between
-Product.hasMany(OrderProduct, {foreignKey: 'productID'}); //
+OrderProduct.belongsTo(Product, {foreignKey: 'productID'});
+Product.hasMany(OrderProduct, {foreignKey: 'productID'}); 
 
 sequelize.sync({'logging': false, 'force': false});
 
