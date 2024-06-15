@@ -18,8 +18,11 @@ const Order = sequelize.define("Order", {
         allowNull: true,
     },
     cardNumber: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        type: DataTypes.STRING,
+        allowNull: true,
+        /*validate: {
+            isCreditCard: true, 
+        }*/
     },
     cardExpiryDate: {
         type: DataTypes.DATE,
