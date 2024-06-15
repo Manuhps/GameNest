@@ -9,6 +9,7 @@ module.exports = {
         return res.status(401).send({ message: "Your token has expired! Please login again." });
     },
     handleServerError: (error, res) => {
+        console.log(error);
         return res.status(500).send({
             message: "Something went wrong. Please try again later",
             details: error,

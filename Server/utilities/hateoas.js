@@ -49,11 +49,11 @@ module.exports = {
             links.push(getProducts, addReview)
         }
         //Creates hateoas links for the getProducts Request for Non Authenticated Users
-        if (!user && request == "getProducts") {
+        if (user == null && request == "getProducts") {
             links.push(getProduct)
         }
         //Creates hateoas links for the getProduct Request for Non Authenticated Users
-        if (!user && request == "getProduct") {
+        if (user == null && request == "getProduct") {
             links.push(getProducts)
         }
         return links

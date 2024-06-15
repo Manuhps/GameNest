@@ -20,7 +20,7 @@ module.exports = {
             offset: options.offset ? parseInt(options.offset): undefined,
             limit: options.limit ? parseInt(options.limit): undefined,
         }
-
+        console.log(query);
         if (query.group) {
             const results = await model.findAll(query)
             const totalItems = results.length

@@ -5,13 +5,14 @@ const router = express.Router();
 const { findAllGenre, createGenre, deleteGenre } = require("../controllers/genres.controller");
 const { verifyAdmin } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken")
+const { checkIsBanned } = require("../middlewares/checkIsBanned")
 
 router.route('/')
-    .get(checkToken, verifyAdmin, findAllGenre)
-    .post(checkToken, verifyAdmin, createGenre);
+    .get(checkToken, verifyAdmin, checkIsBanned, findAllGenre)
+    .post(checkToken, verifyAdmin, checkIsBanned, createGenre);
 
 router.route('/:genreID')
-    .delete(checkToken, verifyAdmin, deleteGenre);
+    .delete(checkToken, verifyAdmin, checkIsBanned, deleteGenre);
 
 router.all('*', (req, res) => {
     res.status(404).json({ message: '404 Not Found' }); //send a predefined error message
