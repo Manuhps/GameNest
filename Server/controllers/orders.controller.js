@@ -3,7 +3,7 @@ const router = express.Router();
 const { Order, OrderProduct, Product, User } = require("../models/index");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
-const validStates = ['empty', 'cart', 'pending', 'shipping', 'delivered'];
+
 
 module.exports = {
     getAllOrders: async (req, res) => {
@@ -169,24 +169,9 @@ module.exports = {
     updateOrder: async (req, res) => {
         try {
             const userID = res.locals.userID;
-            const { state, deliverDate, cardName, cardNumber, cardExpiryDate, products } = req.body;
-    
-            // Validate state
-            if (state && !validStates.includes(state)) {
-                return res.status(400).send({ message: "Invalid state provided." });
-            }
+            const { cardName, cardNumber, cardExpiryDate, products } = req.body;
 
-            // Validate deliverDate
-            if (deliverDate && !/^(\d{4})-(\d{2})-(\d{2})$/.test(deliverDate)) {
-                return res.status(400).send({ message: "Invalid deliverDate format. It must be a valid date." });
-            }
         
-            //Checks if the dates are before the current date
-            const currentDate= new Date().setHours(0,0,0,0)
-
-            if (new Date(deliverDate) < currentDate) {
-                return res.status(400).send({ message: "Deliver Date can't be before the current day" })
-            }
 
             // Validate cardName
             if (cardName && typeof cardName !== 'string') {
@@ -194,9 +179,7 @@ module.exports = {
             }
     
             // Validate cardNumber
-            if (cardNumber && isNaN(cardNumber)) {
-                return res.status(400).send({ message: "Invalid cardNumber format. It must be an integer." });
-            }
+        
     
             // Validate cardExpiryDate
             if (cardExpiryDate && !/^(\d{4})-(\d{2})-(\d{2})$/.test(cardExpiryDate)) {
@@ -219,38 +202,63 @@ module.exports = {
                 }
             }
 
-            let pointsToAdd = 0;
-
-            if (['pending', 'shipping', 'delivered'].includes(state)) {
-                const currentOrder = await Order.findOne({ where: { userID, state: 'cart' } });
-                if (currentOrder) {
-                    const orderProducts = await OrderProduct.findAll({ where: { orderID: currentOrder.orderID } });
-                    for (const orderProduct of orderProducts) {
-                        const product = await Product.findByPk(orderProduct.productID);
-                        if (product) {
-                            product.stock -= orderProduct.quantity;
-                            await product.save();
-                            pointsToAdd += (orderProduct.salePrice * orderProduct.quantity) / 2;  
-                        }
-                    }
-                }
-            }
-
             // Find the order
         const order = await Order.findOne({ where: { userID, state: 'cart' } });
         if (!order) {
             return res.status(404).send({ message: "Current order not found." });
         }
 
+        
+
         // Update order attributes
-        order.state = state || order.state;
-        order.deliverDate = deliverDate || order.deliverDate;
         order.cardName = cardName || order.cardName;
         order.cardNumber = cardNumber || order.cardNumber;
         order.cardExpiryDate = cardExpiryDate || order.cardExpiryDate;
 
-        // Save the updated order
-        await order.save();
+        if (cardName || cardNumber || cardExpiryDate) {
+            order.state = 'pending';
+            const currentDate = new Date();
+            const deliverDate = new Date(currentDate);
+            deliverDate.setSeconds(deliverDate.getSeconds() + 30); // Adiciona 10 segundos em vez de 14 dias
+            order.deliverDate = deliverDate;
+
+            await order.save();
+            
+            let pointsToAdd = 0;
+            for (const product of products) {
+                const productToUpdate = await Product.findByPk(product.productID);
+                if (productToUpdate) {
+                    // Adjusting stock based on quantity change
+                    productToUpdate.stock -= product.quantity;
+                    await productToUpdate.save();
+                    
+                    // Calculate points to add based on the sale price of the product
+                    pointsToAdd += (product.salePrice * product.quantity) / 2;
+                }
+            }
+
+            // Schedule automatic state transitions
+            setTimeout(async () => {
+                // Check if order is still in 'pending' state after 2 days
+                const updatedOrder = await Order.findByPk(order.orderID);
+                if (updatedOrder.state === 'pending') {
+                    updatedOrder.state = 'shipping';
+                    await updatedOrder.save();
+                }
+            }, 5 * 1000); // 2 days in milliseconds
+
+            setTimeout(async () => {
+                // Check if order is still in 'shipping' state on deliverDate
+                const updatedOrder = await Order.findByPk(order.orderID);
+                const currentDate = new Date();
+                if (updatedOrder.state === 'shipping' && currentDate >= deliverDate) {
+                    updatedOrder.state = 'delivered';
+                    await updatedOrder.save();
+                }
+            }, deliverDate.getTime() - Date.now()); // Time until deliverDate in milliseconds
+        }
+
+        
         if (products && Array.isArray(products)) {
             for (const product of products) {
                 const orderProduct = await OrderProduct.findOne({
@@ -271,24 +279,29 @@ module.exports = {
                         quantity: product.quantity,
                         salePrice: product.salePrice
                     });
+
+                  
                 }
             }
         }
 
-        if (['pending', 'shipping', 'delivered'].includes(state)) {
-            const user = await User.findByPk(userID);
-            user.points += pointsToAdd;
-            await user.save();
-        }
+
+        //const user = await User.findByPk(userID);
+        //user.points += pointsToAdd;
+        //await user.save();
+        
 
         res.status(200).send({ message: "Order updated successfully." });
     
         } catch (error) {
+            
+            console.error("Erro capturado:", error);
             res.status(500).send({
-                message: "Something went wrong. Please try again later.",
+                message: "Something went wrong. Please try again later",
                 details: error,
-            });
-        }
+            }
+            )}
+        
     },
 
     updateProductQuantity: async (req, res) => {
