@@ -22,6 +22,7 @@ let productID = window.location.search.split("=")[1]; // Pega o ID do produto da
 fetch(`http://127.0.0.1:8080/products/${productID}`)
     .then(response => response.json())
     .then(data => {
+        console.log(data.product);
         const product = data.product;
 
         const productSection = document.querySelector('.row.gx-4.gx-lg-5.align-items-center');
