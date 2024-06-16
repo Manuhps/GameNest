@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>GameNest</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
-        <link href="css/footer.css" rel="stylesheet" />
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="/">Game Nest</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="html/consoles.html">Consoles</a></li>
-                                <li><a class="dropdown-item" href="#!">Jogos</a></li>
-                                <li><a class="dropdown-item" href="#!">Perifericos</a></li>
-                                <li><a class="dropdown-item" href="#!">Portateis</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>GameNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/footer.css" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="/">Game Nest</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <hr class="dropdown-divider" />
+                            </li>
+                            <li><a class="dropdown-item" href="html/consoles.html">Consoles</a></li>
+                            <li><a class="dropdown-item" href="#!">Jogos</a></li>
+                            <li><a class="dropdown-item" href="#!">Perifericos</a></li>
+                            <li><a class="dropdown-item" href="#!">Portateis</a></li>
+                        </ul>
+                    </li>
+                </ul>
                 <div class="d-flex">
                     <a href="html/cart.html">
                         <button class="btn btn-outline-dark" type="submit">
@@ -42,138 +49,166 @@
                             Login
                         </button>
                     </a>
-                   <a href="html/profile.html">
+                    <a href="html/profile.html">
                         <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon" style="display: none;">
                             <i class="bi-person-fill me-1"></i>
-                             Profile
+                            Profile
                         </button>
                     </a>
-                        <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton" style="display: none;">
-                            <i class="bi-person-fill me-1"></i>
-                            Logout
-                        </button>
-                </div>
-                </div>
-            </div>
-        </nav>
-        <!-- Header-->
-        <header class="bg-dark py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Shop in style</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+                    <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton" style="display: none;">
+                        <i class="bi-person-fill me-1"></i>
+                        Logout
+                    </button>
                 </div>
             </div>
-        </header>
-        <!-- Início da área de filtragem -->
-<div class="filter-area">
-    <h2>Filtrar Produtos</h2>
-    <form id="filterForm">
-        <div class="form-group">
-            <label for="search">Pesquisa:</label>
-            <input type="text" id="search" name="search">
         </div>
-        <div class="form-group">
-            <label for="category">Categoria:</label>
-            <select id="category" name="category"> 
-            </select>
+    </nav>
+    <!-- Header-->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shop in style</h1>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="min-price">Preço Minimo</label>
-            <input type="number" id="min-price" name="min-price" min="0">
-        </div>
-        <div class="form-group">
-            <label for="max-price">Preço Maximo</label>
-            <input type="number" id="max-price" name="max-price">
-        </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </header>
+    <!-- Início da área de filtragem -->
+    <div class="filter-area">
+        <h2>Filter Products</h2>
+        <form id="filterForm">
+            <div class="form-group">
+                <label for="search">Search:</label>
+                <input type="text" id="search" name="search">
+            </div>
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="none">None</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subCategory">SubCategory:</label>
+                <select id="subCategory" name="subCategory">
+                    <option value="none">None</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price:</label><br>
+                <input type="radio" id="priceAsc" name="price" value="higher">
+                <label for="price">Higher</label><br>
+                <input type="radio" id="priceDesc" name="price" value="lower">
+                <label for="price">Lower</label><br>
+                <input type="radio" id="noPrice" name="price" value="none" checked>
+                <label for="price">None</label><br>
+            </div>
+            <div class="form-group">
+                <label>Rating:</label><br>
+                <input type="radio" id="ratingAsc" name="rating" value="higher">
+                <label for="rating">Higher</label><br>
+                <input type="radio" id="ratingDesc" name="rating" value="lower">
+                <label for="rating">Lower</label><br>
+                <input type="radio" id="noRating" name="rating" value="none" checked>
+                <label for="rating">None</label><br>
+            </div>
+            <div class="form-group">
+                <label>Date Added:</label><br>
+                <input type="radio" id="dateAsc" name="date" value="higher">
+                <label for="date">Higher</label><br>
+                <input type="radio" id="dateDesc" name="date" value="lower">
+                <label for="date">Lower</label><br>
+                <input type="radio" id="noDate" name="date" value="none" checked>
+                <label for="date">None</label><br>
+            </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
     </form>
-</div>
-        <!-- Section-->
-        <section class="py-5">
-            <div class="container px-4 px-lg-5 mt-5">
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+    </div>
+    <!-- Section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div id="productsSection" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            </div>
+            <div class="d-flex justify-content-center">
+                <button id="prevPage" class="btn btn-outline-dark me-2">Previous</button>
+                <div id="paginationContainer" class="me-2"></div>
+                <button id="nextPage" class="btn btn-outline-dark">Next</button>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- FOOTER -->
+    <footer id="footer">
+        <!-- top footer -->
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">About Us</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut.</p>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                                <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                            </ul>
                         </div>
-                        <div class="d-flex justify-content-center">
-                            <button id="prevPage" class="btn btn-outline-dark me-2">Previous</button>
-                            <div id="paginationContainer" class="me-2"></div>
-                            <button id="nextPage" class="btn btn-outline-dark">Next</button>
+                    </div>
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Categories</h3>
+                            <ul class="footer-links">
+                                <li><a href="html/consoles.html">Consoles</a></li>
+                                <li><a href="#">Jogos</a></li>
+                                <li><a href="#">Perifericos</a></li>
+                                <li><a href="#">Portateis</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Information</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Orders and Returns</a></li>
+                                <li><a href="#">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Service</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="html/cart.html">My Cart</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-        </section>
-        <!-- FOOTER -->
-		<footer id="footer">
-			<!-- top footer -->
-			<div class="section">
-				<!-- container -->
-				<div class="container">
-					<!-- row -->
-					<div class="row">
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">About Us</h3>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
-								<ul class="footer-links">
-									<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
-									<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
-									<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
-								</ul>
-							</div>
-						</div>                    
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Categories</h3>
-								<ul class="footer-links">
-									<li><a href="html/consoles.html">Consoles</a></li>
-									<li><a href="#">Jogos</a></li>
-									<li><a href="#">Perifericos</a></li>
-									<li><a href="#">Portateis</a></li>
-								</ul>
-							</div>
-						</div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /top footer -->
+        <span class="copyright">
+            Copyright &copy; GameNest ESMAD || TSIW 2ªano
+        </span>
+    </footer>
+    <!-- /FOOTER -->
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/login.js"></script>
+    <script src="js/index.js" type="module"></script>
+    <script src="js/cart.js" ></script>
+    <script src="js/filter.js" type="module"></script>
 
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Information</h3>
-								<ul class="footer-links">
-									<li><a href="#">About Us</a></li>
-									<li><a href="#">Contact Us</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-									<li><a href="#">Orders and Returns</a></li>
-									<li><a href="#">Terms & Conditions</a></li>
-								</ul>
-							</div>
-						</div>
+</body>
 
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Service</h3>
-								<ul class="footer-links">
-									<li><a href="#">My Account</a></li>
-									<li><a href="html/cart.html">My Cart</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<!-- /row -->
-				</div>
-				<!-- /container -->
-			</div>
-			<!-- /top footer -->
-				<span class="copyright">
-						Copyright &copy; GameNest ESMAD || TSIW 2ªano
-				</span>
-		</footer>
-		<!-- /FOOTER -->
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/login.js"></script>
-        <script src="js/index.js"></script>
-        <script src="js/cart.js"></script>
-        <script src="js/filter.js"></script>
-
-    </body>
 </html>

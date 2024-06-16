@@ -8,7 +8,7 @@ module.exports= {
             if (!category) {
                 return res.status(404).send({ message: "Category Not Found." })
             }
-            res.locals.category= category
+            res.locals.categoryID= categoryID
             next()
         } catch (error) {
             res.status(500).send({ message: "Something went wrong. Please try again later.", details: error.message })

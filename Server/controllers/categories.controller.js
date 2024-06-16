@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { Category, SubCategory } = require('../models/index');
-const { generatePaginationPath, paginate } = require("../utilities/pagination")
+const { generatePaginationPath, paginate } = require("../utilities/pagination");
+const { handleBadRequest } = require('../utilities/errors');
 
 module.exports = {
     findAllCategory: async (req, res) => {
@@ -79,7 +80,7 @@ module.exports = {
     },
     getSubCategories: async (req, res) => {
         try {
-            const subCategories = await paginate(SubCategory)
+            const subCategories = await paginate(SubCategory, {where: {categoryID: res.locals.categoryID}})
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
             const links = [
@@ -108,7 +109,6 @@ module.exports = {
                     message: "Please fill all the required fields."
                 })
             }
-            console.log(req.params.categoryID);
             //Create and Save in the database
             await SubCategory.create({
                 subCategoryName: req.body.subCategoryName,
