@@ -20,8 +20,7 @@ module.exports = {
             offset: options.offset ? parseInt(options.offset): undefined,
             limit: options.limit ? parseInt(options.limit): undefined,
         }
-        console.log(query);
-        if (query.group) {
+        if (query.group.length > 0) {
             const results = await model.findAll(query)
             const totalItems = results.length
             const totalPages = Math.ceil(totalItems / (query.limit ? parseInt(query.limit) : totalItems))
@@ -35,8 +34,9 @@ module.exports = {
                 data: results
             }
         }
-        const results = await model.findAndCountAll(query)
-        const totalItems = results.count
+        console.log(model);
+        const {count, rows } = await model.findAndCountAll(query)
+        const totalItems = count[0].count
         const totalPages = Math.ceil(totalItems / (query.limit ? parseInt(query.limit) : totalItems))
         const currentPage = query.offset ? Math.floor(parseInt(query.offset) / parseInt(query.limit)) + 1 : 1
         return {
@@ -45,7 +45,7 @@ module.exports = {
                 totalPages,
                 currentPage
             },
-            data: results.rows
+            data: rows
         }
     }
 }

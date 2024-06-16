@@ -41,14 +41,7 @@ module.exports = {
                 if (!subCategoryBelong) {
                     handleBadRequest(res, "SubCategory Does Not Belong to the Specified Category")
                 }
-                include.push({
-                    model: SubCategory,
-                    attributes: ["subCategoryName"],
-                    through: {attributes: []},
-                    where: {
-                        subCategoryID: subCategoryID
-                    }
-                })
+                where.subCategoryID = subCategoryID
             }
             //Filter/Search by name
             if (name) {

@@ -10,7 +10,7 @@ const { checkCategory } = require("../middlewares/checkCategory")
 const { checkIsBanned } = require("../middlewares/checkIsBanned")
 
 router.route('/')
-    .get(checkToken, findAllCategory)
+    .get(findAllCategory)
     .post(checkToken, verifyAdmin, checkIsBanned, createCategory)
 
 router.route('/:categoryID')
@@ -18,7 +18,7 @@ router.route('/:categoryID')
 
 router.route('/:categoryID/subCategories')
     .post(checkToken, verifyAdmin, checkIsBanned, checkSubCategoryExists, addSubCategory)
-    .get(checkToken, verifyAdmin, checkIsBanned, checkCategory,  getSubCategories)
+    .get(checkCategory, getSubCategories)
 
 router.route('/:categoryID/subCategories/:subCategoryID')
     .delete(checkToken, verifyAdmin, checkIsBanned, checkCategory, checkSubCategory, delSubCategory)
