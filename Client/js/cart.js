@@ -19,19 +19,16 @@ function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let cartElement = document.getElementById('cart');
     if (cartElement) {
-        cartElement.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+        if (cart.length === 0) {
+            cartElement.textContent = '0';
+        } else {
+            cartElement.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+        }
     }
 }
 
 function addToCart(product) {
-    // If the user is not logged in, show the login modal and return
-    let userIsLoggedIn = localStorage.getItem('isLoggedIn');
 
-    if (userIsLoggedIn !== 'true') {
-        let loginModal = new bootstrap.Modal(document.getElementById('loginModal1'), {});
-        loginModal.show();
-        return;
-    }
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -62,9 +59,6 @@ function addToCart(product) {
     updateCartCount();
 }
 
-
-
-
 function generateCart() {
     // Get the cart from localStorage
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -74,7 +68,7 @@ function generateCart() {
     cartDisplay.innerHTML = '';
 
     // Generate HTML for each product in the cart
-    let cartItemsHTML = cart.map(generateCartItemHTML).join('');
+    let cartItemsHTML = cart.map(generateCartItem).join('');
 
     // Insert the cart items HTML into the DOM
     cartDisplay.innerHTML = cartItemsHTML;
@@ -86,7 +80,7 @@ function generateCart() {
     }
 }
 
-function generateCartItemHTML(item) {
+function generateCartItem(item) {
     return `
     <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
         <div class="d-flex align-items-center">
@@ -98,7 +92,7 @@ function generateCartItemHTML(item) {
         </div>
         <div class="d-flex align-items-center">
             <p class="mb-0">$${item.price}</p>
-            <button class="btn btn-link text-dark px-3" onclick="addToCart(${item.id})"><i class="bi-plus-circle-fill"></i></button>
+            <button class="btn btn-link text-dark px-3" onclick="incrementProductQuantity(${item.id})"><i class="bi-plus-circle-fill"></i></button>
             <button class="btn btn-link text-dark px-3" onclick="removeFromCart(${item.id})"><i class="bi-trash"></i></button>
         </div>
         <div>
@@ -108,6 +102,30 @@ function generateCartItemHTML(item) {
 `;
 }
 
+function incrementProductQuantity(productId) {
+    // Obtenha o carrinho do localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Encontre o produto no carrinho
+    let cartItem = cart.find(item => item.id === productId);
+
+    // Se o produto já está no carrinho, aumente sua quantidade
+    if (cartItem) {
+        cartItem.quantity++;
+    } else {
+        console.error(`Produto com ID ${productId} não encontrado no carrinho.`);
+        return;
+    }
+
+    // Salve o carrinho atualizado no localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Atualize a visualização do carrinho
+    document.getElementById('cart').innerHTML = generateCart(cart);
+
+    // Atualize a contagem do carrinho
+    updateCartCount();
+}
 
 function removeFromCart(productId) {
     // Get the cart from localStorage
@@ -147,7 +165,7 @@ function loadCart() {
     }
 
     // Generate HTML for each product in the cart
-    let cartItemsHTML = cart.map(generateCartItemHTML).join('');
+    let cartItemsHTML = cart.map(generateCartItem).join('');
 
     // Insert the cart items HTML into the DOM
     let cartItemsElement = document.getElementById('cart-items');
