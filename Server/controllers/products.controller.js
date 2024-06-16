@@ -23,7 +23,7 @@ module.exports = {
                 where.categoryID = categoryID
             }
             //Filter by subCategory
-            if (categoryID && subCategoryID ) {
+            if (categoryID && subCategoryID) {
                 const category = Category.findByPk(categoryID)
                 if (!category) {
                     handleNotFoundError(res, "Category Not Found")
@@ -32,9 +32,9 @@ module.exports = {
                 if (!subCategory) {
                     handleNotFoundError(res, "SubCategory Not Found")
                 }
-                const subCategoryBelong= await SubCategory.findOne({ 
-                    where: { 
-                        subCategoryID: subCategoryID, 
+                const subCategoryBelong = await SubCategory.findOne({
+                    where: {
+                        subCategoryID: subCategoryID,
                         categoryID: categoryID
                     }
                 })
@@ -138,7 +138,27 @@ module.exports = {
     getProduct: async (req, res) => {
         try {
             const productID = req.params.productID;
-            const product = await Product.findByPk(productID);
+            const currentDate = new Date().setHours(0, 0, 0, 0);
+
+            const product = await Product.findByPk(productID, {
+                attributes: [
+                    'productID', 'name', 'basePrice', 'stock', 'rating', 'img',
+                    [sequelize.literal('round(Product.basePrice * (1 - (coalesce(Discounts.percentage, 0) / 100)), 2)'), 'curPrice']
+                ],
+                include: [{
+                    model: Discount,
+                    attributes: ['percentage', 'startDate', 'endDate'],
+                    where: {
+                        startDate: { [Op.lte]: currentDate },
+                        endDate: { [Op.gte]: currentDate }
+                    },
+                    required: false
+                }]
+            });
+
+            if (!product) {
+                return handleNotFoundError(res, "Product Not Found");
+            }
             const links = await getProductLinks(req, "getProduct", res)
             //Return the product
             return res.status(200).send(
