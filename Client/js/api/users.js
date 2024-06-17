@@ -32,6 +32,24 @@ export async function getSelf(){
     }
 }
 
+export async function getUsers(offset = 0, limit = 10){
+    try {
+        const response = await api.get(`${BASE_URL}`, {
+            params: {
+                offset: offset,
+                limit: limit
+            },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+}
+
 // Function to update user profile
 export async function updateUserProfile(updatedProfile) {
     try {

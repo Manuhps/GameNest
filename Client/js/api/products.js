@@ -27,3 +27,13 @@ export async function fetchProductById(productId) {
         throw error;
     }
 }
+
+// export async function addProduct(){
+//     try {
+//         const response = await api.post(BASE_URL);
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error Adding Product:', error);
+//         throw error;
+//     }
+// }
