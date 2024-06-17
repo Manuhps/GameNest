@@ -32,7 +32,7 @@ fetch(`http://127.0.0.1:8080/products/${productID}`)
             priceSection = `
                 <div class="fs-5 mb-5">
                     <span class="text-decoration-line-through" id="product-price">${product.basePrice}</span>
-                    <span id="sale-price">${product.basePrice}</span>
+                    <span id="sale-price">${product.curPrice}</span>
                 </div>
             `;
         } else {
