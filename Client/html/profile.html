@@ -3,12 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>User Profile</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="../css/footer.css" rel="stylesheet" />
+    <style>
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .form-section {
+            margin-top: 20px;
+        }
+        .admin-section {
+            display: none; /* Hide admin section by default */
+        }
+    </style>
 </head>
 <body>
+    <!-- Navbar Container -->
+    <div id="navbarContainer"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card mt-5">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4>User Profile</h4>
+                    </div>
+                    <div class="card-body">
+                        <p id="pointsHeader"></p> <!-- Display user points -->
+                        <div class="tab-content" id="profileTabContent">
+                            <!-- User Profile Tab -->
+                            <div class="tab-pane fade show active" id="userProfile" role="tabpanel">
+                                <div class="text-center mb-4">
+                                    <img id="profileImage" src="path/to/default/image.jpg" alt="Profile Image" class="profile-img rounded-circle">
+                                </div>
+                                <form id="profileForm">
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">New Password</label>
+                                        <input type="password" class="form-control" id="password" name="password">
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                                    </div>
+                                </form>
+                            </div>
 
-    
+                            <!-- Admin Tab -->
+                            <div class="tab-pane fade" id="adminOptions" role="tabpanel">
+                                <div class="container" id="btnsManage">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button" id="btnUsers" class="btn btn-outline-secondary btn-block">Manage Users</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button" id="btnCategories" class="btn btn-outline-secondary btn-block">Manage Categories</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button" id="btnSubCategories" class="btn btn-outline-secondary btn-block">Manage SubCategories</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button" id="btnOrders" class="btn btn-outline-secondary btn-block">Manage Orders</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button" id="btnGenres" class="btn btn-outline-secondary btn-block">Manage Genres</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button" id="btnGameModes" class="btn btn-outline-secondary btn-block">Manage Game Modes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    
+                        <ul class="nav nav-tabs mt-4" id="profileTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="userProfile-tab" data-toggle="tab" href="#userProfile" role="tab">User Profile</a>
+                            </li>
+                            <li class="nav-item admin-section">
+                                <a class="nav-link" id="adminOptions-tab" data-toggle="tab" href="#adminOptions" role="tab">Admin</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminModalLabel">Admin Panel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered" id="adminTable">
+                        <thead>
+                            <tr id="adminTableHeader"></tr>
+                        </thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module" src="../js/profile.js"></script>
 </body>
 </html>

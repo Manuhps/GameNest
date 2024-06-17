@@ -1,3 +1,4 @@
+import api from './axiosConfig.js'
 const BASE_URL = 'http://127.0.0.1:8080/products'
 
 export async function fetchProducts(offset = 0, params = null) {
@@ -9,7 +10,7 @@ export async function fetchProducts(offset = 0, params = null) {
         url += `&${queryString}`;
     }
     try {
-        const response = await axios.get(url);
+        const response = await api.get(url);
         return response.data
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -19,8 +20,7 @@ export async function fetchProducts(offset = 0, params = null) {
 export async function fetchProductById(productId) {
     const url = `${BASE_URL}/${productId}`;
     try {
-        const response = await axios.get(url);
-        console.log(response.data);
+        const response = await api.get(url);
         return response.data;
     } catch (error) {
         console.error('Error Fetching Product:', error);
