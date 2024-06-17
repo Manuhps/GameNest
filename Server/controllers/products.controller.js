@@ -142,7 +142,8 @@ module.exports = {
 
             const product = await Product.findByPk(productID, {
                 attributes: [
-                    'productID', 'name', 'basePrice', 'stock', 'rating', 'img', 'desc',
+                    'productID', 'name', 'desc', 'basePrice', 'stock', 'rating', 'img',
+       
                     [sequelize.literal('round(Product.basePrice * (1 - (coalesce(Discounts.percentage, 0) / 100)), 2)'), 'curPrice']
                 ],
                 include: [{
