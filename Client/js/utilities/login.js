@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Send login data to the backend
             login(username, password)
                 .then(response => {
-                    if (response.status !== 200) {
+                    if (!response) {
                         throw new Error('Login failed');
                     }
                     return response.data;
