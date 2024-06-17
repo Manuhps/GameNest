@@ -42,9 +42,8 @@ function displayProducts(products, pagination) {
 }
 
 // Function to fetch and display products with pagination
-export async function fetchAndDisplayProducts(offset) {
+export async function fetchAndDisplayProducts(offset, params) {
     try {
-        const params = new URLSearchParams(new FormData(document.getElementById('filterForm')));
         const { data, pagination } = await fetchProducts(offset, params);
 
         if (data && data.length > 0) {

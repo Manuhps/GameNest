@@ -51,9 +51,25 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Event for filter form submission
         document.getElementById('filterForm').addEventListener('submit', async function (event) {
-            event.preventDefault();
-            offset = 0;
-            await fetchAndDisplayProducts(offset);
+            event.preventDefault()
+            offset = 0
+            const search = document.getElementById('search').value;
+            const category = document.getElementById('category').value;
+            const subCategory = document.getElementById('subCategory').value;
+            const price = document.querySelector('input[name="price"]:checked')?.value || '';
+            const rating = document.querySelector('input[name="rating"]:checked')?.value || '';
+            const date = document.querySelector('input[name="date"]:checked')?.value || '';
+
+            const params = new URLSearchParams();
+
+            if (search) params.append('name', search);
+            if (category && category !== "none") params.append('categoryID', category);
+            if (subCategory && subCategory !== "none") params.append('subCategoryID', subCategory);
+            if (price && price !== "none") params.append('curPrice', price);
+            if (rating && rating !== "none") params.append('rating', rating);
+            if (date && date !== "none") params.append('date', date);
+
+            await fetchAndDisplayProducts(offset, params);
         });
 
         // Initially load and display products
