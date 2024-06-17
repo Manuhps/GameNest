@@ -1,32 +1,16 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Verifique o estado de login do usuário
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-        // Oculta o botão de login
-        const loginButton = document.getElementById('loginButton');
-        if (loginButton) loginButton.style.display = 'none';
+import { fetchProductById } from './api/products.js'; // Supondo que você tenha um arquivo api.js com a função fetchProductById
+import { loadNavbar } from './utilities/navbar.js';
+import { checkUserLoginStatus } from './utilities/userUtils.js';
 
-        // Mostra o ícone de perfil
-        const profileIcon = document.getElementById('profileIcon');
-        if (profileIcon) profileIcon.style.display = 'block';
+document.addEventListener('DOMContentLoaded', async function () {
+    loadNavbar('navbarContainer')
+    checkUserLoginStatus()
 
-        // Mostra o botão de logout
-        const logoutButton = document.getElementById('logoutButton');
-        if (logoutButton) logoutButton.style.display = 'block';
-    }
-});
+    let productID = window.location.search.split("=")[1];
 
-
-// Suponha que você tenha o ID do produto
-let productID = window.location.search.split("=")[1]; // Pega o ID do produto da URL
-
-fetch(`http://127.0.0.1:8080/products/${productID}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log(data.product);
-        const product = data.product;
-
+    try {
+        const { product } = await fetchProductById(productID);
         const productSection = document.querySelector('.row.gx-4.gx-lg-5.align-items-center');
-
         let priceSection = '';
         if (product.basePrice !== product.curPrice) {
             priceSection = `
@@ -58,5 +42,7 @@ fetch(`http://127.0.0.1:8080/products/${productID}`)
             </div>
         `;
         document.querySelector('.add-to-cart-button').addEventListener('click', () => addToCart(product));
-    })
-    .catch(error => console.error('Erro ao buscar o produto:', error));
+    } catch (error) {
+        console.error('Erro ao buscar o produto:', error);
+    }
+});

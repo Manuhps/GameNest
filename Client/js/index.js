@@ -5,11 +5,14 @@ import { updateCategorySelect } from './utilities/categoriesDom.js';
 import { updateSubCategorySelect, clearSubCategorySelect } from './utilities/subCategoriesDom.js';
 import { toggleGameModeAndGenreDisplay } from './utilities/toggleModeGenre.js';
 import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
+import { loadNavbar } from './utilities/navbar.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     let offset = 0;
     try {
-        // Check user's login status
+        //Load navbar dynamically
+        loadNavbar('navbarContainer');
+
         checkUserLoginStatus();
 
         // Load and update categories in the category selector
@@ -77,9 +80,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     } catch (error) {
         console.error('Error loading products:', error);
     }
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        // Add event listener to the logout button
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            logoutUser();
+        });
+    } 
 });
 
-// Add event listener to the logout button
-document.getElementById('logoutButton').addEventListener('click', function () {
-    logoutUser();
-});
+    

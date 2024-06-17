@@ -123,7 +123,7 @@ module.exports = {
             // Get the user ID from res.locals set by verifyUser middleware
             const userID = res.locals.userID;
             // Find the user by ID
-            const user = await User.findByPk(userID, {attributes: ['username', 'email', 'address', 'points', 'profileImg']});
+            const user = await User.findByPk(userID, {attributes: ['username', 'email', 'address', 'points', 'profileImg', 'role']});
             // If user is not found, return error
             if (!user) {
                 handleNotFoundError(res, "User Not Found")
