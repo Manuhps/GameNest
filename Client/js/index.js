@@ -1,28 +1,22 @@
-import { fetchCategories, updateCategorySelect } from './categories.js'
-import { fetchSubCategories, updateSubCategorySelect, clearSubCategorySelect } from './subCategories.js'
-import { fetchProducts } from './productss.js'
-
+import { fetchCategories } from './api/categories.js';
+import { fetchSubCategories } from './api/subCategories.js';
+import { fetchAndDisplayProducts } from './utilities/productsDom.js';
+import { updateCategorySelect } from './utilities/categoriesDom.js';
+import { updateSubCategorySelect, clearSubCategorySelect } from './utilities/subCategoriesDom.js';
+import { toggleGameModeAndGenreDisplay } from './utilities/toggleModeGenre.js';
+import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
-    let offset = 0
-    try {   
+    let offset = 0;
+    try {
         // Check user's login status
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            // Hide login button
-            const loginButton = document.getElementById('loginButton');
-            if (loginButton) loginButton.style.display = 'none';
+        checkUserLoginStatus();
 
-            // Mostra o ícone de perfil
-            const profileIcon = document.getElementById('profileIcon');
-            if (profileIcon) profileIcon.style.display = 'block';
-
-            // Mostra o botão de logout
-            const logoutButton = document.getElementById('logoutButton');
-            if (logoutButton) logoutButton.style.display = 'block';
-        }
+        // Load and update categories in the category selector
         const categories = await fetchCategories();
         updateCategorySelect(categories);
 
+        // Event listener for change in category selector
         const categorySelect = document.getElementById('category');
         categorySelect.addEventListener('change', async function () {
             clearSubCategorySelect();
@@ -30,27 +24,33 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (selectedCategoryId) {
                 try {
                     const subCategories = await fetchSubCategories(selectedCategoryId);
-                    console.log(subCategories);
-
                     updateSubCategorySelect(subCategories);
+
+                    // Check if the selected category is "Games"
+                    const selectedCategory = categories.find(category => category.categoryID == selectedCategoryId);
+                    toggleGameModeAndGenreDisplay(selectedCategory);
                 } catch (error) {
-                    console.error('Error fetching subcategories:', error);
+                    console.error('Error fetching subCategories:', error);
                 }
             }
         });
-        
-        document.querySelector('#nextPage').addEventListener('click', () => {
-            offset+= 12;
-            fetchProducts(offset);
+
+        // Event for pagination - Next page
+        document.querySelector('#nextPage').addEventListener('click', async () => {
+            offset += 12;
+            await fetchAndDisplayProducts(offset);
         });
 
-        document.querySelector('#prevPage').addEventListener('click', () => {
+        // Event for pagination - Previous page
+        document.querySelector('#prevPage').addEventListener('click', async () => {
             if (offset > 0) {
-                offset-= 12;
-                fetchProducts(offset);
+                offset -= 12;
+                await fetchAndDisplayProducts(offset);
             }
         });
-        document.getElementById('filterForm').addEventListener('submit', function (event) {
+
+        // Event for filter form submission
+        document.getElementById('filterForm').addEventListener('submit', async function (event) {
             event.preventDefault()
             offset = 0
             const search = document.getElementById('search').value;
@@ -59,20 +59,27 @@ document.addEventListener('DOMContentLoaded', async function () {
             const price = document.querySelector('input[name="price"]:checked')?.value || '';
             const rating = document.querySelector('input[name="rating"]:checked')?.value || '';
             const date = document.querySelector('input[name="date"]:checked')?.value || '';
-    
+
             const params = new URLSearchParams();
-    
+
             if (search) params.append('name', search);
             if (category && category !== "none") params.append('categoryID', category);
             if (subCategory && subCategory !== "none") params.append('subCategoryID', subCategory);
             if (price && price !== "none") params.append('curPrice', price);
             if (rating && rating !== "none") params.append('rating', rating);
             if (date && date !== "none") params.append('date', date);
-            
-            fetchProducts(offset, params)
-        })
-        fetchProducts()
+
+            await fetchAndDisplayProducts(offset, params);
+        });
+
+        // Initially load and display products
+        await fetchAndDisplayProducts(offset);
     } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error loading products:', error);
     }
+});
+
+// Add event listener to the logout button
+document.getElementById('logoutButton').addEventListener('click', function () {
+    logoutUser();
 });

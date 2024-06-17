@@ -67,7 +67,7 @@
     <header class="bg-dark py-5">
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">Shop in style</h1>
+                <h1 class="display-4 fw-bolder">Shop with GameNest</h1>
             </div>
         </div>
     </header>
@@ -88,6 +88,18 @@
             <div class="form-group">
                 <label for="subCategory">SubCategory:</label>
                 <select id="subCategory" name="subCategory">
+                    <option value="none">None</option>
+                </select>
+            </div>
+            <div class="form-group" id="selGameMode" style="display: none;">
+                <label for="gameMode">Game Mode:</label>
+                <select id="gameMode" name="gameMode">
+                    <option value="none">None</option>
+                </select>
+            </div>
+            <div class="form-group" id="selGenre" style="display: none;">
+                <label for="genre">Genre:</label>
+                <select id="genre" name="genre">
                     <option value="none">None</option>
                 </select>
             </div>
@@ -125,7 +137,8 @@
     <!-- Section-->
     <section class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
-            <div id="productsSection" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div id="productsSection"
+                class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             </div>
             <div class="d-flex justify-content-center">
                 <button id="prevPage" class="btn btn-outline-dark me-2">Previous</button>
@@ -204,10 +217,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Core theme JS-->
-    <script src="js/login.js"></script>
     <script src="js/index.js" type="module"></script>
-    <script src="js/cart.js" ></script>
-    <script src="js/filter.js" type="module"></script>
+    <script src="js/cart.js"></script>
 
 </body>
 

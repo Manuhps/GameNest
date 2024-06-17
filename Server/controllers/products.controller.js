@@ -1,4 +1,4 @@
-const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode, SubCategory, Category } = require("../models/index");
+const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode, SubCategory, Category, User } = require("../models/index");
 const { handleServerError, handleConflictError, handleSequelizeValidationError, handleJsonWebTokenError, handleBadRequest, handleForbiddenRequest, handleNotFoundError } = require("../utilities/errors");
 const { getProductLinks } = require("../utilities/hateoas");
 const { paginate, generatePaginationPath } = require('../utilities/pagination')
@@ -143,6 +143,7 @@ module.exports = {
             const product = await Product.findByPk(productID, {
                 attributes: [
                     'productID', 'name', 'desc', 'basePrice', 'stock', 'rating', 'img',
+       
                     [sequelize.literal('round(Product.basePrice * (1 - (coalesce(Discounts.percentage, 0) / 100)), 2)'), 'curPrice']
                 ],
                 include: [{
@@ -284,6 +285,27 @@ module.exports = {
                 // Capture Sequelize Validation Errors
                 handleSequelizeValidationError(error, res)
             }
+            handleServerError(error, res)
+        }
+    },
+    getReviews: async (req, res) => {
+        try {
+            const productID = req.params.productID
+            const where = { productID: productID }
+            const attributes = ['rating', 'comment']
+            const include = {
+                model: User,
+                attributes: ['username', 'profileImg']
+            }
+            //Uses paginate function to get results 
+            const reviewsData = await paginate(Review, { where, include, attributes })
+            if (reviewsData) {
+                return res.status(200).send({
+                    pagination: reviewsData.pagination,
+                    data: reviewsData.data,
+                })
+            }
+        } catch (error) {
             handleServerError(error, res)
         }
     },
