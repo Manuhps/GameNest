@@ -10,3 +10,23 @@ export async function fetchCategories() {
         throw error;
     }
 }
+
+export async function addCategory(categoryName) {
+    try {
+        const response = await axios.post(`${BASE_URL}`, { categoryName });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating category:', error);
+        throw error;
+    }
+}
+
+export async function delCategory(categoryID){
+    try {
+        const response = await axios.delete(`${BASE_URL}/${categoryID}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting category:', error);
+        throw error;
+    }
+}

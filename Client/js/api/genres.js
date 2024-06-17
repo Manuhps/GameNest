@@ -10,3 +10,23 @@ export async function fetchGenres() {
         throw error;
     }
 }
+
+export async function addGenre(genreName) {
+    try {
+        const response = await axios.post(`${BASE_URL}`, { genreName });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating genre:', error);
+        throw error;
+    }
+}
+
+export async function delGenre(genreID){
+    try {
+        const response = await axios.delete(`${BASE_URL}/${genreID}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting genre:', error);
+        throw error;
+    }
+}

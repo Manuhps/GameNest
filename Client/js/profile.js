@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         if (profileImage) {
-            profileImage.src = user.profileImage || 'path/to/default/image.jpg';
+            profileImage.src = user.profileImage;
         }
 
         if (pointsHeader) {
@@ -32,6 +32,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (adminSection) {
                 adminSection.style.display = 'block';
             }
+            // Event listeners for admin buttons
+            document.getElementById('btnUsers').addEventListener('click', () => openAdminModal('Users', getUsers));
+            document.getElementById('btnCategories').addEventListener('click', () => openAdminModal('Categories', getCategories, true));
+            document.getElementById('btnSubCategories').addEventListener('click', () => openAdminModal('SubCategories', getSubCategories));
+            document.getElementById('btnOrders').addEventListener('click', () => openAdminModal('Orders', getOrders));
+            document.getElementById('btnGenres').addEventListener('click', () => openAdminModal('Genres', getGenres));
+            document.getElementById('btnGameModes').addEventListener('click', () => openAdminModal('Game Modes', getGameModes));
         }
 
         // Event listener for tab change

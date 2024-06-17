@@ -84,7 +84,11 @@ module.exports = {
                 limit: req.query.limit
             })
             if (users) {
-                return res.status(200).send({ users, links })
+                return res.status(200).send({
+                    pagination: users.pagination,
+                    data: users.data,
+                    links: links
+                })
             }
         } catch (error) {
             handleServerError(error, res)

@@ -10,3 +10,23 @@ export async function fetchGameModes() {
         throw error;
     }
 }
+
+export async function addGameMode(gameModeName) {
+    try {
+        const response = await axios.post(`${BASE_URL}`, { gameModeName });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating gameMode:', error);
+        throw error;
+    }
+}
+
+export async function delGameMode(gameModeID){
+    try {
+        const response = await axios.delete(`${BASE_URL}/${gameModeID}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting gameMode:', error);
+        throw error;
+    }
+}
