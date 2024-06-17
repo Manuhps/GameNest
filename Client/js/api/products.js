@@ -15,3 +15,15 @@ export async function fetchProducts(offset = 0, params = null) {
         console.error('Error fetching products:', error);
     }
 }
+
+export async function fetchProductById(productId) {
+    const url = `${BASE_URL}/${productId}`;
+    try {
+        const response = await axios.get(url);
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error Fetching Product:', error);
+        throw error;
+    }
+}
