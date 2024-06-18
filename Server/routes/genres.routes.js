@@ -8,7 +8,7 @@ const { checkToken } = require("../middlewares/checkToken")
 const { checkIsBanned } = require("../middlewares/checkIsBanned")
 
 router.route('/')
-    .get(checkToken, verifyAdmin, checkIsBanned, findAllGenre)
+    .get(findAllGenre)
     .post(checkToken, verifyAdmin, checkIsBanned, createGenre);
 
 router.route('/:genreID')
