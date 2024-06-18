@@ -1,9 +1,19 @@
+// profile.js
+
 import { getSelf, updateUserProfile } from './api/users.js';
 import { openAdminModal } from './utilities/admin/adminModal.js';
 import { handleUsers, handleCategories, handleSubCategories, handleGenres, handleGameModes } from './utilities/admin/adminHandlers.js';
+import { loadNavbar } from './utilities/navbar.js';
+import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     try {
+        // Load navbar dynamically
+        loadNavbar('navbarContainer');
+
+        // Check user login status and update UI accordingly
+        checkUserLoginStatus();
+
         const { user } = await getSelf();
 
         const usernameField = document.getElementById('username');
@@ -28,6 +38,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             pointsHeader.innerText = `Points: ${user.points || 0}`;
         }
 
+        // Hide the Profile button in navbar when on profile page
+        const profileButton = document.getElementById('profileIcon');
+        if (profileButton) {
+            profileButton.style.display = 'none';
+        }
+
         // Show admin options if the user is an admin
         if (user.role == 'admin') {
             if (adminSection) {
@@ -40,7 +56,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.getElementById('btnSubCategories').addEventListener('click', () => openAdminModal('SubCategories', handleSubCategories, 'subCategories'));
             document.getElementById('btnGenres').addEventListener('click', () => openAdminModal('Genres', handleGenres, 'genres'));
             document.getElementById('btnGameModes').addEventListener('click', () => openAdminModal('Game Modes', handleGameModes, 'gameModes'));
-
         }
 
         // Update profile form submission
@@ -62,6 +77,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                     console.error('Error updating profile:', error);
                     alert('Failed to update profile');
                 }
+            });
+        }
+
+        // Logout button event listener
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function () {
+                logoutUser();
             });
         }
     } catch (error) {
