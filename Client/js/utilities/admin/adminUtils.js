@@ -123,7 +123,11 @@ export function populateAdminTable(data, type) {
         container.appendChild(nameInput);
 
         const addButton = document.createElement('button');
-        addButton.innerText = `Add New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        if (type === 'categories') {
+            addButton.innerText = `Add New Category`;
+        } else {
+            addButton.innerText = `Add New ${type.charAt(0).toUpperCase() + type.slice(1, -1)}`;
+        }
         addButton.className = 'btn btn-primary btn-sm me-2';
         addButton.onclick = async () => {
             const itemName = nameInput.value.trim();
