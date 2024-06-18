@@ -13,7 +13,7 @@ export async function fetchGenres() {
 
 export async function addGenre(genreName) {
     try {
-        const response = await axios.post(`${BASE_URL}`, { genreName },
+        const response = await axios.post(BASE_URL, { genreName },
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`

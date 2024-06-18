@@ -1,19 +1,22 @@
+import { getSelf } from './api/users.js';
+import { addProduct } from './api/products.js';
 import { fetchCategories } from './api/categories.js';
 import { fetchSubCategories } from './api/subCategories.js';
 import { fetchAndDisplayProducts } from './utilities/productsDom.js';
 import { updateCategorySelect } from './utilities/categoriesDom.js';
 import { updateSubCategorySelect, clearSubCategorySelect } from './utilities/subCategoriesDom.js';
 import { toggleGameModeAndGenreDisplay } from './utilities/toggleModeGenre.js';
-import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
+import { logoutUser } from './utilities/userUtils.js';
 import { loadNavbar } from './utilities/navbar.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     let offset = 0;
     try {
-        //Load navbar dynamically
+        // Load navbar dynamically for index page
         loadNavbar('navbarContainer');
 
-        checkUserLoginStatus();
+        // Check user login status and update UI accordingly
+        // checkUserLoginStatus();
 
         // Load and update categories in the category selector
         const categories = await fetchCategories();
@@ -54,8 +57,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Event for filter form submission
         document.getElementById('filterForm').addEventListener('submit', async function (event) {
-            event.preventDefault()
-            offset = 0
+            event.preventDefault();
+            offset = 0;
             const search = document.getElementById('search').value;
             const category = document.getElementById('category').value;
             const subCategory = document.getElementById('subCategory').value;
@@ -77,15 +80,48 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Initially load and display products
         await fetchAndDisplayProducts(offset);
+
+        if (localStorage.getItem('authToken')) {
+            const { user } = await getSelf();
+            if (user.role === 'admin') {
+                const addButtonContainer = document.createElement('div');
+                addButtonContainer.classList.add('text-center', 'my-3');
+                addButtonContainer.innerHTML = `<button id="addProductButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>`;
+                document.querySelector('.col-lg-9').prepend(addButtonContainer);
+            }
+        }
     } catch (error) {
         console.error('Error loading products:', error);
     }
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-        // Add event listener to the logout button
-        document.getElementById('logoutButton').addEventListener('click', function () {
-            logoutUser();
-        });
-    } 
-});
 
-    
+    // Event listener for submitting the add product form
+    document.getElementById('addProductForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const productName = document.getElementById('productName').value;
+        const productDesc = document.getElementById('productDesc').value;
+        const productBasePrice = document.getElementById('productBasePrice').value;
+        const productStock = document.getElementById('productStock').value;
+        const productImg = document.getElementById('productImg').value;
+        const productPlatform = document.getElementById('productPlatform').value;
+        const categoryID = document.getElementById('categoryID').value;
+        const subCategoryID = document.getElementById('subCategoryID').value;
+        const genres = document.getElementById('genres').value.split(',').map(item => item.trim());
+        const gameModes = document.getElementById('gameModes').value.split(',').map(item => item.trim());
+
+        try {
+            await addProduct(productName, productDesc, productBasePrice, productStock, categoryID, productImg, genres, gameModes, productPlatform, subCategoryID);
+            alert('Product added successfully!');
+            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+            modal.hide();
+            document.getElementById('addProductForm').reset();
+        } catch (error) {
+            console.error('Error adding product:', error);
+        }
+    });
+
+    // Event listener for logout button
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        logoutUser();
+    });
+});

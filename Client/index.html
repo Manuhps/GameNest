@@ -7,10 +7,21 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>GameNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <link href="css/footer.css" rel="stylesheet" />
+    <style>
+        .form-control {
+            width: 80%;
+        }
+
+        .form-select {
+            width: 80%;
+        }
+    </style>
 </head>
+
 
 <body>
     <!-- Navbar Container -->
@@ -23,85 +34,168 @@
             </div>
         </div>
     </header>
-    <!-- Início da área de filtragem -->
-    <div class="filter-area">
-        <h2>Filter Products</h2>
-        <form id="filterForm">
-            <div class="form-group">
-                <label for="search">Search:</label>
-                <input type="text" id="search" name="search">
+    <!-- Filtros verticais e área de produtos -->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Área de Filtros -->
+            <div class="col-lg-3 mb-5">
+                <form id="filterForm">
+                    <div class="mb-3">
+                        <label for="search" class="form-label">Search:</label>
+                        <input type="text" id="search" name="search" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category:</label>
+                        <select id="category" name="category" class="form-select">
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subCategory" class="form-label">SubCategory:</label>
+                        <select id="subCategory" name="subCategory" class="form-select">
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="selGameMode" style="display: none;">
+                        <label for="gameMode" class="form-label">Game Mode:</label>
+                        <select id="gameMode" name="gameMode" class="form-select">
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="selGenre" style="display: none;">
+                        <label for="genre" class="form-label">Genre:</label>
+                        <select id="genre" name="genre" class="form-select">
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price:</label>
+                        <div class="form-check">
+                            <input type="radio" id="priceAsc" name="price" value="higher" class="form-check-input">
+                            <label for="priceAsc" class="form-check-label">Higher</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="priceDesc" name="price" value="lower" class="form-check-input">
+                            <label for="priceDesc" class="form-check-label">Lower</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="noPrice" name="price" value="none" class="form-check-input" checked>
+                            <label for="noPrice" class="form-check-label">None</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rating:</label>
+                        <div class="form-check">
+                            <input type="radio" id="ratingAsc" name="rating" value="higher" class="form-check-input">
+                            <label for="ratingAsc" class="form-check-label">Higher</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="ratingDesc" name="rating" value="lower" class="form-check-input">
+                            <label for="ratingDesc" class="form-check-label">Lower</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="noRating" name="rating" value="none" class="form-check-input"
+                                checked>
+                            <label for="noRating" class="form-check-label">None</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date Added:</label>
+                        <div class="form-check">
+                            <input type="radio" id="dateAsc" name="date" value="higher" class="form-check-input">
+                            <label for="dateAsc" class="form-check-label">Higher</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="dateDesc" name="date" value="lower" class="form-check-input">
+                            <label for="dateDesc" class="form-check-label">Lower</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="noDate" name="date" value="none" class="form-check-input" checked>
+                            <label for="noDate" class="form-check-label">None</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="category">Category:</label>
-                <select id="category" name="category">
-                    <option value="none">None</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="subCategory">SubCategory:</label>
-                <select id="subCategory" name="subCategory">
-                    <option value="none">None</option>
-                </select>
-            </div>
-            <div class="form-group" id="selGameMode" style="display: none;">
-                <label for="gameMode">Game Mode:</label>
-                <select id="gameMode" name="gameMode">
-                    <option value="none">None</option>
-                </select>
-            </div>
-            <div class="form-group" id="selGenre" style="display: none;">
-                <label for="genre">Genre:</label>
-                <select id="genre" name="genre">
-                    <option value="none">None</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Price:</label><br>
-                <input type="radio" id="priceAsc" name="price" value="higher">
-                <label for="price">Higher</label><br>
-                <input type="radio" id="priceDesc" name="price" value="lower">
-                <label for="price">Lower</label><br>
-                <input type="radio" id="noPrice" name="price" value="none" checked>
-                <label for="price">None</label><br>
-            </div>
-            <div class="form-group">
-                <label>Rating:</label><br>
-                <input type="radio" id="ratingAsc" name="rating" value="higher">
-                <label for="rating">Higher</label><br>
-                <input type="radio" id="ratingDesc" name="rating" value="lower">
-                <label for="rating">Lower</label><br>
-                <input type="radio" id="noRating" name="rating" value="none" checked>
-                <label for="rating">None</label><br>
-            </div>
-            <div class="form-group">
-                <label>Date Added:</label><br>
-                <input type="radio" id="dateAsc" name="date" value="higher">
-                <label for="date">Higher</label><br>
-                <input type="radio" id="dateDesc" name="date" value="lower">
-                <label for="date">Lower</label><br>
-                <input type="radio" id="noDate" name="date" value="none" checked>
-                <label for="date">None</label><br>
-            </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Filter</button>
-    </form>
-    </div>
-    <!-- Section-->
-    <section class="py-5">
-        <div class="container px-4 px-lg-5 mt-5">
-            <div id="productsSection"
-                class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            </div>
-            <div class="d-flex justify-content-center">
-                <button id="prevPage" class="btn btn-outline-dark me-2">Previous</button>
-                <div id="paginationContainer" class="me-2"></div>
-                <button id="nextPage" class="btn btn-outline-dark">Next</button>
+            <!-- Área de Produtos -->
+            <div class="col-lg-9">
+                <section class="py-5">
+                    <div class="container px-4 px-lg-5 mt-5">
+                        <div id="productsSection" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+                            <!-- Product cards will be dynamically added here -->
+                        </div>
+                        <div class="d-flex justify-content-center mt-4">
+                            <button id="prevPage" class="btn btn-outline-dark me-2">Previous</button>
+                            <div id="paginationContainer" class="me-2"></div>
+                            <button id="nextPage" class="btn btn-outline-dark">Next</button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
+    </div>
+    <!-- Modal For Adding a New Product -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Product Name:</label>
+                            <input type="text" class="form-control" id="productName" name="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDesc" class="form-label">Description:</label>
+                            <textarea class="form-control" id="productDesc" name="productDesc" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productBasePrice" class="form-label">Base Price:</label>
+                            <input type="number" class="form-control" id="productBasePrice" name="productBasePrice"
+                                step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productStock" class="form-label">Stock:</label>
+                            <input type="number" class="form-control" id="productStock" name="productStock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImg" class="form-label">Image URL:</label>
+                            <input type="text" class="form-control" id="productImg" name="productImg">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPlatform" class="form-label">Platform:</label>
+                            <input type="text" class="form-control" id="productPlatform" name="productPlatform">
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryID" class="form-label">Category ID:</label>
+                            <input type="text" class="form-control" id="categoryID" name="categoryID">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subCategoryID" class="form-label">SubCategory ID:</label>
+                            <input type="text" class="form-control" id="subCategoryID" name="subCategoryID">
+                        </div>
+                        <div class="mb-3">
+                            <label for="genres" class="form-label">Genres IDs(comma-separated):</label>
+                            <input type="text" class="form-control" id="genres" name="genres">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gameModes" class="form-label">Game Modes IDs (comma-separated):</label>
+                            <input type="text" class="form-control" id="gameModes" name="gameModes">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+
+
     <!-- FOOTER -->
-    <footer id="footer">
+    <footer id="footer" class="mt-5">
         <!-- top footer -->
         <div class="section">
             <!-- container -->
@@ -131,7 +225,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="col-md-3 col-xs-6">
                         <div class="footer">
                             <h3 class="footer-title">Information</h3>
@@ -144,7 +237,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="col-md-3 col-xs-6">
                         <div class="footer">
                             <h3 class="footer-title">Service</h3>

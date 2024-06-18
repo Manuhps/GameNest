@@ -1,7 +1,5 @@
-// Import necessary functions
 import { login } from '../api/users.js';
 
-// Listen for the DOMContentLoaded event to ensure the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
 
@@ -22,25 +20,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.data;
                 })
                 .then(data => {
-                    // If login is successful, store the authentication token and redirect to the homepage
+                    // If login is successful, store the authentication token and update UI
                     console.log('Login successful', data);
 
                     // Store the user's login state
                     localStorage.setItem('isLoggedIn', 'true');
 
-                    // Hide the login button
-                    const loginButton = document.getElementById('loginButton');
-                    if (loginButton) loginButton.style.display = 'none';
-
-                    // Show the logout button
-                    const logoutButton = document.getElementById('logoutButton');
-                    if (logoutButton) logoutButton.style.display = 'block';
-
-                    // Show the profile icon
-                    const profileIcon = document.getElementById('profileIcon');
-                    if (profileIcon) profileIcon.style.display = 'block';
-
-                    window.location.href = '/'; // Redirect to the homepage
+                    // Redirect to the homepage
+                    window.location.href = '/';
                 })
                 .catch(error => {
                     console.error('Error during login:', error);
