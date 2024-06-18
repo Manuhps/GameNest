@@ -6,7 +6,7 @@ const { paginate, generatePaginationPath } = require("../utilities/pagination")
 module.exports = {
     findAllGameMode: async (req, res) => {
         try {
-            const gameModes = await paginate(GameMode) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of user
+            const gameModes = await paginate(GameMode, {attributes: ['gameModeID', 'gameModeName']}) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of user
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
             const links = [

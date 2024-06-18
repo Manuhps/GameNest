@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,14 +14,18 @@
             height: 150px;
             object-fit: cover;
         }
+
         .form-section {
             margin-top: 20px;
         }
+
         #admin-section {
-            display: none; /* Hide admin section by default */
+            display: none;
+            /* Hide admin section by default */
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar Container -->
     <div id="navbarContainer"></div>
@@ -63,22 +68,29 @@
                                 <div class="container" id="btnsManage">
                                     <div class="row">
                                         <div class="col-md-6 mb-2">
-                                            <button type="button" id="btnUsers" class="btn btn-outline-secondary btn-block">Manage Users</button>
+                                            <button type="button" id="btnUsers"
+                                                class="btn btn-outline-secondary btn-block">Manage Users</button>
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            <button type="button" id="btnCategories" class="btn btn-outline-secondary btn-block">Manage Categories</button>
+                                            <button type="button" id="btnCategories"
+                                                class="btn btn-outline-secondary btn-block">Manage Categories</button>
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            <button type="button" id="btnSubCategories" class="btn btn-outline-secondary btn-block">Manage SubCategories</button>
+                                            <button type="button" id="btnSubCategories"
+                                                class="btn btn-outline-secondary btn-block">Manage
+                                                SubCategories</button>
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            <button type="button" id="btnOrders" class="btn btn-outline-secondary btn-block">Manage Orders</button>
+                                            <button type="button" id="btnOrders"
+                                                class="btn btn-outline-secondary btn-block">Manage Orders</button>
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            <button type="button" id="btnGenres" class="btn btn-outline-secondary btn-block">Manage Genres</button>
+                                            <button type="button" id="btnGenres"
+                                                class="btn btn-outline-secondary btn-block">Manage Genres</button>
                                         </div>
                                         <div class="col-md-6 mb-2">
-                                            <button type="button" id="btnGameModes" class="btn btn-outline-secondary btn-block">Manage Game Modes</button>
+                                            <button type="button" id="btnGameModes"
+                                                class="btn btn-outline-secondary btn-block">Manage Game Modes</button>
                                         </div>
                                     </div>
                                 </div>
@@ -88,10 +100,12 @@
 
                         <ul class="nav nav-tabs mt-4" id="profileTabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="userProfile-tab" data-toggle="tab" href="#userProfile" role="tab">User Profile</a>
+                                <a class="nav-link active" id="userProfile-tab" data-toggle="tab" href="#userProfile"
+                                    role="tab">User Profile</a>
                             </li>
                             <li class="nav-item" id="adminSection">
-                                <a class="nav-link" id="adminOptions-tab" data-toggle="tab" href="#adminOptions" role="tab">Admin</a>
+                                <a class="nav-link" id="adminOptions-tab" data-toggle="tab" href="#adminOptions"
+                                    role="tab">Admin</a>
                             </li>
                         </ul>
                     </div>
@@ -101,8 +115,9 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 90%; width: auto;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="adminModalLabel">Admin Panel</h5>
@@ -125,6 +140,8 @@
         </div>
     </div>
 
+
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <!-- Bootstrap JS (must be loaded after jQuery) -->
@@ -132,4 +149,5 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="module" src="../js/profile.js"></script>
 </body>
+
 </html>

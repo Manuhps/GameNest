@@ -8,7 +8,7 @@ module.exports = {
         try {
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
-            const genres = await paginate(Genre)
+            const genres = await paginate(Genre, {attributes: ['genreID', 'genreName']})
             const links = [
                 { rel: "createGenre", href: "/genre", method: "POST" },
                 { rel: "deleteGenre", href: "/genre/:genreID", method: "DELETE" },

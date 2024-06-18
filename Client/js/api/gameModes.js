@@ -13,7 +13,12 @@ export async function fetchGameModes() {
 
 export async function addGameMode(gameModeName) {
     try {
-        const response = await axios.post(`${BASE_URL}`, { gameModeName });
+        const response = await axios.post(`${BASE_URL}`, { gameModeName },
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating gameMode:', error);
@@ -23,7 +28,12 @@ export async function addGameMode(gameModeName) {
 
 export async function delGameMode(gameModeID){
     try {
-        const response = await axios.delete(`${BASE_URL}/${gameModeID}`);
+        const response = await axios.delete(`${BASE_URL}/${gameModeID}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error deleting gameMode:', error);

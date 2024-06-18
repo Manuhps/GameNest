@@ -22,7 +22,7 @@ export function logout() {
     localStorage.removeItem('authToken');
 }
 
-export async function getSelf(){
+export async function getSelf() {
     try {
         const response = await api.get(`${BASE_URL}/me`);
         return response.data;
@@ -32,7 +32,7 @@ export async function getSelf(){
     }
 }
 
-export async function getUsers(offset = 0, limit = 10){
+export async function getUsers(offset = 0, limit = 10) {
     try {
         const response = await api.get(`${BASE_URL}`, {
             params: {
@@ -59,4 +59,22 @@ export async function updateUserProfile(updatedProfile) {
         console.error('Error updating user profile:', error);
         throw error;
     }
+}
+
+export async function banUser(userId) {
+    return axios.patch(`${BASE_URL}/${userId}`, { isBanned: true },
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+}
+
+export async function unbanUser(userId) {
+    return axios.patch(`${BASE_URL}/${userId}`, { isBanned: false },
+    {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    });
 }

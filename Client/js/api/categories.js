@@ -13,7 +13,12 @@ export async function fetchCategories() {
 
 export async function addCategory(categoryName) {
     try {
-        const response = await axios.post(`${BASE_URL}`, { categoryName });
+        const response = await axios.post(`${BASE_URL}`, { categoryName },
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating category:', error);
@@ -23,7 +28,12 @@ export async function addCategory(categoryName) {
 
 export async function delCategory(categoryID){
     try {
-        const response = await axios.delete(`${BASE_URL}/${categoryID}`);
+        const response = await axios.delete(`${BASE_URL}/${categoryID}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error deleting category:', error);

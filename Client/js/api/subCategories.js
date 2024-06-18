@@ -13,7 +13,12 @@ export async function fetchSubCategories(categoryID) {
 
 export async function addSubCategory(categoryID, subCategoryName) {
     try {
-        const response = await axios.post(`${BASE_URL}/${categoryID}/subCategories`, { subCategoryName });
+        const response = await axios.post(`${BASE_URL}/${categoryID}/subCategories`, { subCategoryName },
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error creating subCategory:', error);
@@ -23,7 +28,12 @@ export async function addSubCategory(categoryID, subCategoryName) {
 
 export async function delSubCategory(categoryID, subCategoryID){
     try {
-        const response = await axios.delete(`${BASE_URL}/${categoryID}/subCategories/${subCategoryID}`);
+        const response = await axios.delete(`${BASE_URL}/${categoryID}/subCategories/${subCategoryID}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error deleting category:', error);
