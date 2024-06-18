@@ -7,7 +7,7 @@ const { handleBadRequest } = require('../utilities/errors');
 module.exports = {
     findAllCategory: async (req, res) => {
         try {
-            const categories = await paginate(Category)
+            const categories = await paginate(Category, {attributes: ['categoryID', 'categoryName']})
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
             const links = [

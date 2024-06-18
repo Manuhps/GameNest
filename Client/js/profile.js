@@ -35,11 +35,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             // Event listeners for admin buttons
-            document.getElementById('btnUsers').addEventListener('click', () => openAdminModal('Users', handleUsers));
-            document.getElementById('btnCategories').addEventListener('click', () => openAdminModal('Categories', handleCategories));
-            document.getElementById('btnSubCategories').addEventListener('click', () => openAdminModal('SubCategories', handleSubCategories));
-            document.getElementById('btnGenres').addEventListener('click', () => openAdminModal('Genres', handleGenres));
-            document.getElementById('btnGameModes').addEventListener('click', () => openAdminModal('Game Modes', handleGameModes));
+            document.getElementById('btnUsers').addEventListener('click', () => openAdminModal('Users', handleUsers, 'users'));
+            document.getElementById('btnCategories').addEventListener('click', () => openAdminModal('Categories', handleCategories, 'categories'));
+            document.getElementById('btnSubCategories').addEventListener('click', () => openAdminModal('SubCategories', handleSubCategories, 'subCategories'));
+            document.getElementById('btnGenres').addEventListener('click', () => openAdminModal('Genres', handleGenres, 'genres'));
+            document.getElementById('btnGameModes').addEventListener('click', () => openAdminModal('Game Modes', handleGameModes, 'gameModes'));
+
         }
 
         // Update profile form submission
