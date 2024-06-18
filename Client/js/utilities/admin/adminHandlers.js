@@ -1,8 +1,8 @@
 import { getUsers, banUser, unbanUser } from '../../api/users.js';
-import { fetchCategories } from '../../api/categories.js';
-import { fetchSubCategories } from '../../api/subCategories.js';
-import { fetchGenres } from '../../api/genres.js';
-import { fetchGameModes } from '../../api/gameModes.js';
+import { fetchCategories, delCategory } from '../../api/categories.js';
+import { fetchSubCategories, delSubCategory } from '../../api/subCategories.js';
+import { fetchGenres, delGenre } from '../../api/genres.js';
+import { fetchGameModes, delGameMode } from '../../api/gameModes.js';
 import { populateAdminTable } from './adminUtils.js';
 import { reloadTable } from './adminModal.js';
 
