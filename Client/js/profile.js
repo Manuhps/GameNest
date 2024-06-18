@@ -1,4 +1,6 @@
-import { getSelf, updateUserProfile } from '../api/users.js';
+import { getSelf, updateUserProfile } from './api/users.js';
+import { openAdminModal } from './utilities/admin/adminModal.js';
+import { handleUsers, handleCategories, handleSubCategories, handleGenres, handleGameModes } from './utilities/admin/adminHandlers.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     try {
@@ -8,8 +10,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const emailField = document.getElementById('email');
         const profileImage = document.getElementById('profileImage');
         const pointsHeader = document.getElementById('pointsHeader');
-        const adminTab = document.getElementById('adminOptions-tab');
-        const adminSection = document.querySelector('.admin-section');
+        const adminSection = document.getElementById('adminSection');
 
         if (usernameField) {
             usernameField.value = user.username;
@@ -28,41 +29,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         // Show admin options if the user is an admin
-        if (user.role === 'admin') {
+        if (user.role == 'admin') {
             if (adminSection) {
                 adminSection.style.display = 'block';
             }
+
             // Event listeners for admin buttons
-            document.getElementById('btnUsers').addEventListener('click', () => openAdminModal('Users', getUsers));
-            document.getElementById('btnCategories').addEventListener('click', () => openAdminModal('Categories', getCategories, true));
-            document.getElementById('btnSubCategories').addEventListener('click', () => openAdminModal('SubCategories', getSubCategories));
-            document.getElementById('btnOrders').addEventListener('click', () => openAdminModal('Orders', getOrders));
-            document.getElementById('btnGenres').addEventListener('click', () => openAdminModal('Genres', getGenres));
-            document.getElementById('btnGameModes').addEventListener('click', () => openAdminModal('Game Modes', getGameModes));
-        }
-
-        // Event listener for tab change
-        const profileTabs = document.getElementById('profileTabs');
-        if (profileTabs) {
-            profileTabs.addEventListener('click', (event) => {
-                const targetTab = event.target;
-                if (targetTab && targetTab.matches('.nav-link')) {
-                    const activeTab = profileTabs.querySelector('.nav-link.active');
-                    if (activeTab) {
-                        activeTab.classList.remove('active');
-                    }
-                    targetTab.classList.add('active');
-
-                    const targetPanel = document.querySelector(targetTab.getAttribute('href'));
-                    const activePanel = document.querySelector('.tab-pane.show.active');
-                    if (activePanel) {
-                        activePanel.classList.remove('show', 'active');
-                    }
-                    if (targetPanel) {
-                        targetPanel.classList.add('show', 'active');
-                    }
-                }
-            });
+            document.getElementById('btnUsers').addEventListener('click', () => openAdminModal('Users', handleUsers));
+            document.getElementById('btnCategories').addEventListener('click', () => openAdminModal('Categories', handleCategories));
+            document.getElementById('btnSubCategories').addEventListener('click', () => openAdminModal('SubCategories', handleSubCategories));
+            document.getElementById('btnGenres').addEventListener('click', () => openAdminModal('Genres', handleGenres));
+            document.getElementById('btnGameModes').addEventListener('click', () => openAdminModal('Game Modes', handleGameModes));
         }
 
         // Update profile form submission
@@ -80,7 +57,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 try {
                     const updatedUser = await updateUserProfile(updatedProfile);
                     alert('Profile updated successfully');
-                    // Optionally refresh the page or user details
                 } catch (error) {
                     console.error('Error updating profile:', error);
                     alert('Failed to update profile');

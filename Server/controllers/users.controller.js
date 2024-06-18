@@ -77,9 +77,9 @@ module.exports = {
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ]
             const users = await paginate(User, {
-                attributes: {
-                    exclude: ["password"],
-                },
+                attributes: 
+                    ['userID', 'username', 'email', 'role', 'isBanned']
+                ,
                 offset: req.query.offset,
                 limit: req.query.limit
             })

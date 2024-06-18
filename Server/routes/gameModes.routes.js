@@ -8,7 +8,7 @@ const { checkToken } = require("../middlewares/checkToken")
 const { checkIsBanned } = require("../middlewares/checkIsBanned")
 
 router.route('/')
-    .get(checkToken, verifyAdmin, checkIsBanned, findAllGameMode)
+    .get(findAllGameMode)
     .post(checkToken, verifyAdmin, checkIsBanned, createGameMode);
 
 router.route('/:gameModeID')
