@@ -6,7 +6,7 @@ import { fetchAndDisplayProducts } from './utilities/productsDom.js';
 import { updateCategorySelect } from './utilities/categoriesDom.js';
 import { updateSubCategorySelect, clearSubCategorySelect } from './utilities/subCategoriesDom.js';
 import { toggleGameModeAndGenreDisplay } from './utilities/toggleModeGenre.js';
-import { logoutUser } from './utilities/userUtils.js';
+import { logoutUser, checkUserLoginStatus } from './utilities/userUtils.js';
 import { loadNavbar } from './utilities/navbar.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         loadNavbar('navbarContainer');
 
         // Check user login status and update UI accordingly
-        // checkUserLoginStatus();
+        checkUserLoginStatus();
 
         // Load and update categories in the category selector
         const categories = await fetchCategories();
@@ -81,13 +81,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Initially load and display products
         await fetchAndDisplayProducts(offset);
 
+        // Check if user is logged in and show admin features if applicable
         if (localStorage.getItem('authToken')) {
             const { user } = await getSelf();
             if (user.role === 'admin') {
-                const addButtonContainer = document.createElement('div');
-                addButtonContainer.classList.add('text-center', 'my-3');
-                addButtonContainer.innerHTML = `<button id="addProductButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>`;
-                document.querySelector('.col-lg-9').prepend(addButtonContainer);
+                // Show "Add Product" button
+                document.getElementById('addProductContainer').style.display = 'block';
             }
         }
     } catch (error) {

@@ -8,7 +8,7 @@ const { paginate, generatePaginationPath } = require("../utilities/pagination")
 module.exports = {
     getAllOrders: async (req, res) => {
         try {
-            const ordersData = await paginate(Order, { 
+            const ordersData = await paginate(Order, {
                 include: [{ model: OrderProduct }]
             });
 
@@ -21,56 +21,56 @@ module.exports = {
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-    
+
             if (ordersData.data.length === 0) {
                 return res.status(404).send({ message: "No orders found." });
             }
-    
+
             res.status(200).send({
                 pagination: ordersData.pagination,
                 data: ordersData.data,
                 links: links
             });
-            } catch (err) {
-                res.status(500).send({
-                    message: err.message || "Something went wrong. Please try again later."
-                });
-            }   
-        },
-
-    getOrdersMe: async (req, res) => {
-        try {
-
-        const userID = res.locals.userID;
-
-        const ordersData = await paginate(Order, {
-            where: { userID: userID },  
-            include: [{ model: OrderProduct }]
-        });
-
-        let nextPage, prevPage = await generatePaginationPath(req, res);
-
-        const links = [
-            { rel: "createOrder", href: "/orders", method: "POST" },
-            { rel: "getCurrent", href: "/orders/current", method: "GET" },
-            { rel: "nextPage", href: nextPage, method: "GET" },
-            { rel: "prevPage", href: prevPage, method: "GET" }
-        ];
-
-        if (ordersData.data.length === 0) {
-            return res.status(404).send({ message: "No orders found." });
-        }
-
-        res.status(200).send({
-            pagination: ordersData.pagination,
-            data: ordersData.data,
-            links: links
-        });
         } catch (err) {
             res.status(500).send({
                 message: err.message || "Something went wrong. Please try again later."
             });
-        }   
+        }
+    },
+
+    getOrdersMe: async (req, res) => {
+        try {
+
+            const userID = res.locals.userID;
+
+            const ordersData = await paginate(Order, {
+                where: { userID: userID },
+                include: [{ model: OrderProduct }]
+            });
+
+            let nextPage, prevPage = await generatePaginationPath(req, res);
+
+            const links = [
+                { rel: "createOrder", href: "/orders", method: "POST" },
+                { rel: "getCurrent", href: "/orders/current", method: "GET" },
+                { rel: "nextPage", href: nextPage, method: "GET" },
+                { rel: "prevPage", href: prevPage, method: "GET" }
+            ];
+
+            if (ordersData.data.length === 0) {
+                return res.status(404).send({ message: "No orders found." });
+            }
+
+            res.status(200).send({
+                pagination: ordersData.pagination,
+                data: ordersData.data,
+                links: links
+            });
+        } catch (err) {
+            res.status(500).send({
+                message: err.message || "Something went wrong. Please try again later."
+            });
+        }
     },
 
     getCurrentOrder: async (req, res) => {
@@ -87,7 +87,7 @@ module.exports = {
             const currentOrder = await Order.findOne({
                 where: {
                     userID: userID,
-                    state: 'cart' 
+                    state: 'cart'
                 }
             });
 
@@ -103,18 +103,18 @@ module.exports = {
             });
         }
     },
-    
+
     createOrder: async (req, res) => {
         try {
             const userID = res.locals.userID;
             const { products } = req.body;
-    
+
             if (!products || !Array.isArray(products) || products.length === 0) {
                 return res.status(400).send({
                     message: "Please provide at least one product."
                 });
             }
-    
+
             // Verificar se todos os produtos existem e validar quantidade
             for (const product of products) {
                 const productExists = await Product.findByPk(product.productID);
@@ -128,7 +128,7 @@ module.exports = {
                     return res.status(400).send({ message: `Quantity for product ${product.productID} exceeds available stock.` });
                 }
             }
-    
+
             // Verificar se já existe uma order em estado 'cart' para o usuário
             const existingCartOrder = await Order.findOne({
                 where: {
@@ -139,13 +139,13 @@ module.exports = {
             if (existingCartOrder) {
                 return res.status(400).send({ message: "There is already an existing order with state 'cart' for this user." });
             }
-    
+
             // Criar a ordem com estado 'cart'
             const order = await Order.create({
                 state: 'cart',
                 userID: userID
             });
-    
+
             // Adicionar produtos à ordem
             const orderProducts = products.map(product => ({
                 orderID: order.orderID,
@@ -153,9 +153,9 @@ module.exports = {
                 quantity: product.quantity,
                 salePrice: product.salePrice
             }));
-    
+
             await OrderProduct.bulkCreate(orderProducts);
-    
+
             res.status(201).send({ message: "Order placed successfully." });
         } catch (error) {
             console.error("Error creating order:", error);
@@ -165,22 +165,22 @@ module.exports = {
             });
         }
     },
-    
+
     updateOrder: async (req, res) => {
         try {
             const userID = res.locals.userID;
-            const { cardName, cardNumber, cardExpiryDate, products, pointsToUse, pointsEarned  } = req.body;
+            const { cardName, cardNumber, cardExpiryDate, products, pointsToUse, pointsEarned } = req.body;
 
             // Validate cardName
             if (cardName && typeof cardName !== 'string') {
                 return res.status(400).send({ message: "Invalid cardName format. It must be a string." });
             }
-    
+
             // Validate cardNumber
             if (cardNumber && isNaN(cardNumber)) {
                 return res.status(400).send({ message: "Invalid cardNumber format. It must be an integer." });
             }
-    
+
             // Validate cardExpiryDate
             if (cardExpiryDate && !/^(\d{4})-(\d{2})-(\d{2})$/.test(cardExpiryDate)) {
                 return res.status(400).send({ message: "Invalid cardExpiryDate format. It must be a valid date." });
@@ -202,7 +202,7 @@ module.exports = {
                     }
                     if (product.quantity > productExists.stock) {
                         return res.status(400).send({ message: `Quantity for product ${product.productID} exceeds available stock.` });
-                    }                    
+                    }
                 }
             }
 
@@ -217,22 +217,22 @@ module.exports = {
                 return res.status(404).send({ message: "User not found." });
             }
 
-        // Validate if user has enough points
+            // Validate if user has enough points
             if (pointsToUse && pointsToUse > user.points) {
                 return res.status(400).send({ message: "Not enough points available." });
             }
-            
+
             let totalOrderValue = 0;
             const orderProducts = await OrderProduct.findAll({ where: { orderID: order.orderID } });
             for (const orderProduct of orderProducts) {
                 totalOrderValue += orderProduct.salePrice * orderProduct.quantity;
-            }   
+            }
 
             let discount = 0;
             if (pointsToUse) {
                 discount = pointsToUse / 2;
 
-            // Validate if discount is greater than the totalOrderValue
+                // Validate if discount is greater than the totalOrderValue
                 if (discount > totalOrderValue) {
                     return res.status(400).send({ message: "Discount cannot be greater than the total order value." });
                 }
@@ -244,7 +244,7 @@ module.exports = {
                 totalOrderValue -= discount;
                 user.points -= pointsToUse;
             }
-   
+
 
             // Update order attributes
             order.cardName = cardName || order.cardName;
@@ -268,7 +268,7 @@ module.exports = {
                         await product.save();
                     }
                 }
-    
+
                 // Update user points based on order total
                 const pointsEarned = Math.floor(totalOrderValue / 2);
                 user.points += pointsEarned;
@@ -294,7 +294,7 @@ module.exports = {
                         await updatedOrder.save();
                     }
                 }, deliverDate.getTime() - Date.now()); // Time until deliverDate in milliseconds
-            } 
+            }
 
             if (products && Array.isArray(products)) {
                 for (const product of products) {
@@ -327,7 +327,7 @@ module.exports = {
                 pointsUsed: pointsToUse || 0,
                 pointsEarned: pointsEarned
             });
-    
+
         } catch (error) {
             console.error("Erro capturado:", error);
             res.status(500).send({
@@ -421,18 +421,18 @@ module.exports = {
             });
         }
     },
-    
-    
+
+
     // Função delete apenas para ajudar nos testes de post de orders e não ficar demasiadas linhas na tabela na base de dados
 
     deleteOrder: async (req, res) => {
         try {
-            
-            let result = await Order.destroy({ where: { orderID: req.params.orderID}})
+
+            let result = await Order.destroy({ where: { orderID: req.params.orderID } })
             if (result == 1)
                 return res.status(201).send({
                     message: `Order deleted successfully.`
-             
+
                 });
             else {
                 res
@@ -448,5 +448,24 @@ module.exports = {
             });
         }
     },
-    
+    getOrderProducts: async (req, res) => {
+        try {
+            const productID = req.params.productID
+            const where = { productID: productID }
+            const include = {
+                model: Product,
+                attributes: ['name', 'basePrice', 'img']
+            }
+            //Uses paginate function to get results 
+            const orderProductsData = await paginate(OrderProduct, { where, include })
+            if (orderProductsData) {
+                return res.status(200).send({
+                    pagination: orderProductsData.pagination,
+                    data: orderProductsData.data,
+                })
+            }
+        } catch (error) {
+            handleServerError(error, res)
+        }
+    }
 };

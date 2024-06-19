@@ -16,6 +16,21 @@ export async function login(username, password) {
     }
 }
 
+export async function register(username, email, password) {
+    try {
+        const response = await api.post(BASE_URL, {
+            username,
+            email,
+            password
+        });
+        const token = response.data.accessToken;
+        localStorage.setItem('authToken', token); // Save the token to localStorage
+        return response.data;
+    } catch (error) {
+        throw new Error('Error trying to register' + error.message);
+    }
+}
+
 // Logout
 export function logout() {
     localStorage.removeItem('isLoggedIn');
