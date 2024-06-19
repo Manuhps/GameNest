@@ -27,12 +27,20 @@
         <!-- Product actions -->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
             <div class="text-center">
-                <button id="btnManageDiscounts" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal" data-bs-target="#discountModal">
+                <button id="btnManageDiscounts" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal"
+                    data-bs-target="#discountModal">
                     Manage Discounts
+                </button>
+                <!-- Edit Product Button -->
+                <button id="btnEditProduct" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal"
+                    data-bs-target="#editProductModal">
+                    Edit Product
                 </button>
             </div>
         </div>
-        <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+        <!--Discounts Modal-->
+        <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -70,6 +78,44 @@
                                 <input type="date" class="form-control" id="endDateInput" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Discount</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Product Modal-->
+        <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editProductForm">
+                            <div class="mb-3">
+                                <label for="editNameInput" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="editNameInput">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDescInput" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="editDescInput">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPriceInput" class="form-label">Base Price</label>
+                                <input type="number" class="form-control" id="editPriceInput">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editImgInput" class="form-label">Image URL</label>
+                                <input type="text" class="form-control" id="editImgInput">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPlatformInput" class="form-label">Platform</label>
+                                <input type="text" class="form-control" id="editPlatformInput">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
                     </div>
                 </div>

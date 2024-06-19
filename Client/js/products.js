@@ -1,4 +1,4 @@
-import { fetchProductById, addDiscount } from './api/products.js';
+import { fetchProductById, addDiscount, editProduct } from './api/products.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus } from './utilities/userUtils.js';
 import { populateDiscountTable } from './utilities/discountsUtils.js';
@@ -64,6 +64,27 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.error('Error adding discount:', error);
             }
         })
+        // Handle form submission for editing product
+        document.getElementById('editProductForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const updateData = {
+                name: document.getElementById('editNameInput').value,
+                desc: document.getElementById('editDescInput').value,
+                basePrice: document.getElementById('editPriceInput').value,
+                img: document.getElementById('editImgInput').value,
+                platform: document.getElementById('editPlatformInput').value
+            };
+
+            try {
+                await editProduct(productID, updateData);
+                alert('Product updated successfully!');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+                modal.hide();
+            } catch (error) {
+                console.error('Error updating product:', error);
+            }
+        });
 
         // Add-to-cart button event listener (example)
         document.querySelector('.add-to-cart-button').addEventListener('click', () => addToCart(product));
