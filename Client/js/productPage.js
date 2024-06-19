@@ -93,12 +93,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.querySelector('.add-to-cart-button').addEventListener('click', async () => {
             try {
                 const products = [{ productID: productID, quantity: 1, salePrice: product.curPrice }]
-
                 const currentOrder = await getCurrent();
-                if (currentOrder && currentOrder.currentOrder.state === 'cart') {
+                if (currentOrder.currentOrder.state == 'cart') {
                     await updateOrder(products)
                     alert('Product added to cart successfully!');
-                } else {
+                } else { 
                     await addOrder(products);
                     alert('Product added to cart successfully!');
                 }

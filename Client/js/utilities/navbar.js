@@ -1,4 +1,4 @@
-export function loadNavbar(containerId, isProfilePage = false) {
+export function loadNavbar(containerId, isProfilePage = false, isCartPage = false) {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
     const navbarHTML = `
@@ -35,6 +35,17 @@ export function loadNavbar(containerId, isProfilePage = false) {
                         ${isLoggedIn ?
                             (isProfilePage ?
                                 `<button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
+                                    <i class="bi-person-fill me-1"></i>
+                                    Logout
+                                </button>`
+                                : isCartPage ?
+                                `<a href="html/profile.html">
+                                    <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon">
+                                        <i class="bi-person-fill me-1"></i>
+                                        Profile
+                                    </button>
+                                </a>
+                                <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
                                     <i class="bi-person-fill me-1"></i>
                                     Logout
                                 </button>`
