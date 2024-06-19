@@ -60,6 +60,20 @@ export async function getCurrent() {
     }
 }
 
+export async function getOrderProducts() {
+    try {
+        const response = await api.get(`${BASE_URL}/current/orderProducts`,{
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        throw error;
+    }
+}
+
 export async function updateOrder(products) {
     try {
         const response = await api.patch(`${BASE_URL}/current`,

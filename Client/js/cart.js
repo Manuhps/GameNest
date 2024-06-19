@@ -1,4 +1,4 @@
-import { getCurrent} from './api/orders.js';
+import { getCurrent, getOrderProducts} from './api/orders.js';
 
 async function renderCart() {
     try {
@@ -7,21 +7,22 @@ async function renderCart() {
         if (currentOrder && currentOrder.currentOrder.state === 'cart') {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = ''; // Clear previous content
+            const orderProducts = await getOrderProducts()
 
             let totalPrice = 0;
-            console.log(currentOrder)
-            currentOrder.products.forEach(product => {
-                totalPrice += product.salePrice * product.quantity;
 
+            orderProducts.data.forEach(product => {
+                totalPrice += parseInt(product.salePrice) * product.quantity;
+                
                 const productElement = document.createElement('div');
                 productElement.className = 'd-flex justify-content-between align-items-center mb-3';
 
                 productElement.innerHTML = `
                     <div class="d-flex align-items-center">
-                        <img src="${product.imageUrl}" alt="${product.name}" class="img-thumbnail" style="width: 100px; height: auto;">
+                        <img src="${product.Product.img}" alt="${product.Product.name}" class="img-thumbnail" style="width: 100px; height: auto;">
                         <div class="ms-3">
-                            <h5>${product.name}</h5>
-                            <p>${product.salePrice.toFixed(2)} €</p>
+                            <h5>${product.Product.name}</h5>
+                            <p>${parseInt(product.salePrice).toFixed(2)} €</p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
