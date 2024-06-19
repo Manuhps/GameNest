@@ -77,9 +77,9 @@ export async function getOrderProducts() {
 export async function updateOrder(products) {
     try {
         const response = await api.patch(`${BASE_URL}/current`,
-            {
+            
                 products
-            },
+            ,
             {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
