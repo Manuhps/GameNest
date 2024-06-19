@@ -457,12 +457,13 @@ module.exports = {
                     state: 'cart'
                 }
             });
+            const attributes = ['orderID', 'productID', 'salePrice', 'quantity']
             const where = {orderID: currentOrder.orderID}
             const include = {
                 model: Product,
                 attributes: ['name', 'img'] 
             }
-            const orderProductsData = await paginate(OrderProduct, { where, include })
+            const orderProductsData = await paginate(OrderProduct, { attributes, where, include })
             if (orderProductsData) {
                 return res.status(200).send({
                     pagination: orderProductsData.pagination,
