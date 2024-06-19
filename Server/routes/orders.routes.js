@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // import controller middleware
-const { getAllOrders, getOrdersMe, createOrder, getCurrentOrder, updateOrder, updateProductQuantity, deleteOrderProduct, deleteOrder} = require("../controllers/orders.controller");
+const { getAllOrders, getOrdersMe, createOrder, getCurrentOrder, updateOrder, updateProductQuantity, deleteOrderProduct, deleteOrder, getOrderProducts } = require("../controllers/orders.controller");
 const { verifyAdmin, verifyUser } = require("../middlewares/jwt");
 const { checkToken } = require("../middlewares/checkToken");
 const { checkIsBanned } = require('../middlewares/checkIsBanned');
@@ -17,6 +17,9 @@ router.route('/me')
 router.route('/current')
     .get(checkToken, verifyUser, checkIsBanned, getCurrentOrder)
     .patch(checkToken, verifyUser, checkIsBanned, updateOrder)
+
+router.route('/current/orderProducts')
+    .get(checkToken, verifyUser, checkIsBanned, getOrderProducts)
 
 router.route('/current/products/:productID')
     .patch(checkToken, verifyUser, checkIsBanned, updateProductQuantity)
