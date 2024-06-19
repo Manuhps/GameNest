@@ -13,7 +13,7 @@ export async function fetchGameModes() {
 
 export async function addGameMode(gameModeName) {
     try {
-        const response = await axios.post(`${BASE_URL}`, { gameModeName },
+        const response = await api.post(`${BASE_URL}`, { gameModeName },
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -28,7 +28,7 @@ export async function addGameMode(gameModeName) {
 
 export async function delGameMode(gameModeID){
     try {
-        const response = await axios.delete(`${BASE_URL}/${gameModeID}`,
+        const response = await api.delete(`${BASE_URL}/${gameModeID}`,
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`

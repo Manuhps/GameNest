@@ -1,5 +1,3 @@
-// navbar.js
-
 export function loadNavbar(containerId, isProfilePage = false) {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 

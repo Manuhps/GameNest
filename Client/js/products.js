@@ -1,10 +1,11 @@
-import { fetchProductById } from './api/products.js'; // Supondo que você tenha um arquivo api.js com a função fetchProductById
+import { fetchProductById, addDiscount } from './api/products.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus } from './utilities/userUtils.js';
+import { populateDiscountTable } from './utilities/discountsUtils.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
-    loadNavbar('navbarContainer')
-    checkUserLoginStatus()
+    loadNavbar('navbarContainer');
+    checkUserLoginStatus();
 
     let productID = window.location.search.split("=")[1];
 
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const { product } = await fetchProductById(productID);
         const productSection = document.querySelector('.row.gx-4.gx-lg-5.align-items-center');
         let priceSection = '';
+
         if (product.basePrice !== product.curPrice) {
             priceSection = `
                 <div class="fs-5 mb-5">
@@ -41,8 +43,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                 </div>
             </div>
         `;
+
+        // Populate discounts table
+        await populateDiscountTable(productID);
+
+        const addDiscountForm = document.getElementById('addDiscountForm');
+        addDiscountForm.addEventListener('submit', async function (event) {
+            event.preventDefault()
+            const percentage = document.getElementById('percentageInput').value;
+            const startDate = document.getElementById('startDateInput').value;
+            const endDate = document.getElementById('endDateInput').value;
+
+            try {
+                await addDiscount(productID, percentage, startDate, endDate);
+                alert('Discount added successfully!');
+                const modal = new bootstrap.Modal(document.getElementById('discountModal'));
+                modal.hide();
+                addDiscountForm.reset();
+            } catch (error) {
+                console.error('Error adding discount:', error);
+            }
+        })
+
+        // Add-to-cart button event listener (example)
         document.querySelector('.add-to-cart-button').addEventListener('click', () => addToCart(product));
     } catch (error) {
-        console.error('Erro ao buscar o produto:', error);
+        console.error('Error Fetching Product:', error);
     }
 });

@@ -330,6 +330,23 @@ module.exports = {
             handleServerError(error, res)
         }
     },
+    getDiscounts: async (req, res) => {
+        try {
+            const productID = req.params.productID
+            const where = { productID: productID }
+            const attributes = ['discountID', 'percentage', 'startDate', 'endDate', 'productID']
+            //Uses paginate function to get results 
+            const discountsData = await paginate(Discount, { where, attributes })
+            if (discountsData) {
+                return res.status(200).send({
+                    pagination: discountsData.pagination,
+                    data: discountsData.data
+                })
+            }
+        } catch (error) {
+            handleServerError(error, res)
+        }
+    },
     deleteDiscount: async (req, res) => {
         try {
             const productID = req.params.productID

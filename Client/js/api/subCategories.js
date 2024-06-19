@@ -13,7 +13,7 @@ export async function fetchSubCategories(categoryID) {
 
 export async function addSubCategory(categoryID, subCategoryName) {
     try {
-        const response = await axios.post(`${BASE_URL}/${categoryID}/subCategories`, { subCategoryName },
+        const response = await api.post(`${BASE_URL}/${categoryID}/subCategories`, { subCategoryName },
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -28,7 +28,7 @@ export async function addSubCategory(categoryID, subCategoryName) {
 
 export async function delSubCategory(categoryID, subCategoryID){
     try {
-        const response = await axios.delete(`${BASE_URL}/${categoryID}/subCategories/${subCategoryID}`,
+        const response = await api.delete(`${BASE_URL}/${categoryID}/subCategories/${subCategoryID}`,
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`

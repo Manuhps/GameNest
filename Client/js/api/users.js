@@ -62,7 +62,7 @@ export async function updateUserProfile(updatedProfile) {
 }
 
 export async function banUser(userId) {
-    return axios.patch(`${BASE_URL}/${userId}`, { isBanned: true },
+    return api.patch(`${BASE_URL}/${userId}`, { isBanned: true },
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -71,7 +71,7 @@ export async function banUser(userId) {
 }
 
 export async function unbanUser(userId) {
-    return axios.patch(`${BASE_URL}/${userId}`, { isBanned: false },
+    return api.patch(`${BASE_URL}/${userId}`, { isBanned: false },
     {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`

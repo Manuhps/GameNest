@@ -13,7 +13,7 @@ export async function fetchGenres() {
 
 export async function addGenre(genreName) {
     try {
-        const response = await axios.post(BASE_URL, { genreName },
+        const response = await api.post(BASE_URL, { genreName },
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -28,7 +28,7 @@ export async function addGenre(genreName) {
 
 export async function delGenre(genreID){
     try {
-        const response = await axios.delete(`${BASE_URL}/${genreID}`,
+        const response = await api.delete(`${BASE_URL}/${genreID}`,
         {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`

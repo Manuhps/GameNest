@@ -28,6 +28,21 @@ export async function fetchProductById(productId) {
     }
 }
 
+export async function delProduct(productID){
+    try {
+        const response = await api.delete(`${BASE_URL}/${productID}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        throw error;
+    }
+}
+
 export async function addProduct(name, desc, basePrice, stock, categoryID = null, img = null, genres = null, gameModes = null, platform = null, subCategoryID = null) {
     try {
         const response = await api.post(BASE_URL, {
@@ -51,6 +66,50 @@ export async function addProduct(name, desc, basePrice, stock, categoryID = null
         return response.data;
     } catch (error) {
         console.error('Error Adding Product:', error);
+        throw error;
+    }
+}
+export async function getDiscounts(productID){
+    try {
+        const response = await api.get(`${BASE_URL}/${productID}/discounts`);
+        return response.data
+    } catch (error) {
+        console.error('Error fetching products:', error);
+    }
+}
+
+export async function addDiscount(productID, percentage, startDate, endDate) {
+    try {
+        const response = await api.post(`${BASE_URL}/${productID}/discounts`, {
+            productID,
+            percentage,
+            startDate,
+            endDate
+        },
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error Adding Discount:', error);
+        throw error;
+    }
+}
+
+export async function delDiscount(productID, discountID){
+    try {
+        const response = await api.delete(`${BASE_URL}/${productID}/discounts/${discountID}`,
+        {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting discount:', error);
         throw error;
     }
 }

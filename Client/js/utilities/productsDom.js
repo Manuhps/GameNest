@@ -1,4 +1,4 @@
-import { fetchProducts, fetchProductById } from '../api/products.js'
+import { fetchProducts } from '../api/products.js'
 
 function displayProducts(products, pagination) {
     const limit = 12;
