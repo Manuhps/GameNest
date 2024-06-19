@@ -1,13 +1,14 @@
-import { fetchProductById, addDiscount, editProduct } from './api/products.js';
+import { fetchProductById, addDiscount, editProduct, getReviews, addReview } from './api/products.js';
 import { addOrder, getCurrent, updateOrder } from './api/orders.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus } from './utilities/userUtils.js';
 import { populateDiscountTable } from './utilities/discountsUtils.js';
+import { getSelf } from './api/users.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     loadNavbar('navbarContainer');
     checkUserLoginStatus();
-
+    const { user } = await getSelf();
     let productID = window.location.search.split("=")[1];
 
     try {
@@ -91,14 +92,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Add-to-cart button event listener
         document.querySelector('.add-to-cart-button').addEventListener('click', async () => {
             try {
-                const products = [{productID: productID, quantity: 1, salePrice: product.curPrice}]
+                const products = [{ productID: productID, quantity: 1, salePrice: product.curPrice }]
 
                 const currentOrder = await getCurrent();
                 if (currentOrder && currentOrder.currentOrder.state === 'cart') {
                     await updateOrder(products)
                     alert('Product added to cart successfully!');
-
-                } else { 
+                } else {
                     await addOrder(products);
                     alert('Product added to cart successfully!');
                 }
@@ -107,6 +107,67 @@ document.addEventListener('DOMContentLoaded', async function () {
                 alert('There was an error adding the product to the cart.');
             }
         });
+
+        // Fetch and display product reviews
+        const reviewsContainer = document.getElementById('reviews-container');
+        let hasReviewed = false
+        try {
+            const reviews = await getReviews(productID);
+            reviews.data.forEach(review => {
+                if(review.userID == user.userID){
+                    hasReviewed = true
+                }
+                const reviewElement = document.createElement('div');
+                reviewElement.classList.add('col-12', 'mb-4');
+                reviewElement.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <img class="rounded-circle" src="${review.User.profileImg}" alt="${review.User.username}" width="50" height="50">
+                                <div class="ms-3">
+                                    <h5 class="fw-bolder">${review.User.username}</h5>
+                                    <div class="d-flex align-items-center mb-2">
+                                        ${'<span class="bi-star-fill text-warning"></span>'.repeat(review.rating)}
+                                        ${'<span class="bi-star text-muted"></span>'.repeat(5 - review.rating)}
+                                    </div>
+                                    <p class="mb-0">${review.comment || ''}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                reviewsContainer.appendChild(reviewElement);
+            });
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+
+        // Handle form submission for adding a new review
+        const addReviewForm = document.getElementById('addReviewForm');
+        if (hasReviewed) {
+            addReviewForm.style.display = 'none';
+            document.getElementById('alreadyReviewedMessage').style.display = 'block';
+        }else{
+            addReviewForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+    
+                const rating = document.getElementById('ratingInput').value;
+                const comment = document.getElementById('commentInput').value;
+                const reviewData= {
+                    rating,
+                    comment
+                }
+                try {
+                    await addReview(productID, reviewData);
+                    alert('Review added successfully!');
+                    addReviewForm.reset();
+                    location.reload(); // Reload the page to display the new review
+                } catch (error) {
+                    console.error('Error adding review:', error);
+                    alert(error.response.data.message || 'There was an error adding your review.');
+                }
+            });
+        }
     } catch (error) {
         console.error('Error Fetching Product:', error);
     }
