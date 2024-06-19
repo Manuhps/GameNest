@@ -447,5 +447,30 @@ module.exports = {
                 details: error,
             });
         }
+    },
+    getOrderProducts: async (req, res) => {
+        try {
+            const userID = res.locals.userID
+            const currentOrder = await Order.findOne({
+                where: {
+                    userID: userID,
+                    state: 'cart'
+                }
+            });
+            const where = {orderID: currentOrder.orderID}
+            const include = {
+                model: Product,
+                attributes: ['name', 'img'] 
+            }
+            const orderProductsData = await paginate(OrderProduct, { where, include })
+            if (orderProductsData) {
+                return res.status(200).send({
+                    pagination: orderProductsData.pagination,
+                    data: orderProductsData.data
+                })
+            }
+        } catch (error) {
+            handleServerError(error, res)
+        }
     }
 }
