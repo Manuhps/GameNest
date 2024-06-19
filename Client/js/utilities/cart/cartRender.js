@@ -1,15 +1,16 @@
-import { getCurrent} from './api/orders.js';
+/*import { getCurrent} from '../../api/orders.js';
 
-async function renderCart() {
+export async function renderCart() {
     try {
         const currentOrder = await getCurrent();
+        alert("EH")
         
         if (currentOrder && currentOrder.currentOrder.state === 'cart') {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = ''; // Clear previous content
 
             let totalPrice = 0;
-            console.log(currentOrder)
+
             currentOrder.products.forEach(product => {
                 totalPrice += product.salePrice * product.quantity;
 
@@ -46,6 +47,4 @@ async function renderCart() {
     } catch (error) {
         console.error('Error rendering cart:', error);
     }
-}
-
-window.onload = renderCart;
+}*/
