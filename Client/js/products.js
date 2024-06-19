@@ -1,4 +1,5 @@
 import { fetchProductById, addDiscount, editProduct } from './api/products.js';
+import { addOrder, getCurrent, updateOrder } from './api/orders.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus } from './utilities/userUtils.js';
 import { populateDiscountTable } from './utilities/discountsUtils.js';
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 ${priceSection}
                 <p class="lead" id="product-desc">${product.desc}</p>
                 <div class="d-flex">
-                    <button class="btn btn-outline-dark flex-shrink-0 add-to-cart-button" type="button" onclick="addToCart(${JSON.stringify(product)})">
+                    <button class="btn btn-outline-dark flex-shrink-0 add-to-cart-button" type="button">
                         <i class="bi-cart-fill me-1"></i>
                         Add to cart
                     </button>
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.error('Error adding discount:', error);
             }
         })
+
         // Handle form submission for editing product
         document.getElementById('editProductForm').addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -86,8 +88,25 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         });
 
-        // Add-to-cart button event listener (example)
-        document.querySelector('.add-to-cart-button').addEventListener('click', () => addToCart(product));
+        // Add-to-cart button event listener
+        document.querySelector('.add-to-cart-button').addEventListener('click', async () => {
+            try {
+                const products = [{productID: productID, quantity: 1, salePrice: product.curPrice}]
+
+                const currentOrder = await getCurrent();
+                if (currentOrder && currentOrder.currentOrder.state === 'cart') {
+                    await updateOrder(products)
+                    alert('Product added to cart successfully!');
+
+                } else { 
+                    await addOrder(products);
+                    alert('Product added to cart successfully!');
+                }
+            } catch (error) {
+                console.error('Error adding product to cart:', error);
+                alert('There was an error adding the product to the cart.');
+            }
+        });
     } catch (error) {
         console.error('Error Fetching Product:', error);
     }

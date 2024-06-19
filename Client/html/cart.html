@@ -1,228 +1,228 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Cart</title>
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="../css/styles.css" rel="stylesheet" />
-        <link href="../css/footer.css" rel="stylesheet" />
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+			<meta name="description" content="" />
+			<meta name="author" content="" />
+			<title>Cart</title>
+			<!-- Bootstrap icons-->
+			<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+			<!-- Core theme CSS (includes Bootstrap)-->
+			<link href="../css/styles.css" rel="stylesheet" />
+			<link href="../css/footer.css" rel="stylesheet" />
 
-    </head>
-    <body>
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="/">Game Nest</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="consoles.html">Consoles</a></li>
-                                <li><a class="dropdown-item" href="#!">Jogos</a></li>
-                                <li><a class="dropdown-item" href="#!">Perifericos</a></li>
-                                <li><a class="dropdown-item" href="#!">Portateis</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                <form class="d-flex">
-                    <a href="cart.html">
-                        <button class="btn btn-outline-dark" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Cart
-                            <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart">0</span>
-                        </button>
-                    </a>
-                        <!-- Botão de Login -->
-						<a href="login.html">
-                            <button class="btn btn-outline-dark ms-2" type="button" id="loginButton">
-                                <i class="bi-person-fill me-1"></i>
-                                Login
-                            </button>
-                        </a>
-					<!-- Botão de Perfil -->
-					<button class="btn btn-outline-dark ms-2" type="button" id="profileIcon" style="display: none;">
-						<i class="bi-person-fill me-1"></i>
-						 Profile
-					</button>
-					<!-- Botão de Logout -->
-					<button class="btn btn-outline-dark ms-2" type="button" id="logoutButton" style="display: none;">
-						<i class="bi-person-fill me-1"></i>
-						Logout
-					</button>
-                </form>
-                </div>
-            </div>
-        </nav>
-		<!-- Cart-->
-		<section class="py-5">
-			<div class="container px-4 px-lg-5 my-5">
-				<div class="row gx-4 gx-lg-5">
-					<div class="col-lg-8">
-						<div class="card rounded-3 border-0 shadow">
-							<div class="card-header">
-								<div class="h6 text-uppercase mb-0">Shopping cart</div>
-							</div>
-							<div class="card-body p-4" id="cart-items">
-							</div>
-						</div>
+		</head>
+		<body>
+			<!-- Navigation-->
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<div class="container px-4 px-lg-5">
+					<a class="navbar-brand" href="/">Game Nest</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+							<li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+									<li><hr class="dropdown-divider" /></li>
+									<li><a class="dropdown-item" href="consoles.html">Consoles</a></li>
+									<li><a class="dropdown-item" href="#!">Jogos</a></li>
+									<li><a class="dropdown-item" href="#!">Perifericos</a></li>
+									<li><a class="dropdown-item" href="#!">Portateis</a></li>
+								</ul>
+							</li>
+						</ul>
+					<form class="d-flex">
+						<a href="cart.html">
+							<button class="btn btn-outline-dark" type="submit">
+								<i class="bi-cart-fill me-1"></i>
+								Cart
+								<span class="badge bg-dark text-white ms-1 rounded-pill" id="cart">0</span>
+							</button>
+						</a>
+							<!-- Botão de Login -->
+							<a href="login.html">
+								<button class="btn btn-outline-dark ms-2" type="button" id="loginButton">
+									<i class="bi-person-fill me-1"></i>
+									Login
+								</button>
+							</a>
+						<!-- Botão de Perfil -->
+						<button class="btn btn-outline-dark ms-2" type="button" id="profileIcon" style="display: none;">
+							<i class="bi-person-fill me-1"></i>
+							Profile
+						</button>
+						<!-- Botão de Logout -->
+						<button class="btn btn-outline-dark ms-2" type="button" id="logoutButton" style="display: none;">
+							<i class="bi-person-fill me-1"></i>
+							Logout
+						</button>
+					</form>
 					</div>
 				</div>
-			</div>
-		</section>
-		<div class="text-end pe-3">
-			<button class="btn btn-outline-dark" onclick="checkOut()" >
-				<i class="bi-credit-card"></i>
-				Checkout
-			</button>
-		</div>
-		<br>
-		<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-				<h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="modal-body">
-						<form>
-							<h5>Endereço</h5>
-							<div class="mb-3">
-								<label for="fullName" class="form-label">Nome Completo</label>
-								<input type="text" class="form-control" id="fullName" required>
-							</div>
-							<div class="mb-3">
-								<label for="address" class="form-label">Morada</label>
-								<input type="text" class="form-control" id="address" required>
-							</div>
-							<div class="mb-3">
-								<label for="postalCode1" class="form-label">Código Postal</label>
-								<div class="input-group">
-									<input type="text" class="form-control" id="postalCode1" pattern="[0-9]{1,4}" size="4" maxlength="4" required>
-									-
-									<input type="text" class="form-control" id="postalCode2" pattern="[0-9]{1,3}" size="3" maxlength="3" required>
+			</nav>
+			<!-- Cart-->
+			<section class="py-5">
+				<div class="container px-4 px-lg-5 my-5">
+					<div class="row gx-4 gx-lg-5">
+						<div class="col-lg-8">
+							<div class="card rounded-3 border-0 shadow">
+								<div class="card-header">
+									<div class="h6 text-uppercase mb-0">Shopping cart</div>
+								</div>
+								<div class="card-body p-4" id="cart-items">
 								</div>
 							</div>
-							<div class="mb-3">
-								<label for="freguesia" class="form-label">Freguesia</label>
-								<input type="text" class="form-control" id="freguesia" required>
-							</div>
-							<h5>Forma de Pagamento</h5>
-							<div class="mb-3">
-								<label for="paymentMethod" class="form-label">Método</label>
-								<select class="form-select" id="paymentMethod" required>
-									<option selected disabled value="">Escolha...</option>
-									<option>Cartão de Crédito</option>
-									<option>PayPal</option>
-									<option>Transferência Bancária</option>
-								</select>
-							</div>
-						</form>
+						</div>
 					</div>
 				</div>
-		<div class="modal-footer">
-		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-		  <button type="button" class="btn btn-primary">Confirmar compra</button>
+			</section>
+			<div class="text-end pe-3">
+				<button class="btn btn-outline-dark" onclick="checkOut()" >
+					<i class="bi-credit-card"></i>
+					Checkout
+				</button>
+			</div>
+			<br>
+			<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					<h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="modal-body">
+							<form>
+								<h5>Endereço</h5>
+								<div class="mb-3">
+									<label for="fullName" class="form-label">Nome Completo</label>
+									<input type="text" class="form-control" id="fullName" required>
+								</div>
+								<div class="mb-3">
+									<label for="address" class="form-label">Morada</label>
+									<input type="text" class="form-control" id="address" required>
+								</div>
+								<div class="mb-3">
+									<label for="postalCode1" class="form-label">Código Postal</label>
+									<div class="input-group">
+										<input type="text" class="form-control" id="postalCode1" pattern="[0-9]{1,4}" size="4" maxlength="4" required>
+										-
+										<input type="text" class="form-control" id="postalCode2" pattern="[0-9]{1,3}" size="3" maxlength="3" required>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="freguesia" class="form-label">Freguesia</label>
+									<input type="text" class="form-control" id="freguesia" required>
+								</div>
+								<h5>Forma de Pagamento</h5>
+								<div class="mb-3">
+									<label for="paymentMethod" class="form-label">Método</label>
+									<select class="form-select" id="paymentMethod" required>
+										<option selected disabled value="">Escolha...</option>
+										<option>Cartão de Crédito</option>
+										<option>PayPal</option>
+										<option>Transferência Bancária</option>
+									</select>
+								</div>
+							</form>
+						</div>
+					</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+			<button type="button" class="btn btn-primary">Confirmar compra</button>
+			</div>
 		</div>
-	  </div>
+		</div>
 	</div>
-  </div>
-		<!-- Login Modal -->
-		<div class="modal fade" id="loginModal1" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-				<h5 class="modal-title" id="loginModalLabel">Login Necessário</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-				Você precisa fazer login para continuar.
-				</div>
-				<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-				<button type="button" class="btn btn-primary" onclick="redirectToLogin()">Fazer Login</button>
-				</div>
-			</div>
-			</div>
-		</div>
-        <!-- FOOTER -->
-		<footer id="footer">
-			<!-- top footer -->
-			<div class="section">
-				<!-- container -->
-				<div class="container">
-					<!-- row -->
-					<div class="row">
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">About Us</h3>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
-								<ul class="footer-links">
-									<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
-									<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
-									<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
-								</ul>
-							</div>
-						</div>                    
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Categories</h3>
-								<ul class="footer-links">
-									<li><a href="consoles.html">Consoles</a></li>
-									<li><a href="#">Jogos</a></li>
-									<li><a href="#">Perifericos</a></li>
-									<li><a href="#">Portateis</a></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Information</h3>
-								<ul class="footer-links">
-									<li><a href="#">About Us</a></li>
-									<li><a href="#">Contact Us</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-									<li><a href="#">Orders and Returns</a></li>
-									<li><a href="#">Terms & Conditions</a></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Service</h3>
-								<ul class="footer-links">
-									<li><a href="#">My Account</a></li>
-									<li><a href="#">View Cart</a></li>
-								</ul>
-							</div>
-						</div>
+			<!-- Login Modal -->
+			<div class="modal fade" id="loginModal1" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					<h5 class="modal-title" id="loginModalLabel">Login Necessário</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<!-- /row -->
+					<div class="modal-body">
+					Você precisa fazer login para continuar.
+					</div>
+					<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+					<button type="button" class="btn btn-primary" onclick="redirectToLogin()">Fazer Login</button>
+					</div>
 				</div>
-				<!-- /container -->
+				</div>
 			</div>
-			<!-- /top footer -->
-				<span class="copyright">
-						Copyright &copy; GameNest ESMAD || TSIW 2ªano
-				</span>
-		</footer>
-		<!-- /FOOTER -->
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-		<script src="../js/filter.js"></script>
-		 <script src="../js/login.js"></script>
-        <script src="../js/cart.js"></script>
-    </body>
-</html>
+			<!-- FOOTER -->
+			<footer id="footer">
+				<!-- top footer -->
+				<div class="section">
+					<!-- container -->
+					<div class="container">
+						<!-- row -->
+						<div class="row">
+							<div class="col-md-3 col-xs-6">
+								<div class="footer">
+									<h3 class="footer-title">About Us</h3>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+									<ul class="footer-links">
+										<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+										<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+										<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+									</ul>
+								</div>
+							</div>                    
+							<div class="col-md-3 col-xs-6">
+								<div class="footer">
+									<h3 class="footer-title">Categories</h3>
+									<ul class="footer-links">
+										<li><a href="consoles.html">Consoles</a></li>
+										<li><a href="#">Jogos</a></li>
+										<li><a href="#">Perifericos</a></li>
+										<li><a href="#">Portateis</a></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="col-md-3 col-xs-6">
+								<div class="footer">
+									<h3 class="footer-title">Information</h3>
+									<ul class="footer-links">
+										<li><a href="#">About Us</a></li>
+										<li><a href="#">Contact Us</a></li>
+										<li><a href="#">Privacy Policy</a></li>
+										<li><a href="#">Orders and Returns</a></li>
+										<li><a href="#">Terms & Conditions</a></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="col-md-3 col-xs=6">
+								<div class="footer">
+									<h3 class="footer-title">Service</h3>
+									<ul class="footer-links">
+										<li><a href="#">My Account</a></li>
+										<li><a href="#">View Cart</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- /row -->
+					</div>
+					<!-- /container -->
+				</div>
+				<!-- /top footer -->
+					<span class="copyright">
+							Copyright &copy; GameNest ESMAD || TSIW 2ªano
+					</span>
+			</footer>
+			<!-- /FOOTER -->
+			<!-- Bootstrap core JS-->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+			<!-- Core theme JS-->
+			<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+			<script src="../js/utilities/login.js" type="module"></script>
+			<script src="../js/cart.js" type="module"></script>
+		</body>
+	</html>
