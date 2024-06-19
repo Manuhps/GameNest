@@ -7,7 +7,7 @@ import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
 document.addEventListener('DOMContentLoaded', async function () {
     try {
         // Load navbar dynamically
-        loadNavbar('navbarContainer');
+        loadNavbar('navbarContainer', true);
 
         // Check user login status and update UI accordingly
         checkUserLoginStatus();
