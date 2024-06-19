@@ -113,3 +113,20 @@ export async function delDiscount(productID, discountID){
         throw error;
     }
 }
+
+export async function editProduct(productID, updateData) {
+    try {
+        const response = await api.patch(`${BASE_URL}/${productID}`,
+            updateData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error Updating Product:', error);
+        throw error;
+    }
+}
