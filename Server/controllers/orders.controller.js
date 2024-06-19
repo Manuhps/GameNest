@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Order, OrderProduct, Product, User } = require("../models/index");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
-
+const { handleServerError } = require("../utilities/errors")
 
 
 module.exports = {
@@ -447,25 +447,5 @@ module.exports = {
                 details: error,
             });
         }
-    },
-    getOrderProducts: async (req, res) => {
-        try {
-            const productID = req.params.productID
-            const where = { productID: productID }
-            const include = {
-                model: Product,
-                attributes: ['name', 'basePrice', 'img']
-            }
-            //Uses paginate function to get results 
-            const orderProductsData = await paginate(OrderProduct, { where, include })
-            if (orderProductsData) {
-                return res.status(200).send({
-                    pagination: orderProductsData.pagination,
-                    data: orderProductsData.data,
-                })
-            }
-        } catch (error) {
-            handleServerError(error, res)
-        }
     }
-};
+}
