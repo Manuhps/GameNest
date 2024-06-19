@@ -1,5 +1,5 @@
 import { fetchProducts } from '../api/products.js';
-import { getStarsHTML } from './ratingStars.js';
+import { getStarsHTML } from './ratingStarsHome.js';
 
 function displayProducts(products, pagination) {
     const limit = 12;

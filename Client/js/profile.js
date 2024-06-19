@@ -1,5 +1,3 @@
-// profile.js
-
 import { getSelf, updateUserProfile } from './api/users.js';
 import { openAdminModal } from './utilities/admin/adminModal.js';
 import { handleUsers, handleCategories, handleSubCategories, handleGenres, handleGameModes } from './utilities/admin/adminHandlers.js';

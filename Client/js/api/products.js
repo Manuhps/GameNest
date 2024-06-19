@@ -28,14 +28,14 @@ export async function fetchProductById(productId) {
     }
 }
 
-export async function delProduct(productID){
+export async function delProduct(productID) {
     try {
         const response = await api.delete(`${BASE_URL}/${productID}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-            }
-        });
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            });
         return response.data;
     } catch (error) {
         console.error('Error deleting product:', error);
@@ -69,7 +69,7 @@ export async function addProduct(name, desc, basePrice, stock, categoryID = null
         throw error;
     }
 }
-export async function getDiscounts(productID){
+export async function getDiscounts(productID) {
     try {
         const response = await api.get(`${BASE_URL}/${productID}/discounts`);
         return response.data
@@ -99,14 +99,14 @@ export async function addDiscount(productID, percentage, startDate, endDate) {
     }
 }
 
-export async function delDiscount(productID, discountID){
+export async function delDiscount(productID, discountID) {
     try {
         const response = await api.delete(`${BASE_URL}/${productID}/discounts/${discountID}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-            }
-        });
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            });
         return response.data;
     } catch (error) {
         console.error('Error deleting discount:', error);
@@ -128,5 +128,30 @@ export async function editProduct(productID, updateData) {
     } catch (error) {
         console.error('Error Updating Product:', error);
         throw error;
+    }
+}
+
+export async function getReviews(productID) {
+    try {
+        const response = await api.get(`${BASE_URL}/${productID}/reviews`);
+        return response.data
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+    }
+}
+
+export async function addReview(productID, reviewData) {
+    try {
+        const response = await api.post(`${BASE_URL}/${productID}/reviews`,
+            reviewData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        );
+        return response.data
+    } catch (error) {
+        console.error('Error fetching products:', error);
     }
 }
