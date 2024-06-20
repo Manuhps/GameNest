@@ -17,18 +17,18 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                 data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="html/consoles.html">Consoles</a></li>
+                                <li><a class="dropdown-item" href="/html/consoles.html">Consoles</a></li>
                                 <li><a class="dropdown-item" href="#!">Jogos</a></li>
                                 <li><a class="dropdown-item" href="#!">Perifericos</a></li>
                                 <li><a class="dropdown-item" href="#!">Portateis</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="html/leaderboards.html">Leaderboards</a>
+                            <a class="nav-link" href="/html/leaderboards.html">Leaderboards</a>
                         </li>
                     </ul>
                     <div class="d-flex">
-                        <a href="html/cart.html">
+                        <a href="/html/cart.html">
                             <button class="btn btn-outline-dark" type="submit">
                                 <i class="bi-cart-fill me-1"></i>
                                 Cart
@@ -41,7 +41,7 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                     Logout
                                 </button>`
                                 : isCartPage ?
-                                `<a href="html/profile.html">
+                                `<a href="/html/profile.html">
                                     <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon">
                                         <i class="bi-person-fill me-1"></i>
                                         Profile
@@ -52,7 +52,7 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                     Logout
                                 </button>`
                                 :
-                                `<a href="html/profile.html">
+                                `<a href="/html/profile.html">
                                     <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon">
                                         <i class="bi-person-fill me-1"></i>
                                         Profile
@@ -64,7 +64,7 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                 </button>`
                             )
                             :
-                            `<a href="html/login.html">
+                            `<a href="/html/login.html">
                                 <button class="btn btn-outline-dark ms-2" type="button" id="loginButton">
                                     <i class="bi-person-fill me-1"></i>
                                     Login
