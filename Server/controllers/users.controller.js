@@ -65,6 +65,16 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
+            const { role, isBanned } = req.query
+            let where = {}
+            //Filter by user role
+            if (role) {
+                where.role= role
+            }
+            //Filter by banned or unbanned user
+            if (isBanned) {
+                where.isBanned= isBanned
+            }
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
             // Construct HATEOAS links
@@ -80,6 +90,7 @@ module.exports = {
                 attributes: 
                     ['userID', 'username', 'email', 'role', 'isBanned']
                 ,
+                where,
                 offset: req.query.offset,
                 limit: req.query.limit
             })
