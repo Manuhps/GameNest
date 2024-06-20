@@ -1,4 +1,4 @@
-import api from './axiosConfig.JS'
+import api from './axiosConfig.js'
 const BASE_URL = 'http://127.0.0.1:8080/genres'
 
 export async function fetchGenres() {

@@ -23,6 +23,9 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                 <li><a class="dropdown-item" href="#!">Portateis</a></li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="html/leaderboards.html">Leaderboards</a>
+                        </li>
                     </ul>
                     <div class="d-flex">
                         <a href="html/cart.html">
