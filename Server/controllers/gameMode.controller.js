@@ -11,7 +11,7 @@ module.exports = {
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
             const links = [
                 { rel: "createGameMode", href: "/gameMode", method: "POST" },
-                { rel: "deleteGame", href: "/categories/:gameModeID", method: "DELETE" },
+                { rel: "deleteGameMode", href: "/gameMode/:gameModeID", method: "DELETE" },
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
@@ -32,20 +32,20 @@ module.exports = {
             //Verify if the gameMode is empty
             if (!req.body.gameModeName) {
                 return res.status(400).send({
-                    message: "GameMode content cannot be empty"
+                    message: "GameModeName cannot be empty"
                 });
             }
             if (req.body.gameModeName) {
                 const existingGameMode = await GameMode.findOne({ where: { gameModeName: req.body.gameModeName } });
                 if (existingGameMode) {
-                    return res.status(409).send({ message: "GameMode already exists" });
+                    return res.status(409).send({ message: "A GameMode with that name already exists." });
                 }
             }
 
             const regex = /^[A-Za-z\s]+$/;
             if (!regex.test(req.body.gameModeName)) {
                 return res.status(400).send({
-                    message: "GameMode name must be a string"
+                    message: "GameModeName must be a string"
                 });
             }
 
@@ -54,7 +54,7 @@ module.exports = {
                 gameModeName: req.body.gameModeName,
             });
             res.status(201).send({
-                message: "New GameMode created with success."
+                message: "New Game Mode created with success."
             });
         } catch (err) {
             res.status(500).send({

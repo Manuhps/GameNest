@@ -33,13 +33,13 @@ module.exports = {
             // Verify if the category is empty
             if (!req.body.categoryName) {
                 return res.status(400).send({
-                    message: "Category content cannot be empty"
+                    message: "CategoryName cannot be empty"
                 });
             }
             if (req.body.categoryName) {
                 const existingCategory = await Category.findOne({ where: { categoryName: req.body.categoryName } });
                 if (existingCategory) {
-                    return res.status(409).send({ message: "Category already exists" });
+                    return res.status(409).send({ message: "A category with that name already exists" });
                 }
             }
 
@@ -109,7 +109,7 @@ module.exports = {
             // Verify if the SubCategory and CategoryID is provided in the body
             if (!req.body.subCategoryName) {
                 return res.status(400).send({
-                    message: "Please fill all the required fields."
+                    message: "SubCategoryName cannot be empty."
                 })
             }
             //Create and Save in the database

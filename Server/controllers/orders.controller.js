@@ -9,7 +9,11 @@ module.exports = {
     getAllOrders: async (req, res) => {
         try {
             const ordersData = await paginate(Order, {
-                include: [{ model: OrderProduct }]
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include: {
+                    model: OrderProduct,
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'orderID'] }
+                }
             });
 
             // Construct links for pagination
@@ -45,7 +49,11 @@ module.exports = {
 
             const ordersData = await paginate(Order, {
                 where: { userID: userID },
-                include: [{ model: OrderProduct }]
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include: {
+                    model: OrderProduct,
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'orderID'] }
+                }
             });
 
             let nextPage, prevPage = await generatePaginationPath(req, res);
@@ -80,15 +88,16 @@ module.exports = {
             console.log(userID)
 
             const links = [
-                { rel: "createOrder", href: "/orders", method: "POST" },
-                { rel: "getOrders", href: "/orders", method: "GET" },
+                { rel: "updateOrder", href: "/orders/current", method: "PATCH" },
+                { rel: "getOrdersMe", href: "/orders/me", method: "GET" },
             ];
 
             const currentOrder = await Order.findOne({
                 where: {
                     userID: userID,
                     state: 'cart'
-                }
+                },
+                attributes: { exclude: ['deliverDate', 'cardName', 'cardNumber', 'cardExpiryDate', 'createdAt', 'updatedAt'] }
             });
 
             if (!currentOrder) {
@@ -111,7 +120,7 @@ module.exports = {
 
             if (!products || !Array.isArray(products) || products.length === 0) {
                 return res.status(400).send({
-                    message: "Please provide at least one product."
+                    message: "Please provide one product."
                 });
             }
 
@@ -119,7 +128,7 @@ module.exports = {
             for (const product of products) {
                 const productExists = await Product.findByPk(product.productID);
                 if (!productExists) {
-                    return res.status(400).send({ message: `Product with ID ${product.productID} does not exist.` });
+                    return res.status(404).send({ message: `Product with ID ${product.productID} does not exist.` });
                 }
                 if (isNaN(product.quantity) || product.quantity <= 0) {
                     return res.status(400).send({ message: "Invalid quantity provided." });
@@ -137,7 +146,7 @@ module.exports = {
                 }
             });
             if (existingCartOrder) {
-                return res.status(400).send({ message: "There is already an existing order with state 'cart' for this user." });
+                return res.status(409).send({ message: "There is already an existing order with state 'cart' for this user." });
             }
 
             // Criar a ordem com estado 'cart'
@@ -195,7 +204,7 @@ module.exports = {
                 for (const product of products) {
                     const productExists = await Product.findByPk(product.productID);
                     if (!productExists) {
-                        return res.status(400).send({ message: `Product with ID ${product.productID} does not exist.` });
+                        return res.status(404).send({ message: `Product with ID ${product.productID} does not exist.` });
                     }
                     if (isNaN(product.quantity) || product.quantity <= 0) {
                         return res.status(400).send({ message: "Invalid quantity provided." });
@@ -213,9 +222,6 @@ module.exports = {
             }
 
             const user = await User.findByPk(userID);
-            if (!user) {
-                return res.status(404).send({ message: "User not found." });
-            }
 
             // Validate if user has enough points
             if (pointsToUse && pointsToUse > user.points) {
@@ -307,7 +313,7 @@ module.exports = {
 
                     if (orderProduct) {
                         // If the product already exists in the order, return an error message
-                        return res.status(400).send({ message: `Product with ID ${product.productID} is already in the cart.` });
+                        return res.status(409).send({ message: `Product with ID ${product.productID} is already in the cart.` });
                     } else {
                         // Add new product to the order
                         await OrderProduct.create({
@@ -379,7 +385,7 @@ module.exports = {
             }
 
             await orderProduct.save();
-            return res.status(200).send({ message: "Data successfully updated" });
+            return res.status(200).send({ message: "Quantity successfully updated" });
         } catch (error) {
             res.status(500).send({
                 message: "Something went wrong. Please try again later.",
@@ -422,32 +428,6 @@ module.exports = {
         }
     },
 
-
-    // Função delete apenas para ajudar nos testes de post de orders e não ficar demasiadas linhas na tabela na base de dados
-
-    deleteOrder: async (req, res) => {
-        try {
-
-            let result = await Order.destroy({ where: { orderID: req.params.orderID } })
-            if (result == 1)
-                return res.status(201).send({
-                    message: `Order deleted successfully.`
-
-                });
-            else {
-                res
-                    .status(404)
-                    .send({
-                        messsage: "Order not found",
-                    });
-            }
-        } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
-            });
-        }
-    },
     getOrderProducts: async (req, res) => {
         try {
             const userID = res.locals.userID
