@@ -160,9 +160,6 @@ module.exports = {
             //Get the user to be banned using it's id provided in the url
             const userID = req.params.userID
             const user = await User.findByPk(userID)
-            if (!user) {
-                handleNotFoundError(res, "User Not Found")
-            }
             const isBanned = req.body.isBanned
             //Set the user as banned or Unbanned
             user.isBanned = isBanned

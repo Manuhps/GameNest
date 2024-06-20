@@ -36,7 +36,7 @@ module.exports = {
                     return res.status(403).send({ message: "This action requires admin privileges." });
                 }
             } else {
-                return res.status(401).send({ message: "User does not exist" });
+                return res.status(404).send({ message: "User Not Found" });
             }
         } catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
