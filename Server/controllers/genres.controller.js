@@ -68,13 +68,13 @@ module.exports = {
             let result = await Genre.destroy({ where: { genreID: req.params.genreID } })
             if (result == 1)
                 return res.status(201).send({
-                    msg: `Genre deleted successfully.`
+                    message: `Genre deleted successfully.`
                 });
             else {
                 res
                     .status(404)
                     .send({
-                        messsage: "Genre not found",
+                        message: "Genre not found",
                     });
             }
         }
