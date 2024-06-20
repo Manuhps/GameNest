@@ -29,7 +29,6 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                             <button class="btn btn-outline-dark" type="submit">
                                 <i class="bi-cart-fill me-1"></i>
                                 Cart
-                                <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart">0</span>
                             </button>
                         </a>
                         ${isLoggedIn ?

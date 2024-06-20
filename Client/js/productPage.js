@@ -67,6 +67,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         })
 
+        const productStockSpan = document.getElementById('product-stock')
+        productStockSpan.innerText = product.stock
+
         // Handle form submission for editing product
         document.getElementById('editProductForm').addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -92,19 +95,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Add-to-cart button event listener
         document.querySelector('.add-to-cart-button').addEventListener('click', async () => {
             try {
+                const quantity = document.getElementById('quantityInput').value
+
                 let isOrderCart = false
                 const orders = await getMyOrders()
                 orders.data.forEach((order) => {
-                    alert(order.state)
                     if (order.state == 'cart') {
-                        isOrderCart == true
+                        isOrderCart = true
                     }
                 })
-                const products = [{ productID: productID, quantity: 1, salePrice: product.curPrice }]
+                const products = [{ productID: productID, quantity: quantity, salePrice: product.curPrice }]
                 if (isOrderCart) {
                     await updateOrder(products)
                     alert('Product added to cart successfully!');
-                } else { 
+                } else {
                     await addOrder(products);
                     alert('Product added to cart successfully!');
                 }
@@ -120,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         try {
             const reviews = await getReviews(productID);
             reviews.data.forEach(review => {
-                if(review.userID == user.userID){
+                if (review.userID == user.userID) {
                     hasReviewed = true
                 }
                 const reviewElement = document.createElement('div');
@@ -150,16 +154,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Handle form submission for adding a new review
         const addReviewForm = document.getElementById('addReviewForm');
+        const reviewsDiv = document.getElementById('reviewsDiv')
         if (hasReviewed) {
-            addReviewForm.style.display = 'none';
+            reviewsDiv.style.display = 'none';
             document.getElementById('alreadyReviewedMessage').style.display = 'block';
-        }else{
+        } else {
             addReviewForm.addEventListener('submit', async function (event) {
                 event.preventDefault();
-    
+
                 const rating = document.getElementById('ratingInput').value;
                 const comment = document.getElementById('commentInput').value;
-                const reviewData= {
+                const reviewData = {
                     rating,
                     comment
                 }
