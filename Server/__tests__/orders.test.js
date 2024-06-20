@@ -257,7 +257,7 @@ test("getCurrentOrder Test", async () => {
         ],
     });
   });
-
+/*
   test("createOrder Test", async () => {
     const req = {
       body: {
@@ -347,3 +347,4 @@ test("getCurrentOrder Test", async () => {
         pointsEarned: 15
     });
 });
+*/

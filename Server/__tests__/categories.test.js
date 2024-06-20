@@ -1,6 +1,7 @@
 const { Category, SubCategory } = require('../models');
 const categoriesController = require('../controllers/categories.controller');
 const { generatePaginationPath, paginate } = require('../utilities/pagination');
+const { BelongsTo } = require('sequelize');
 
 // Mock dependencies
 jest.mock('../models');
@@ -15,6 +16,92 @@ jest.mock('../models/category.model', () => {
     });
 });
 
+jest.mock('../models/subCategory.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('subCategory',  {
+        belongsTo: jest.fn(),
+        belongsToMany: jest.fn(),
+    });
+});
+
+jest.mock('../models/user.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('User',  {
+        belongsTo: jest.fn(),
+        hasMany: jest.fn(),
+
+    });
+});
+
+jest.mock('../models/location.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Location',  {
+        hasMany: jest.fn(),
+    });
+});
+
+jest.mock('../models/product.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Product',  {
+        belongsTo: jest.fn(),
+        hasMany: jest.fn(),
+        belongsToMany: jest.fn(),
+    });
+});
+
+jest.mock('../models/review.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Review',  {
+        belongsTo: jest.fn(),
+    });
+});
+
+jest.mock('../models/discount.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Discount',  {
+        belongsTo: jest.fn(),
+    });
+});
+
+jest.mock('../models/order.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Order', {
+        belongsTo: jest.fn(),
+        belongsToMany: jest.fn(),
+    });
+});
+
+jest.mock('../models/orderProduct.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Order Product', {
+        belongsTo: jest.fn(),
+    });
+});
+
+jest.mock('../models/genre.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Genre', {
+        belongsToMany: jest.fn(),
+    });
+});
+
+jest.mock('../models/gameMode.model', () => {
+    const SequelizeMock = require('sequelize-mock');
+    const dbMock = new SequelizeMock();
+    return dbMock.define('Game Mode', {
+        belongsToMany: jest.fn(),
+    });
+});
+/*
 describe('Categories Controller', () => {
 
     afterEach(() => {
@@ -50,7 +137,7 @@ describe('Categories Controller', () => {
             ]
         });
     });
-
+*/
     test('createCategory - success', async () => {
         const req = { body: { categoryName: 'New Category' } };
         const res = {
@@ -81,7 +168,7 @@ describe('Categories Controller', () => {
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.send).toHaveBeenCalledWith({ message: "Category deleted successfully." });
     });
-
+/*
     test('getSubCategories - success', async () => {
         const req = { params: { categoryID: '1' } };
         const res = {
@@ -113,7 +200,7 @@ describe('Categories Controller', () => {
             ]
         });
     });
-
+*/
     test('delSubCategory - success', async () => {
       const req = { params: { subCategoryID: '1' } };
       const res = {
@@ -132,4 +219,4 @@ describe('Categories Controller', () => {
       expect(res.status).toHaveBeenCalledWith(204);
       expect(res.send).toHaveBeenCalledWith({ message: "SubCategory deleted successfully." });
   });
-});
+

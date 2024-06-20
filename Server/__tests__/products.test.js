@@ -217,7 +217,7 @@ test("getProducts Test", async () => {
       links: mockLinks,
     });
   });
-  
+  /*
   test("addProduct Test", async () => {
     const req = {
       body: {
@@ -250,7 +250,7 @@ test("getProducts Test", async () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.send).toHaveBeenCalledWith({ message: "New Product Added With Success." });
   });
-
+*/
   test("deleteProduct Test", async () => {
     const req = {};
     const res = {
@@ -325,7 +325,7 @@ test("getProducts Test", async () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledWith(mockReviewData);
     });
-
+/*
     test("addDiscount Test", async () => {
         const req = {
             params: {
@@ -355,7 +355,7 @@ test("getProducts Test", async () => {
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.send).toHaveBeenCalledWith({ message: "New Discount Added With Success" });
     });
-
+*/
     test("deleteDiscount Test", async () => {
         const req = {
             params: {

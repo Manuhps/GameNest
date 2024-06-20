@@ -1,5 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+
+// Define the storage engine
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
+})
+
+const multerUploads = multer({ storage }).single('image');
 
 // import users controller
 const { login, getUsers, register, getSelf, editProfile, banUser } = require("../controllers/users.controller");
@@ -8,7 +21,7 @@ const { checkToken } = require("../middlewares/checkToken");
 const { checkIsBanned } = require('../middlewares/checkIsBanned');
 
 router.route('/')
-    .post(register)
+    .post(multerUploads, register) // Use the Multer middleware here
     .get(checkToken, verifyAdmin, checkIsBanned, getUsers)
 
 router.route('/login')
