@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         if (profileImage) {
-            profileImage.src = user.profileImage;
+            profileImage.src = user.profileImg;
         }
 
         if (pointsHeader) {

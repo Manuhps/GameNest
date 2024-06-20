@@ -4,6 +4,20 @@ const { handleForbiddenRequest, handleInvalidRequest, handleBadRequest, handleSe
 const { SignToken } = require("../middlewares/jwt");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
+const cloudinary = require("cloudinary").v2;
+require('dotenv').config();
+
+// cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.C_CLOUD_NAME,
+  api_key: process.env.C_API_KEY,
+  api_secret: process.env.C_API_SECRET
+});
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+
 module.exports = {
     login: async (req, res) => {
         // await User.create({
@@ -44,20 +58,32 @@ module.exports = {
                 if (await User.findOne({ where: { email: req.body.email } })) {
                     handleConflictError(res, "User already exists")
                 } else {
+                    let user_image = null;
+                    let defaultImageUrl = 'https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-512.png'; // Substitua pela URL da imagem padrão
+                    let imagePath = req.file ? req.file.path : defaultImageUrl;
+    
+                    // upload image
+                    if (req.file) {
+                        user_image = await cloudinary.uploader.upload(imagePath);
+                    } else {
+                        user_image = { url: defaultImageUrl, public_id: null };
+                    }
+                    
                     const user = await User.create({
                         username: req.body.username,
                         email: req.body.email,
                         password: req.body.password,
+                        profileImg: user_image.url, // save URL to access the image
+                        cloudinary_id: user_image.public_id // save image ID to delete it
                     });
                     const token = await SignToken(user.userID);
-                    return res.status(201).send({ message: "Registered Successfuly", token: token })
+                    return res.status(201).send({ message: "Registered Successfully", token: token })
                 }
             } else {
                 handleBadRequest(res, "Please fill all the required fields")
             }
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
-                // Capture Sequelize Validation Errors
                 handleSequelizeValidationError(error, res)
             }
             handleServerError(error, res)
@@ -110,7 +136,20 @@ module.exports = {
             if (req.body.email) user.email = req.body.email;
             if (req.body.address) user.address = req.body.address;
             if (req.body.postalCode) user.postalCode = req.body.postalCode;
-            if (req.body.profileImg) user.profileImg = req.body.profileImg;
+            
+            let user_image = null;
+            if (req.file) {
+                // Check if the user has an existing image
+                if (user.cloudinary_id) {
+                    // Delete image from cloudinary
+                    await cloudinary.uploader.destroy(user.cloudinary_id);
+                }
+                // upload a new image image (using multer memory storage engine)
+                user_image = await cloudinary.uploader.upload(req.file.path);
+            }
+            user.profileImg = user_image ? user_image.url : user.profileImg;
+            user.cloudinary_id = user_image ? user_image.public_id : user.cloudinary_id;
+    
             // Save the changes to the database
             await user.save();
             // Return a success response
