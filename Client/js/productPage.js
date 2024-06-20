@@ -1,5 +1,5 @@
-import { fetchProductById, addDiscount, editProduct, getReviews, addReview } from './api/products.js';
-import { addOrder, getCurrent, updateOrder, getMyOrders } from './api/orders.js';
+import { fetchProductById, addDiscount, editProduct, getReviews, addReview, delProduct, delComment } from './api/products.js';
+import { addOrder, updateOrder, getMyOrders } from './api/orders.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus } from './utilities/userUtils.js';
 import { populateDiscountTable } from './utilities/discountsUtils.js';
@@ -10,50 +10,58 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkUserLoginStatus();
     const { user } = await getSelf();
     let productID = window.location.search.split("=")[1];
-
+    const delProductButton = document.getElementById('btnDeleteProduct')
+    if (user.role === "admin") {
+        delProductButton.style.display = 'block';
+    }
     try {
         const { product } = await fetchProductById(productID);
         const productSection = document.querySelector('.row.gx-4.gx-lg-5.align-items-center');
         let priceSection = '';
-
         if (product.basePrice !== product.curPrice) {
             priceSection = `
-                <div class="fs-5 mb-5">
-                    <span class="text-decoration-line-through" id="product-price">${product.basePrice}</span>
-                    <span id="sale-price">${product.curPrice}</span>
-                </div>
-            `;
+            <div class="fs-5 mb-5">
+                <span class="text-decoration-line-through" id="product-price">${product.basePrice}</span>
+                <span id="sale-price">${product.curPrice}</span>
+            </div>
+        `;
         } else {
             priceSection = `
-                <div class="fs-5 mb-5">
-                    <span id="product-price">${product.basePrice}</span>
-                </div>
-            `;
+            <div class="fs-5 mb-5">
+                <span id="product-price">${product.basePrice}</span>
+            </div>
+        `;
         }
 
         productSection.innerHTML = `
-            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" id="product-image" src="${product.img}" alt="${product.name}" /></div>
-            <div class="col-md-6">
-                <h1 class="display-5 fw-bolder" id="product-name">${product.name}</h1>
-                <div class="d-flex align-items-center mb-3">
-                    <div>
-                        ${priceSection}
-                        <p><strong class="product-stock-label">Available Stock:</strong> <span id="product-stock">${product.stock}</span></p> <!-- Added class for styling -->
-                    </div>
-                    <div class="ms-auto" style="max-width: 200px;">
-                        <label for="quantityInput" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="quantityInput" value="1" min="1" max="${product.stock}">
-                    </div>
+        <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" id="product-image" src="${product.img}" alt="${product.name}" /></div>
+        <div class="col-md-6">
+            <h1 class="display-5 fw-bolder" id="product-name">${product.name}</h1>
+            <div class="d-flex align-items-center mb-3">
+                <div>
+                    ${priceSection}
+                    <p><strong class="product-stock-label">Available Stock:</strong> <span id="product-stock">${product.stock}</span></p> <!-- Added class for styling -->
                 </div>
-                <p class="lead" id="product-desc">${product.desc}</p>
-                <div class="d-flex">
-                    <button class="btn btn-outline-dark flex-shrink-0 add-to-cart-button" type="button">
-                        <i class="bi-cart-fill me-1"></i>
-                        Add to cart
-                    </button>
+                <div class="ms-auto" style="max-width: 200px;">
+                    <label for="quantityInput" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="quantityInput" value="1" min="1" max="${product.stock}">
                 </div>
             </div>
-        `;
+            <p class="lead" id="product-desc">${product.desc}</p>
+            <div class="d-flex">
+                <button class="btn btn-outline-dark flex-shrink-0 add-to-cart-button" type="button">
+                    <i class="bi-cart-fill me-1"></i>
+                    Add to cart
+                </button>
+            </div>
+        </div>
+    `;
+        delProductButton.addEventListener('click', async () => {
+            await delProduct(productID)
+            alert('Product Deleted With Success')
+            window.location.href = '/'
+        })
+
         // Populate discounts table
         await populateDiscountTable(productID);
 
@@ -142,24 +150,33 @@ document.addEventListener('DOMContentLoaded', async function () {
                         <div class="card-body">
                             <div class="d-flex">
                                 <img class="rounded-circle" src="${review.User.profileImg}" alt="${review.User.username}" width="50" height="50">
-                                <div class="ms-3">
+                                <div class="ms-3"> 
                                     <h5 class="fw-bolder">${review.User.username}</h5>
                                     <div class="d-flex align-items-center mb-2">
                                         ${'<span class="bi-star-fill text-warning"></span>'.repeat(review.rating)}
                                         ${'<span class="bi-star text-muted"></span>'.repeat(5 - review.rating)}
                                     </div>
                                     <p class="mb-0">${review.comment || ''}</p>
+                                    ${user.role === 'admin' ? `<button class="btn btn-sm btn-outline-danger mt-2 delete-review-btn">Delete</button>` : ''}
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
                 reviewsContainer.appendChild(reviewElement);
+                // Add event listener for delete button if user is admin
+                if (user.role === 'admin') {
+                    const deleteButton = reviewElement.querySelector('.delete-review-btn');
+                    deleteButton.addEventListener('click', async () => {
+                        await delComment(productID, review.reviewID)
+                        alert('Comment Successfuly Deleted.');
+                        deleteButton.style.display = 'none';
+                    });
+                }
             });
         } catch (error) {
             console.error('Error fetching reviews:', error);
         }
-
         // Handle form submission for adding a new review
         const addReviewForm = document.getElementById('addReviewForm');
         const reviewsDiv = document.getElementById('reviewsDiv')

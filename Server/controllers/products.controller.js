@@ -291,7 +291,7 @@ module.exports = {
         try {
             const productID = req.params.productID
             const where = { productID: productID }
-            const attributes = ['rating', 'comment']
+            const attributes = ['rating', 'comment', 'reviewID']
             const include = {
                 model: User,
                 attributes: ['username', 'profileImg']
