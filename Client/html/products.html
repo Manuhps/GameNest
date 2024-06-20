@@ -26,6 +26,11 @@
         </div>
         <!-- Product actions -->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+            <p><strong>Available Stock:</strong> <span id="product-stock"></span></p>
+            <div class="mb-3">
+                <label for="quantityInput" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="quantityInput" value="1" min="1" max="${product.stock}">
+            </div>
             <div class="text-center">
                 <button id="btnManageDiscounts" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal"
                     data-bs-target="#discountModal">
@@ -131,7 +136,7 @@
                 <!-- Reviews will be dynamically added here -->
             </div>
         </div>
-        <div class="container px-4 px-lg-5 mt-5">
+        <div id="reviewsDiv" class="container px-4 px-lg-5 mt-5">
             <h3 class="fw-bolder mb-4">Add a Review</h3>
             <form id="addReviewForm">
                 <div class="mb-3">
