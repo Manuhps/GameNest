@@ -1,5 +1,5 @@
 import { fetchProductById, addDiscount, editProduct, getReviews, addReview } from './api/products.js';
-import { addOrder, getCurrent, updateOrder } from './api/orders.js';
+import { addOrder, getCurrent, updateOrder, getMyOrders } from './api/orders.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus } from './utilities/userUtils.js';
 import { populateDiscountTable } from './utilities/discountsUtils.js';
@@ -92,9 +92,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Add-to-cart button event listener
         document.querySelector('.add-to-cart-button').addEventListener('click', async () => {
             try {
+                let isOrderCart = false
+                const orders = await getMyOrders()
+                orders.data.forEach((order) => {
+                    alert(order.state)
+                    if (order.state == 'cart') {
+                        isOrderCart == true
+                    }
+                })
                 const products = [{ productID: productID, quantity: 1, salePrice: product.curPrice }]
-                const currentOrder = await getCurrent();
-                if (currentOrder.currentOrder.state == 'cart') {
+                if (isOrderCart) {
                     await updateOrder(products)
                     alert('Product added to cart successfully!');
                 } else { 
