@@ -3,6 +3,8 @@ import { openAdminModal } from './utilities/admin/adminModal.js';
 import { handleUsers, handleCategories, handleSubCategories, handleGenres, handleGameModes } from './utilities/admin/adminHandlers.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
+import { getMyOrders } from './api/orders.js'; // Import the getMyOrders function
+import { fetchProductById } from './api/products.js'; // Import the function to get product details
 
 document.addEventListener('DOMContentLoaded', async function () {
     try {
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         // Show admin options if the user is an admin
-        if (user.role == 'admin') {
+        if (user.role === 'admin') {
             if (adminSection) {
                 adminSection.style.display = 'block';
             }
@@ -83,6 +85,66 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (logoutButton) {
             logoutButton.addEventListener('click', function () {
                 logoutUser();
+            });
+        }
+
+        // Fetch and display orders when the Orders tab is clicked
+        const ordersTab = document.getElementById('userOrders-tab');
+        if (ordersTab) {
+            ordersTab.addEventListener('click', async function () {
+                try {
+                    const orders = await getMyOrders();
+                    const ordersContainer = document.getElementById('ordersContainer');
+                    ordersContainer.innerHTML = ''; // Clear existing orders
+
+                    for (const order of orders.data) {
+                        const orderDetails = [];
+                        let orderTotal = 0; // Initialize order total for this order
+
+                        for (const orderProduct of order.OrderProducts) {
+                            const productResponse = await fetchProductById(orderProduct.productID);
+                            const product = productResponse.product;
+                            const productTotal = orderProduct.quantity * parseFloat(product.basePrice);
+                            orderTotal += productTotal;
+
+                            orderDetails.push({
+                                ...orderProduct,
+                                name: product.name,
+                                imageUrl: product.img, // Ensure this matches the actual property name for the image URL
+                                price: product.basePrice, // Add price for this product
+                                total: productTotal.toFixed(2) // Add total for this product
+                            });
+                        }
+
+                        const orderElement = document.createElement('div');
+                        orderElement.classList.add('order');
+                        orderElement.innerHTML = `
+                            <h6>Order ID: ${order.orderID}</h6>
+                            <p>Date: ${new Date(order.deliverDate).toLocaleDateString()}</p>
+                            <p>State: ${order.state}</p>
+                            <div class="products">
+                                ${orderDetails.map(product => `
+                                    <div class="product">
+                                        <img src="${product.imageUrl}" alt="${product.name}" class="product-image" />
+                                        <div class="product-details">
+                                            <p>Price: $${product.price}</p>
+                                            <p>Name: ${product.name}</p>
+                                            <p>Quantity: ${product.quantity}</p>
+                                            <p>Total Price: $${product.total}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div style="clear: both;"></div> <!-- Clear floats after products -->
+                            <p><strong>Order Total: $${orderTotal.toFixed(2)}</strong></p>
+                            <hr />
+                        `;
+                        ordersContainer.appendChild(orderElement);
+                    }
+                } catch (error) {
+                    console.error('Error fetching orders:', error);
+                    alert('Failed to load orders');
+                }
             });
         }
     } catch (error) {
