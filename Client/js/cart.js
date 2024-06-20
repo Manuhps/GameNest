@@ -1,5 +1,5 @@
 import { renderCart } from './utilities/cart/renderCart.js';
-import { getOrderProducts, updateOrder } from './api/orders.js';
+import { getOrderProducts, completeOrder } from './api/orders.js';
 import { getSelf } from './api/users.js';
 import { loadNavbar } from './utilities/navbar.js';
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,10 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await updateOrder(orderData);
+            const response = await completeOrder(orderData);
             if (response) {
                 alert('Order completed successfully!');
-                cartItemsContainer.innerHTML = ''; // Clear previous content
+                 // Clear the cart items container
+                 const cartItemsContainer = document.getElementById('cart-items');
+                 cartItemsContainer.innerHTML = ''; // Clear previous content
+ 
             } else {
                 alert('Failed to complete order');
             }
