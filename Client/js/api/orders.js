@@ -18,7 +18,7 @@ export async function fetchOrders() {
 export async function addOrder(products) {
     try {
         const response = await api.post(BASE_URL, 
-            products
+            {products}
         ,
         {
             headers: {
@@ -41,7 +41,7 @@ export async function getMyOrders() {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching my orders:', error);
         throw error;
     }
 }
@@ -55,7 +55,7 @@ export async function getCurrent() {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching order', error);
         throw error;
     }
 }
@@ -69,7 +69,7 @@ export async function getOrderProducts() {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching orderProducts:', error);
         throw error;
     }
 }
