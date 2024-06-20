@@ -12,7 +12,6 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="../css/styles.css" rel="stylesheet" />
     <link href="../css/footer.css" rel="stylesheet" />
-
 </head>
 
 <body>
@@ -26,11 +25,6 @@
         </div>
         <!-- Product actions -->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <p><strong>Available Stock:</strong> <span id="product-stock"></span></p>
-            <div class="mb-3">
-                <label for="quantityInput" class="form-label">Quantity</label>
-                <input type="number" class="form-control" id="quantityInput" value="1" min="1" max="${product.stock}">
-            </div>
             <div class="text-center">
                 <button id="btnManageDiscounts" class="btn btn-outline-dark mt-auto" data-bs-toggle="modal"
                     data-bs-target="#discountModal">

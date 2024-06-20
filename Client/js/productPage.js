@@ -35,7 +35,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" id="product-image" src="${product.img}" alt="${product.name}" /></div>
             <div class="col-md-6">
                 <h1 class="display-5 fw-bolder" id="product-name">${product.name}</h1>
-                ${priceSection}
+                <div class="d-flex align-items-center mb-3">
+                    <div>
+                        ${priceSection}
+                        <p><strong class="product-stock-label">Available Stock:</strong> <span id="product-stock">${product.stock}</span></p> <!-- Added class for styling -->
+                    </div>
+                    <div class="ms-auto" style="max-width: 200px;">
+                        <label for="quantityInput" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantityInput" value="1" min="1" max="${product.stock}">
+                    </div>
+                </div>
                 <p class="lead" id="product-desc">${product.desc}</p>
                 <div class="d-flex">
                     <button class="btn btn-outline-dark flex-shrink-0 add-to-cart-button" type="button">
@@ -45,7 +54,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 </div>
             </div>
         `;
-
         // Populate discounts table
         await populateDiscountTable(productID);
 
