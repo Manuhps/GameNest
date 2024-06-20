@@ -68,13 +68,13 @@ module.exports = {
             let result = await GameMode.destroy({ where: { gameModeID: req.params.gameModeID } })
             if (result == 1)
                 return res.status(201).send({
-                    msg: `Game Mode deleted successfully.`
+                    message: `Game Mode deleted successfully.`
                 });
             else {
                 res
                     .status(404)
                     .send({
-                        messsage: "Game Mode not found",
+                        message: "Game Mode not found",
                     });
             }
         }

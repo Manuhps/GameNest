@@ -4,7 +4,7 @@
   "description": "Projeto de WebPII-Loja de E-commerce de jogos",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -28,5 +28,10 @@
   "bugs": {
     "url": "https://github.com/Manuhps/GameNest/issues"
   },
-  "homepage": "https://github.com/Manuhps/GameNest#readme"
+  "homepage": "https://github.com/Manuhps/GameNest#readme",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "sequelize-mock": "^0.10.2",
+    "supertest": "^7.0.0"
+  }
 }
