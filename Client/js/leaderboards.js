@@ -1,8 +1,10 @@
 import { getMostOrders, getMostSpent, getMostReviews } from "./api/leaderboards.js";
 import { loadNavbar } from "./utilities/navbar.js";
+import { getSelf } from "./api/users.js";
 document.addEventListener('DOMContentLoaded', async function () {
     loadNavbar('navbarContainer');
-
+    const user = await getSelf()
+    const loggedInUsername= user.user.username
     try {
         const mostSpent = await getMostSpent();
         const mostOrders = await getMostOrders();
@@ -12,8 +14,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             const tableBody = document.getElementById(tableBodyId);
             tableBody.innerHTML = ''; // Clear any existing rows
             leaderboardData.forEach((item, index) => {
+                const highlightClass = item.username === loggedInUsername ? 'table-highlight' : '';
                 const row = `
-                    <tr>
+                    <tr class="${highlightClass}">
                         <th scope="row">${index + 1}</th>
                         <td>${item.username}</td>
                         <td>${item[scoreKey]}</td>
