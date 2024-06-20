@@ -8,12 +8,15 @@ const sequelize = require('sequelize')
 module.exports = {
     getProducts: async (req, res) => {
         try {
-            const { curPrice, rating, categoryID, subCategoryID, name, date, genreID, gameModeID } = req.query
+            const { curPrice, rating, categoryID, subCategoryID, name, date, genreID, gameModeID, offset, limit } = req.query
             const currentDate = new Date().setHours(0, 0, 0, 0)
             let where = {}
             let order = []
             let include = []
             let attributes = ['productID', 'name', 'basePrice', 'stock', 'rating', 'img']
+            if (offset) {
+                
+            }
             //Filter by category
             if (categoryID) {
                 const category = Category.findByPk(categoryID)
@@ -123,7 +126,7 @@ module.exports = {
             const links = await getProductLinks(req, "getProducts", res)
             // links.push(nextPageLink, prevPageLink)
             //Uses paginate function to get results 
-            const productsData = await paginate(Product, { order, where, include, attributes })
+            const productsData = await paginate(Product, { offset, limit, order, where, include, attributes })
             if (productsData) {
                 return res.status(200).send({
                     pagination: productsData.pagination,
