@@ -33,20 +33,20 @@ module.exports = {
             // Verifica se o gênero é vazio antes de qualquer coisa
             if (!req.body.genreName) {
                 return res.status(400).send({
-                    message: "Genre content cannot be empty"
+                    message: "GenreName cannot be empty"
                 });
             }
             if (req.body.genreName) {
                 const existingGenre = await Genre.findOne({ where: { genreName: req.body.genreName } });
                 if (existingGenre) {
-                    return res.status(409).send({ message: "Genre already exists" });
+                    return res.status(409).send({ message: "A genre with that name already exists" });
                 }
             }
 
             const regex = /^[A-Za-z\s]+$/;
             if (!regex.test(req.body.genreName)) {
                 return res.status(400).send({
-                    message: "Genre name must be a string"
+                    message: "GenreName must be a string"
                 });
             }
 
