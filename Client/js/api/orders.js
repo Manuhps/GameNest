@@ -92,6 +92,20 @@ export async function updateOrder(products) {
     }
 }
 
+export async function completeOrder(orderData) {
+    try {
+        const response = await api.patch(`${BASE_URL}/current`, orderData, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating current order:', error);
+        throw error;
+    }
+}
+
 export async function incrementProduct(productID) {
     return api.patch(`${BASE_URL}/current/products/${productID}`, { action: "increment"},
         {
