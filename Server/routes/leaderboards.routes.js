@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// import products controller
 const { getMostOrders, getMostSpent, getMostReviews } = require("../controllers/leaderboards.controller");
 
 router.route('/mostOrders')
