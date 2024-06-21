@@ -24,13 +24,31 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                             </button>
                         </a>
                         ${isLoggedIn ?
-                            (isProfilePage ?
-                                `<button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
+            (isProfilePage ?
+                `
+                <a href="/">
+                <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
                                     <i class="bi-person-fill me-1"></i>
                                     Logout
-                                </button>`
-                                : isCartPage ?
-                                `<a href="/html/profile.html">
+                                </button>
+                                </a>`
+
+                : isCartPage ?
+                    `<a href="/html/profile.html">
+                                    <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon">
+                                        <i class="bi-person-fill me-1"></i>
+                                        Profile
+                                    </button>
+                                </a>
+                                <a href="/">
+                                    <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
+                                        <i class="bi-person-fill me-1"></i>
+                                        Logout
+                                    </button>
+                                </a>    
+                    `
+                    :
+                    `<a href="/html/profile.html">
                                     <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon">
                                         <i class="bi-person-fill me-1"></i>
                                         Profile
@@ -40,26 +58,15 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                     <i class="bi-person-fill me-1"></i>
                                     Logout
                                 </button>`
-                                :
-                                `<a href="/html/profile.html">
-                                    <button class="btn btn-outline-dark ms-2" type="button" id="profileIcon">
-                                        <i class="bi-person-fill me-1"></i>
-                                        Profile
-                                    </button>
-                                </a>
-                                <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
-                                    <i class="bi-person-fill me-1"></i>
-                                    Logout
-                                </button>`
-                            )
-                            :
-                            `<a href="/html/login.html">
+            )
+            :
+            `<a href="/html/login.html">
                                 <button class="btn btn-outline-dark ms-2" type="button" id="loginButton">
                                     <i class="bi-person-fill me-1"></i>
                                     Login
                                 </button>
                             </a>`
-                        }
+        }
                     </div>
                 </div>
             </div>
