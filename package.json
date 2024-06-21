@@ -4,6 +4,8 @@
   "description": "Projeto de WebPII-Loja de E-commerce de jogos",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "build": "echo 'No build step required'",
     "test": "jest --coverage"
   },
   "keywords": [],
