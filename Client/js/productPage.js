@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkUserLoginStatus();
     const { user } = await getSelf();
     let productID = window.location.search.split("=")[1];
-    const productManage = document.getElementById('btnProductActions')
+    const productManage = document.getElementById('productActions')
     if (user.role === "admin") {
         productManage.style.display= 'block'
     }
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             </div>
         </div>
     `;
+        const delProductButton = document.getElementById('btnDeleteProduct')
         delProductButton.addEventListener('click', async () => {
             await delProduct(productID)
             alert('Product Deleted With Success')
