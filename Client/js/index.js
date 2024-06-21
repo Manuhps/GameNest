@@ -11,7 +11,7 @@ import { loadNavbar } from './utilities/navbar.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     let offset = 0;
-    const limit = 12;
+    const limit = 4;
 
     try {
         loadNavbar('navbarContainer');

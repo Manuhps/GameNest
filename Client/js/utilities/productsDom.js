@@ -30,20 +30,20 @@ function displayProducts(products, pagination, limit) {
     const container = document.getElementById('productsSection');
     container.innerHTML = productCards;
 
-    if (pagination) {
-        const { totalPages, currentPage } = pagination;
+    // if (pagination) {
+    //     const { totalPages, currentPage } = pagination;
+    //     console.log(pagination);
+    //     let paginationLinks = '';
+    //     for (let i = 1; i <= totalPages + 1; i++) {
+    //         const activeClass = i === currentPage ? 'active' : '';
+    //         paginationLinks += `<a href="?page=${i}" class="${activeClass}">${i}</a>`;
+    //     }
 
-        let paginationLinks = '';
-        for (let i = 1; i <= totalPages; i++) {
-            const activeClass = i === currentPage ? 'active' : '';
-            paginationLinks += `<a href="?page=${i}" class="${activeClass}">${i}</a>`;
-        }
-
-        const paginationContainer = document.querySelector('#paginationContainer');
-        if (paginationContainer) {
-            paginationContainer.innerHTML = paginationLinks;
-        }
-    }
+    //     const paginationContainer = document.querySelector('#paginationContainer');
+    //     if (paginationContainer) {
+    //         paginationContainer.innerHTML = paginationLinks;
+    //     }
+    // }
 }
 
 // Function to fetch and display products with pagination
