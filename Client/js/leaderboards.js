@@ -4,7 +4,7 @@ import { getSelf } from "./api/users.js";
 document.addEventListener('DOMContentLoaded', async function () {
     loadNavbar('navbarContainer');
     let loggedInUsername = null
-    if(localStorage.getItem('loggedInUser')){
+    if(localStorage.getItem('isLoggedIn')){
         const user = await getSelf()
         loggedInUsername= user.user.username
     }
