@@ -85,7 +85,6 @@ module.exports = {
         try {
 
             const userID = res.locals.userID;
-            console.log(userID)
 
             const links = [
                 { rel: "updateOrder", href: "/orders/current", method: "PATCH" },
@@ -124,7 +123,7 @@ module.exports = {
                 });
             }
 
-            // Verificar se todos os produtos existem e validar quantidade
+            // Verify if all the products exist and verify quantity
             for (const product of products) {
                 const productExists = await Product.findByPk(product.productID);
                 if (!productExists) {

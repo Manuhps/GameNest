@@ -1,12 +1,13 @@
 import { getMostOrders, getMostSpent, getMostReviews } from "./api/leaderboards.js";
 import { loadNavbar } from "./utilities/navbar.js";
 import { getSelf } from "./api/users.js";
+import { logoutUser } from "./utilities/userUtils.js";
 document.addEventListener('DOMContentLoaded', async function () {
     loadNavbar('navbarContainer');
     let loggedInUsername = null
-    if(localStorage.getItem('loggedInUser')){
+    if (localStorage.getItem('isLoggedIn')) {
         const user = await getSelf()
-        loggedInUsername= user.user.username
+        loggedInUsername = user.user.username
     }
     try {
         const mostSpent = await getMostSpent();
@@ -32,6 +33,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         populateTable(mostSpent.data, 'mostSpentBody', 'totalSpent');
         populateTable(mostOrders.data, 'mostOrdersBody', 'totalOrders');
         populateTable(mostReviews.data, 'mostReviewsBody', 'totalReviews');
+
+        // Event listener for logout button
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            logoutUser();
+        });
     } catch (error) {
         console.error('Error fetching leaderboard data:', error);
     }
