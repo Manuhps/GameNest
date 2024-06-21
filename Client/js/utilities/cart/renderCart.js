@@ -2,7 +2,7 @@ import { getCurrent, getOrderProducts, decrementProduct, incrementProduct, delOr
 
 export async function renderCart() {
     try {
-        if (localStorage.getItem('loggedInUser')) {
+        if (localStorage.getItem('isLoggedIn')) {
             const currentOrder = await getCurrent();
             if (currentOrder && currentOrder.currentOrder.state === 'cart') {
                 const cartItemsContainer = document.getElementById('cart-items');
