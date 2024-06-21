@@ -65,7 +65,7 @@ module.exports = {
                     message: `Game Mode deleted successfully.`
                 });
             else {
-                handleNotFoundError(res, "Game Mode Not Found")
+                handleNotFoundError(res, "Game Mode not found")
             }
         } catch (error) {
             handleServerError(error, res)
