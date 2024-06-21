@@ -34,7 +34,6 @@ module.exports = {
                 data: results
             }
         }
-        console.log(model);
         const {count, rows } = await model.findAndCountAll(query)
         const totalItems = count[0].count
         const totalPages = Math.ceil(totalItems / (query.limit ? parseInt(query.limit) : totalItems))

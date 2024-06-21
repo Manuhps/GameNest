@@ -3,15 +3,16 @@ const { compareHash } = require("../utilities/bcrypt");
 const { handleForbiddenRequest, handleInvalidRequest, handleBadRequest, handleServerError, handleSequelizeValidationError, handleConflictError, handleJsonWebTokenError, handleNotFoundError } = require("../utilities/errors");
 const { SignToken } = require("../middlewares/jwt");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
+const {Op} = require('sequelize')
 
 const cloudinary = require("cloudinary").v2;
 require('dotenv').config();
 
 // cloudinary configuration
 cloudinary.config({
-  cloud_name: process.env.C_CLOUD_NAME,
-  api_key: process.env.C_API_KEY,
-  api_secret: process.env.C_API_SECRET
+    cloud_name: process.env.C_CLOUD_NAME,
+    api_key: process.env.C_API_KEY,
+    api_secret: process.env.C_API_SECRET
 });
 
 const multer = require('multer');
@@ -55,20 +56,27 @@ module.exports = {
     register: async (req, res) => {
         try {
             if (req.body.password && req.body.username && req.body.email) {
-                if (await User.findOne({ where: { email: req.body.email } })) {
-                    handleConflictError(res, "User already exists")
+                if (await User.findOne({
+                    where: {
+                        [Op.or]: [
+                            { email: req.body.email },
+                            { username: req.body.username }
+                        ]
+                    }
+                })) {
+                    handleConflictError(res, "User with this email or name already exists");
                 } else {
                     let user_image = null;
                     let defaultImageUrl = 'https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-512.png'; // Substitua pela URL da imagem padrão
                     let imagePath = req.file ? req.file.path : defaultImageUrl;
-    
+
                     // upload image
                     if (req.file) {
                         user_image = await cloudinary.uploader.upload(imagePath);
                     } else {
                         user_image = { url: defaultImageUrl, public_id: null };
                     }
-                    
+
                     const user = await User.create({
                         username: req.body.username,
                         email: req.body.email,
@@ -95,11 +103,11 @@ module.exports = {
             let where = {}
             //Filter by user role
             if (role) {
-                where.role= role
+                where.role = role
             }
             //Filter by banned or unbanned user
             if (isBanned) {
-                where.isBanned= isBanned
+                where.isBanned = isBanned
             }
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
@@ -113,7 +121,7 @@ module.exports = {
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ]
             const users = await paginate(User, {
-                attributes: 
+                attributes:
                     ['userID', 'username', 'email', 'role', 'isBanned']
                 ,
                 where,
@@ -147,7 +155,7 @@ module.exports = {
             if (req.body.email) user.email = req.body.email;
             if (req.body.address) user.address = req.body.address;
             if (req.body.postalCode) user.postalCode = req.body.postalCode;
-            
+
             let user_image = null;
             if (req.file) {
                 // Check if the user has an existing image
@@ -160,7 +168,7 @@ module.exports = {
             }
             user.profileImg = user_image ? user_image.url : user.profileImg;
             user.cloudinary_id = user_image ? user_image.public_id : user.cloudinary_id;
-    
+
             // Save the changes to the database
             await user.save();
             // Return a success response
@@ -177,7 +185,7 @@ module.exports = {
             // Get the user ID from res.locals set by verifyUser middleware
             const userID = res.locals.userID;
             // Find the user by ID
-            const user = await User.findByPk(userID, {attributes: ['username', 'email', 'address', 'points', 'profileImg', 'role']});
+            const user = await User.findByPk(userID, { attributes: ['username', 'email', 'address', 'points', 'profileImg', 'role'] });
             // If user is not found, return error
             if (!user) {
                 handleNotFoundError(res, "User Not Found")
