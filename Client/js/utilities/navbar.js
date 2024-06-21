@@ -26,12 +26,11 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                         ${isLoggedIn ?
             (isProfilePage ?
                 `
-                <a href="/">
                 <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
                                     <i class="bi-person-fill me-1"></i>
                                     Logout
                                 </button>
-                                </a>`
+                                `
 
                 : isCartPage ?
                     `<a href="/html/profile.html">
@@ -40,12 +39,10 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                         Profile
                                     </button>
                                 </a>
-                                <a href="/">
                                     <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
                                         <i class="bi-person-fill me-1"></i>
                                         Logout
-                                    </button>
-                                </a>    
+                                    </button>     
                     `
                     :
                     `<a href="/html/profile.html">
@@ -54,12 +51,12 @@ export function loadNavbar(containerId, isProfilePage = false, isCartPage = fals
                                         Profile
                                     </button>
                                 </a>
-                                <a href="/">
+                                
                                 <button class="btn btn-outline-dark ms-2" type="button" id="logoutButton">
                                     <i class="bi-person-fill me-1"></i>
                                     Logout
                                 </button>
-                            </a>`
+                            `
             )
             :
             `<a href="/html/login.html">

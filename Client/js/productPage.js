@@ -1,7 +1,7 @@
 import { fetchProductById, addDiscount, editProduct, getReviews, addReview, delProduct, delComment } from './api/products.js';
 import { addOrder, updateOrder, getMyOrders } from './api/orders.js';
 import { loadNavbar } from './utilities/navbar.js';
-import { checkUserLoginStatus } from './utilities/userUtils.js';
+import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
 import { populateDiscountTable } from './utilities/discountsUtils.js';
 import { getSelf } from './api/users.js';
 
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let productID = window.location.search.split("=")[1];
     const productManage = document.getElementById('productActions')
     if (user.role === "admin") {
-        productManage.style.display= 'block'
+        productManage.style.display = 'block'
     }
     try {
         const { product } = await fetchProductById(productID);
@@ -207,6 +207,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
             });
         }
+        // Event listener for logout button
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            logoutUser();
+        });
     } catch (error) {
         console.error('Error Fetching Product:', error);
     }
