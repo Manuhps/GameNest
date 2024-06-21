@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Category, SubCategory } = require('../models/index');
 const { generatePaginationPath, paginate } = require("../utilities/pagination");
-const { handleBadRequest } = require('../utilities/errors');
+const { handleBadRequest, handleServerError, handleSequelizeValidationError } = require('../utilities/errors');
 
 module.exports = {
     findAllCategory: async (req, res) => {
@@ -47,13 +47,11 @@ module.exports = {
             await Category.create({
                 categoryName: req.body.categoryName,
             });
-            res.status(201).send({
+            return res.status(201).send({
                 message: "New Category created with success."
             });
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
 
@@ -65,17 +63,14 @@ module.exports = {
                     message: `Category deleted successfully.`
                 });
             else {
-                res
+                return res
                     .status(404)
                     .send({
                         messsage: "Category not found",
                     });
             }
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
     getSubCategories: async (req, res) => {
@@ -99,9 +94,7 @@ module.exports = {
                     links: links
                 });
         } catch (error) {
-            return res.status(500).send({
-                message: error.message || "Something went wrong. Please try again later."
-            });
+            handleServerError(error, res)
         }
     },
     addSubCategory: async (req, res) => {
@@ -123,21 +116,16 @@ module.exports = {
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
                 // Capture Sequelize Validation Errors
-                const messages = error.errors.map(err => ({
-                    message: `Invalid Data Format on ${err.path}`
-                }))
-                return res.status(400).send({ errors: messages })
+                handleSequelizeValidationError(error, res)
             }
-            res.status(500).send({
-                message: error.message || "Something went wrong. Please try again later."
-            })
+            handleServerError(error, res)
         }
     },
     delSubCategory: async (req, res) => {
         try {
             const subCategory = res.locals.subCategory
 
-            //Destroys the SubCategory if it exists
+            //Deletes the SubCategory if it exists
             await SubCategory.destroy({ where: { subCategoryID: subCategory.subCategoryID } })
 
             res.status(204).send({ message: "SubCategory deleted successfully." })
@@ -147,5 +135,5 @@ module.exports = {
                 details: error,
             })
         }
-    },
+    }
 }

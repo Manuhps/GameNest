@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             </div>
         `;
         }
-
         productSection.innerHTML = `
         <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" id="product-image" src="${product.img}" alt="${product.name}" /></div>
         <div class="col-md-6">
@@ -164,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     </div>
                 `;
                 reviewsContainer.appendChild(reviewElement);
-                // Add event listener for delete button if user is admin
+                // Event listener for delete button if user is admin
                 if (user.role === 'admin') {
                     const deleteButton = reviewElement.querySelector('.delete-review-btn');
                     deleteButton.addEventListener('click', async () => {
@@ -197,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     await addReview(productID, reviewData);
                     alert('Review added successfully!');
                     addReviewForm.reset();
-                    location.reload(); // Reload the page to display the new review
+                    location.reload();
                 } catch (error) {
                     console.error('Error adding review:', error);
                     alert(error.response.data.message || 'There was an error adding your review.');

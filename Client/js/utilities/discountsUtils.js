@@ -5,7 +5,7 @@ export async function populateDiscountTable(productId) {
         const discounts = await getDiscounts(productId);
         const discountTableBody = document.getElementById('discountTableBody');
 
-        discountTableBody.innerHTML = ''; // Clear existing rows
+        discountTableBody.innerHTML = '';
         discounts.data.forEach((discount) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -26,7 +26,6 @@ export async function populateDiscountTable(productId) {
                 const discountId = button.dataset.id;
                 try {
                     await delDiscount(productId, discountId);
-                    // After deletion, refresh the table
                     await populateDiscountTable(productId);
                 } catch (error) {
                     console.error('Error deleting discount:', error);

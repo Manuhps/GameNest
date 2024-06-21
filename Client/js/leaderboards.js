@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         function populateTable(leaderboardData, tableBodyId, scoreKey) {
             const tableBody = document.getElementById(tableBodyId);
-            tableBody.innerHTML = ''; // Clear any existing rows
+            tableBody.innerHTML = '';
             leaderboardData.forEach((item, index) => {
                 const highlightClass = item.username === loggedInUsername ? 'table-highlight' : '';
                 const row = `

@@ -6,7 +6,7 @@ function displayProducts(products, pagination) {
     let productCards = '';
 
     products.slice(0, limit).forEach(product => {
-        // Calculate stars based on the rating (assuming rating is out of 5)
+        // Calculate stars based on the rating 
         const stars = getStarsHTML(product.rating);
 
         productCards += `

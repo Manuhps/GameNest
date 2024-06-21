@@ -3,8 +3,8 @@ import { openAdminModal } from './utilities/admin/adminModal.js';
 import { handleUsers, handleCategories, handleSubCategories, handleGenres, handleGameModes } from './utilities/admin/adminHandlers.js';
 import { loadNavbar } from './utilities/navbar.js';
 import { checkUserLoginStatus, logoutUser } from './utilities/userUtils.js';
-import { getMyOrders } from './api/orders.js'; // Import the getMyOrders function
-import { fetchProductById } from './api/products.js'; // Import the function to get product details
+import { getMyOrders } from './api/orders.js';
+import { fetchProductById } from './api/products.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     try {
@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                             orderDetails.push({
                                 ...orderProduct,
                                 name: product.name,
-                                imageUrl: product.img, // Ensure this matches the actual property name for the image URL
-                                price: product.basePrice, // Add price for this product
-                                total: productTotal.toFixed(2) // Add total for this product
+                                imageUrl: product.img,
+                                price: product.basePrice,
+                                total: productTotal.toFixed(2) 
                             });
                         }
 

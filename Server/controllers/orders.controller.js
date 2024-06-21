@@ -1,8 +1,6 @@
-const express = require('express');
-const router = express.Router();
 const { Order, OrderProduct, Product, User } = require("../models/index");
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
-const { handleServerError } = require("../utilities/errors")
+const { handleServerError, handleNotFoundError, handleBadRequest, handleConflictError } = require("../utilities/errors")
 
 
 module.exports = {
@@ -27,26 +25,22 @@ module.exports = {
             ];
 
             if (ordersData.data.length === 0) {
-                return res.status(404).send({ message: "No orders found." });
+                handleNotFoundError(res, "No orders found.")
             }
 
-            res.status(200).send({
+            return res.status(200).send({
                 pagination: ordersData.pagination,
                 data: ordersData.data,
                 links: links
             });
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
 
     getOrdersMe: async (req, res) => {
         try {
-
             const userID = res.locals.userID;
-
             const ordersData = await paginate(Order, {
                 where: { userID: userID },
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
@@ -55,43 +49,34 @@ module.exports = {
                     attributes: { exclude: ['createdAt', 'updatedAt', 'orderID'] }
                 }
             });
-
             let nextPage, prevPage = await generatePaginationPath(req, res);
-
             const links = [
                 { rel: "createOrder", href: "/orders", method: "POST" },
                 { rel: "getCurrent", href: "/orders/current", method: "GET" },
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-
             if (ordersData.data.length === 0) {
-                return res.status(404).send({ message: "No orders found." });
+                handleNotFoundError(res, "No orders found")
             }
 
-            res.status(200).send({
+            return res.status(200).send({
                 pagination: ordersData.pagination,
                 data: ordersData.data,
                 links: links
             });
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
 
-    getCurrentOrder: async (req, res) => {
+    getCurrentOrder: async (res) => {
         try {
-
             const userID = res.locals.userID;
-            console.log(userID)
-
             const links = [
                 { rel: "updateOrder", href: "/orders/current", method: "PATCH" },
                 { rel: "getOrdersMe", href: "/orders/me", method: "GET" },
             ];
-
             const currentOrder = await Order.findOne({
                 where: {
                     userID: userID,
@@ -104,12 +89,9 @@ module.exports = {
                 return res.status(404).send({ message: "No current order found" });
             }
 
-            res.status(200).send({ currentOrder: currentOrder, links: links });
+            return res.status(200).send({ currentOrder: currentOrder, links: links });
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error.message,
-            });
+            handleServerError(error, res)
         }
     },
 
@@ -119,26 +101,24 @@ module.exports = {
             const { products } = req.body;
 
             if (!products || !Array.isArray(products) || products.length === 0) {
-                return res.status(400).send({
-                    message: "Please provide one product."
-                });
+                handleBadRequest(res, "Please provide one product")
             }
 
-            // Verificar se todos os produtos existem e validar quantidade
+            // Verifiy if all the products exist and the quantity
             for (const product of products) {
                 const productExists = await Product.findByPk(product.productID);
                 if (!productExists) {
-                    return res.status(404).send({ message: `Product with ID ${product.productID} does not exist.` });
+                    handleNotFoundError(res, `Product with ID ${product.productID} does not exist.`)
                 }
                 if (isNaN(product.quantity) || product.quantity <= 0) {
-                    return res.status(400).send({ message: "Invalid quantity provided." });
+                    handleBadRequest(res, "Invalid quantity provided.")
                 }
                 if (product.quantity > productExists.stock) {
-                    return res.status(400).send({ message: `Quantity for product ${product.productID} exceeds available stock.` });
+                    handleBadRequest(res, `Quantity for product ${product.productID} exceeds available stock.`)
                 }
             }
 
-            // Verificar se já existe uma order em estado 'cart' para o usuário
+            //Verify if there is already an order in state cart for the user
             const existingCartOrder = await Order.findOne({
                 where: {
                     userID: userID,
@@ -146,16 +126,16 @@ module.exports = {
                 }
             });
             if (existingCartOrder) {
-                return res.status(409).send({ message: "There is already an existing order with state 'cart' for this user." });
+                handleConflictError(res, "There is already an existing order with state 'cart' for this user.")
             }
 
-            // Criar a ordem com estado 'cart'
+            // Create the order with the state cart
             const order = await Order.create({
                 state: 'cart',
                 userID: userID
             });
 
-            // Adicionar produtos à ordem
+            // Add products to the order
             const orderProducts = products.map(product => ({
                 orderID: order.orderID,
                 productID: product.productID,
@@ -165,13 +145,10 @@ module.exports = {
 
             await OrderProduct.bulkCreate(orderProducts);
 
-            res.status(201).send({ message: "Order placed successfully." });
+            return res.status(201).send({ message: "Order placed successfully." });
         } catch (error) {
             console.error("Error creating order:", error);
-            res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
 
@@ -182,21 +159,21 @@ module.exports = {
 
             // Validate cardName
             if (cardName && typeof cardName !== 'string') {
-                return res.status(400).send({ message: "Invalid cardName format. It must be a string." });
+                handleBadRequest(res, "Invalid cardName format. It must be a string.")
             }
 
             // Validate cardNumber
             if (cardNumber && isNaN(cardNumber)) {
-                return res.status(400).send({ message: "Invalid cardNumber format. It must be an integer." });
+                handleBadRequest(res, "Invalid cardNumber format. It must be an integer.")
             }
 
             // Validate cardExpiryDate
             if (cardExpiryDate && !/^(\d{4})-(\d{2})-(\d{2})$/.test(cardExpiryDate)) {
-                return res.status(400).send({ message: "Invalid cardExpiryDate format. It must be a valid date." });
+                handleBadRequest(res, "Invalid cardExpiryDate format. It must be a valid date.")
             }
 
             if (pointsToUse && (isNaN(pointsToUse) || pointsToUse < 0)) {
-                return res.status(400).send({ message: "Invalid pointsToUse format. It must be a positive integer." });
+                handleBadRequest(res, "Invalid pointsToUse format. It must be a positive integer.")
             }
 
             // Validate products if provided
@@ -204,13 +181,13 @@ module.exports = {
                 for (const product of products) {
                     const productExists = await Product.findByPk(product.productID);
                     if (!productExists) {
-                        return res.status(404).send({ message: `Product with ID ${product.productID} does not exist.` });
+                        handleNotFoundError(res, `Product with ID ${product.productID} does not exist.`)
                     }
                     if (isNaN(product.quantity) || product.quantity <= 0) {
-                        return res.status(400).send({ message: "Invalid quantity provided." });
+                        handleBadRequest(res, "Invalid quantity provided.")
                     }
                     if (product.quantity > productExists.stock) {
-                        return res.status(400).send({ message: `Quantity for product ${product.productID} exceeds available stock.` });
+                        handleBadRequest(res, `Quantity for product ${product.productID} exceeds available stock.`)
                     }
                 }
             }
@@ -218,14 +195,14 @@ module.exports = {
             // Find the order
             const order = await Order.findOne({ where: { userID, state: 'cart' } });
             if (!order) {
-                return res.status(404).send({ message: "Current order not found." });
+                handleNotFoundError(res, "Current order not found.")
             }
 
             const user = await User.findByPk(userID);
 
             // Validate if user has enough points
             if (pointsToUse && pointsToUse > user.points) {
-                return res.status(400).send({ message: "Not enough points available." });
+                handleBadRequest(res, "Not enough points available.")
             }
 
             let totalOrderValue = 0;
@@ -240,11 +217,11 @@ module.exports = {
 
                 // Validate if discount is greater than the totalOrderValue
                 if (discount > totalOrderValue) {
-                    return res.status(400).send({ message: "Discount cannot be greater than the total order value." });
+                    handleBadRequest(res, "Discount cannot be greater than the total order value.")
                 }
 
                 if (!cardName && !cardNumber && !cardExpiryDate && pointsToUse && discount < totalOrderValue) {
-                    return res.status(400).send({ message: "Points are not enough to cover the total order value." });
+                    handleBadRequest(res, "Points are not enough to cover the total order value.")
                 }
 
                 totalOrderValue -= discount;
@@ -261,7 +238,7 @@ module.exports = {
                 order.state = 'pending';
                 const currentDate = new Date();
                 const deliverDate = new Date(currentDate);
-                deliverDate.setDate(deliverDate.getDate() + 14); // Adiciona 14 dias (2 semanas)
+                deliverDate.setDate(deliverDate.getDate() + 14); // Add 14 days (2 weeks)
                 order.deliverDate = deliverDate;
 
                 await order.save();
@@ -313,7 +290,7 @@ module.exports = {
 
                     if (orderProduct) {
                         // If the product already exists in the order, return an error message
-                        return res.status(409).send({ message: `Product with ID ${product.productID} is already in the cart.` });
+                        handleConflictError(res, `Product with ID ${product.productID} is already in the cart.`)
                     } else {
                         // Add new product to the order
                         await OrderProduct.create({
@@ -326,7 +303,7 @@ module.exports = {
                 }
             }
 
-            res.status(200).send({
+            return res.status(200).send({
                 message: "Order updated successfully.",
                 totalValue: totalOrderValue,
                 discount: discount,
@@ -335,14 +312,9 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error("Erro capturado:", error);
-            res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
-
     updateProductQuantity: async (req, res) => {
         try {
             const userID = res.locals.userID;
@@ -350,7 +322,7 @@ module.exports = {
             const { action } = req.body;
 
             if (!productID || !['increment', 'decrement'].includes(action)) {
-                return res.status(400).send({ message: "Please insert valid values" });
+                handleBadRequest(res, "Please insert valid values")
             }
 
             const currentOrder = await Order.findOne({
@@ -364,7 +336,7 @@ module.exports = {
             });
 
             if (!currentOrder) {
-                return res.status(404).send({ message: "Product Not Found" });
+                handleNotFoundError(res, "Product Not Found")
             }
 
             const orderProduct = currentOrder.OrderProducts[0];
@@ -372,7 +344,7 @@ module.exports = {
             if (action === 'increment') {
                 const product = await Product.findByPk(productID);
                 if (orderProduct.quantity + 1 > product.stock) {
-                    return res.status(400).send({ message: "Not enough stock available" });
+                    handleBadRequest(res, "Not enough stock available")
                 }
                 orderProduct.quantity += 1;
             } else if (action === 'decrement') {
@@ -387,13 +359,9 @@ module.exports = {
             await orderProduct.save();
             return res.status(200).send({ message: "Quantity successfully updated" });
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     },
-
     deleteOrderProduct: async (req, res) => {
         try {
             const userID = res.locals.userID;
@@ -411,24 +379,17 @@ module.exports = {
             });
 
             if (!currentOrder) {
-                return res.status(404).send({ message: "Product not found in current order" });
+                handleNotFoundError(res, "Product not found in current order")
             }
-
             const orderProduct = currentOrder.OrderProducts[0];
-
             // Delete the product from the order
             await orderProduct.destroy();
-
             return res.status(200).send({ message: "Product removed from current order successfully" });
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error.message,
-            });
+            handleServerError(error, res)
         }
     },
-
-    getOrderProducts: async (req, res) => {
+    getOrderProducts: async (res) => {
         try {
             const userID = res.locals.userID
             const currentOrder = await Order.findOne({

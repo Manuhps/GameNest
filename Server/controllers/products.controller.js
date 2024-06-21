@@ -1,7 +1,7 @@
 const { Product, Order, Review, OrderProduct, Discount, Genre, GameMode, SubCategory, Category, User } = require("../models/index");
 const { handleServerError, handleConflictError, handleSequelizeValidationError, handleJsonWebTokenError, handleBadRequest, handleForbiddenRequest, handleNotFoundError } = require("../utilities/errors");
 const { getProductLinks } = require("../utilities/hateoas");
-const { paginate, generatePaginationPath } = require('../utilities/pagination')
+const { paginate } = require('../utilities/pagination')
 const { Op } = require('sequelize')
 const sequelize = require('sequelize')
 

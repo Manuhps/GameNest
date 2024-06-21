@@ -6,7 +6,7 @@ export async function renderCart() {
 
         if (currentOrder && currentOrder.currentOrder.state === 'cart') {
             const cartItemsContainer = document.getElementById('cart-items');
-            cartItemsContainer.innerHTML = ''; // Clear previous content
+            cartItemsContainer.innerHTML = '';
             const orderProducts = await getOrderProducts();
 
             let totalPrice = 0;
@@ -32,26 +32,23 @@ export async function renderCart() {
                         <button class="btn btn-outline-danger ms-2 remove-btn">Remove</button>
                     </div>
                 `;
-
                 cartItemsContainer.appendChild(productElement);
-
-                // Adicionar event listeners aos botões criados dinamicamente
                 const decrementBtn = productElement.querySelector('.decrement-btn');
                 decrementBtn.addEventListener('click', async () => {
                     await decrementProduct(product.productID);
-                    renderCart(); // Atualizar a página após decrementar
+                    renderCart();
                 });
 
                 const incrementBtn = productElement.querySelector('.increment-btn');
                 incrementBtn.addEventListener('click', async () => {
                     await incrementProduct(product.productID);
-                    renderCart(); // Atualizar a página após incrementar
+                    renderCart();
                 });
 
                 const removeBtn = productElement.querySelector('.remove-btn');
                 removeBtn.addEventListener('click', async () => {
                     await delOrderProduct(product.productID);
-                    renderCart(); // Atualizar a página após remover
+                    renderCart();
                 });
             });
 

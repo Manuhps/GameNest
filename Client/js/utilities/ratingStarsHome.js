@@ -1,4 +1,4 @@
-// Helper function to generate star HTML based on rating
+// Function to generate star HTML based on rating
 export function getStarsHTML(rating) {
     const maxStars = 5;
     const fullStars = Math.floor(rating); // Full stars (integer part of rating)
@@ -11,7 +11,7 @@ export function getStarsHTML(rating) {
         starHTML += '<i class="bi bi-star-fill text-warning"></i>';
     }
 
-    // Add half star if applicable
+    // Add half star
     if (halfStar) {
         starHTML += '<i class="bi bi-star-half text-warning"></i>';
     }

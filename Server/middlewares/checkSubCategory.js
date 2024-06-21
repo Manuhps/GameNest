@@ -30,7 +30,7 @@ module.exports = {
             res.locals.subCategory = subCategory
             next()
         } catch (error) {
-            res.status(500).send({ message: "Something went wrong. Please try again later.", details: error.message })
+           return res.status(500).send({ message: "Something went wrong. Please try again later.", details: error.message })
         }
     }
 }

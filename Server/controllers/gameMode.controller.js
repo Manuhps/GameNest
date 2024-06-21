@@ -1,12 +1,12 @@
 const express = require('express');
-const router = express.Router();
 const GameMode = require('../models/gameMode.model');
-const { paginate, generatePaginationPath } = require("../utilities/pagination")
+const { paginate, generatePaginationPath } = require("../utilities/pagination");
+const { handleServerError, handleNotFoundError } = require('../utilities/errors');
 
 module.exports = {
     findAllGameMode: async (req, res) => {
         try {
-            const gameModes = await paginate(GameMode, {attributes: ['gameModeID', 'gameModeName']}) //Sends the parameters req, res, limit(per page) and Model and returns the paginated list of user
+            const gameModes = await paginate(GameMode, { attributes: ['gameModeID', 'gameModeName'] })
             // Construct links for pagination
             let nextPage, prevPage = await generatePaginationPath(req, res,) //Generates the Url dinamically for the nextPage and previousPage
             const links = [
@@ -15,16 +15,14 @@ module.exports = {
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-            res.status(200).send(
+            return res.status(200).send(
                 {
                     pagination: gameModes.pagination,
                     data: gameModes.data,
                     links: links
                 });
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
     createGameMode: async (req, res) => {
@@ -41,25 +39,21 @@ module.exports = {
                     return res.status(409).send({ message: "A GameMode with that name already exists." });
                 }
             }
-
             const regex = /^[A-Za-z\s]+$/;
             if (!regex.test(req.body.gameModeName)) {
                 return res.status(400).send({
                     message: "GameModeName must be a string"
                 });
             }
-
             // Create and Save GameMode in the databsae
             await GameMode.create({
                 gameModeName: req.body.gameModeName,
             });
-            res.status(201).send({
+            return res.status(201).send({
                 message: "New Game Mode created with success."
             });
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
 
@@ -71,18 +65,10 @@ module.exports = {
                     message: `Game Mode deleted successfully.`
                 });
             else {
-                res
-                    .status(404)
-                    .send({
-                        message: "Game Mode not found",
-                    });
+                handleNotFoundError(res, "Game Mode Not Found")
             }
-        }
-        catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     }
 }
