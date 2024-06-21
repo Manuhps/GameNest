@@ -1,5 +1,6 @@
 const { User, Order, OrderProduct, Review } = require("../models/index");
-const { paginate, generatePaginationPath } = require("../utilities/pagination")
+const { handleServerError } = require("../utilities/errors");
+const { paginate } = require("../utilities/pagination")
 const sequelize = require('sequelize')
 
 module.exports = {
@@ -23,10 +24,7 @@ module.exports = {
                 })
             }
         } catch (error) {
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     getMostSpent: async (req, res) => {
@@ -53,11 +51,7 @@ module.exports = {
                 })
             }
         } catch (error) {
-            console.log(error);
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     },
     getMostReviews: async (req, res) => {
@@ -80,10 +74,7 @@ module.exports = {
                 })
             }
         } catch (error) {
-            return res.status(500).send({
-                message: "Something went wrong. Please try again later",
-                details: error,
-            })
+            handleServerError(error, res)
         }
     }
 }

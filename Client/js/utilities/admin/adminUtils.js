@@ -3,7 +3,7 @@ import { addCategory } from '../../api/categories.js';
 import { addGameMode } from '../../api/gameModes.js';
 import { addGenre } from '../../api/genres.js';
 import { addSubCategory } from '../../api/subCategories.js';
-import { reloadTable } from './adminModal.js'; // Importing reloadTable function
+import { reloadTable } from './adminModal.js';
 
 export function populateAdminTable(data, type) {
     const tableHeader = document.getElementById('adminTableHeader');
@@ -77,7 +77,6 @@ export function populateAdminTable(data, type) {
                             default:
                                 throw new Error('Unknown type');
                         }
-                        // After deleting, reload the table
                         await reloadTable(type);
                     } catch (error) {
                         console.error('Error deleting item:', error);
@@ -99,11 +98,9 @@ export function populateAdminTable(data, type) {
         tableBody.appendChild(tr);
     }
 
-    // Add input field and "Add" button only if it's not 'users' type
     if (type !== 'users') {
         const modalBody = document.querySelector('#adminModal .modal-body');
 
-        // Check if there's already an existing container, and remove it if so
         const existingContainer = modalBody.querySelector('.admin-table-container');
         if (existingContainer) {
             existingContainer.remove();
@@ -150,7 +147,7 @@ export function populateAdminTable(data, type) {
                             throw new Error('Unknown type');
                     }
                     await reloadTable(type);
-                    nameInput.value = ''; // Clear input value after adding
+                    nameInput.value = '';
                 } catch (error) {
                     console.error('Error adding item:', error);
                     alert('Failed to add item');
@@ -160,7 +157,6 @@ export function populateAdminTable(data, type) {
             }
         };
         container.appendChild(addButton);
-
         modalBody.appendChild(container);
     }
 }

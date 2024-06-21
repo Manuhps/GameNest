@@ -75,7 +75,7 @@ export async function getDiscounts(productID) {
         const response = await api.get(`${BASE_URL}/${productID}/discounts`);
         return response.data
     } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching discounts:', error);
     }
 }
 
@@ -153,7 +153,7 @@ export async function addReview(productID, reviewData) {
         );
         return response.data
     } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error adding reviews:', error);
     }
 }
 

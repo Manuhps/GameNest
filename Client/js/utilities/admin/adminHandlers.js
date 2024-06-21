@@ -56,11 +56,10 @@ export async function handleGameModes() {
     }
 }
 
-// Functions to handle actions like ban/unban or delete
 export async function handleBanUser(userId, currentType) {
     try {
         await banUser(userId);
-        await reloadTable(currentType); // Reload table after banning user
+        await reloadTable(currentType);
         alert('User banned successfully');
     } catch (error) {
         console.error('Error banning user:', error);
@@ -71,7 +70,7 @@ export async function handleBanUser(userId, currentType) {
 export async function handleUnbanUser(userId, currentType) {
     try {
         await unbanUser(userId);
-        await reloadTable(currentType); // Reload table after unbanning user
+        await reloadTable(currentType);
         alert('User unbanned successfully');
     } catch (error) {
         console.error('Error unbanning user:', error);
@@ -82,7 +81,7 @@ export async function handleUnbanUser(userId, currentType) {
 export async function handleDeleteCategory(categoryId, currentType) {
     try {
         await delCategory(categoryId);
-        await reloadTable(currentType); // Reload table after deleting category
+        await reloadTable(currentType);
         alert('Category deleted successfully');
     } catch (error) {
         console.error('Error deleting category:', error);
@@ -93,7 +92,7 @@ export async function handleDeleteCategory(categoryId, currentType) {
 export async function handleDeleteSubCategory(subCategoryId, currentType) {
     try {
         await delSubCategory(subCategoryId);
-        await reloadTable(currentType); // Reload table after deleting subcategory
+        await reloadTable(currentType);
         alert('Subcategory deleted successfully');
     } catch (error) {
         console.error('Error deleting subcategory:', error);
@@ -104,7 +103,7 @@ export async function handleDeleteSubCategory(subCategoryId, currentType) {
 export async function handleDeleteGenre(genreId, currentType) {
     try {
         await delGenre(genreId);
-        await reloadTable(currentType); // Reload table after deleting genre
+        await reloadTable(currentType);
         alert('Genre deleted successfully');
     } catch (error) {
         console.error('Error deleting genre:', error);
@@ -115,7 +114,7 @@ export async function handleDeleteGenre(genreId, currentType) {
 export async function handleDeleteGameMode(gameModeId, currentType) {
     try {
         await delGameMode(gameModeId);
-        await reloadTable(currentType); // Reload table after deleting game mode
+        await reloadTable(currentType);
         alert('Game Mode deleted successfully');
     } catch (error) {
         console.error('Error deleting game mode:', error);

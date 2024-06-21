@@ -1,6 +1,5 @@
-const express = require('express');
-const router = express.Router();
 const Genre = require('../models/genre.model');
+const { handleServerError, handleBadRequest, handleConflictError, handleNotFoundError } = require('../utilities/errors');
 const { paginate, generatePaginationPath } = require("../utilities/pagination")
 
 module.exports = {
@@ -15,52 +14,44 @@ module.exports = {
                 { rel: "nextPage", href: nextPage, method: "GET" },
                 { rel: "prevPage", href: prevPage, method: "GET" }
             ];
-            res.status(200).send(
+            return res.status(200).send(
                 {
                     pagination: genres.pagination,
                     data: genres.data,
                     links: links
                 }
             );
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
     createGenre: async (req, res) => {
         try {
-            // Verifica se o gênero é vazio antes de qualquer coisa
+            // Verify if the genreName is empty
             if (!req.body.genreName) {
-                return res.status(400).send({
-                    message: "GenreName cannot be empty"
-                });
+                handleBadRequest(res, "Genre Name can not be empty");
             }
             if (req.body.genreName) {
                 const existingGenre = await Genre.findOne({ where: { genreName: req.body.genreName } });
                 if (existingGenre) {
-                    return res.status(409).send({ message: "A genre with that name already exists" });
+                    handleConflictError(res, "A genre with that name already exists")
                 }
             }
-
             const regex = /^[A-Za-z\s]+$/;
             if (!regex.test(req.body.genreName)) {
                 return res.status(400).send({
                     message: "GenreName must be a string"
                 });
             }
-
-            // Salva o gênero no banco de dados
+            // Saves the database in the database
             await Genre.create({
                 genreName: req.body.genreName,
             });
-            res.status(201).send({
+            return res.status(201).send({
                 message: "New genre created with success."
             });
-        } catch (err) {
-            res.status(500).send({
-                message: err.message || "Something went wrong. Please try again later."
-            });
+        } catch (error) {
+            handleServerError(error, res)
         }
     },
     deleteGenre: async (req, res) => {
@@ -71,18 +62,11 @@ module.exports = {
                     message: `Genre deleted successfully.`
                 });
             else {
-                res
-                    .status(404)
-                    .send({
-                        message: "Genre not found",
-                    });
+                handleNotFoundError(res, "Genre Not Found")
             }
         }
         catch (error) {
-            res.status(500).send({
-                message: "Something went wrong. Please try again later.",
-                details: error,
-            });
+            handleServerError(error, res)
         }
     }
 }

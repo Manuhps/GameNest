@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     try {
         loadNavbar('navbarContainer');
 
-        // Check user login status and update UI accordingly
+        // Check user login status and update UI
         checkUserLoginStatus();
 
         // Load and update categories in the category selector

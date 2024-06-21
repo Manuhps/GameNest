@@ -9,7 +9,7 @@ export async function login(username, password) {
             password
         });
         const token = response.data.accessToken;
-        localStorage.setItem('authToken', token); // Save the token to localStorage
+        localStorage.setItem('authToken', token);
         return response.data;
     } catch (error) {
         throw new Error('Error trying to login' + error.message);
@@ -24,7 +24,7 @@ export async function register(username, email, password) {
             password
         });
         const token = response.data.accessToken;
-        localStorage.setItem('authToken', token); // Save the token to localStorage
+        localStorage.setItem('authToken', token);
         return response.data;
     } catch (error) {
         throw new Error('Error trying to register' + error.message);
