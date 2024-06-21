@@ -1,8 +1,7 @@
 import api from './axiosConfig.js'
 const BASE_URL = 'http://127.0.0.1:8080/products'
 
-export async function fetchProducts(offset = 0, params = null) {
-    const limit = 12;
+export async function fetchProducts(offset = 0, limit = 12, params = null) {
     let url = `${BASE_URL}?offset=${offset}&limit=${limit}`;
 
     if (params != null) {
@@ -11,7 +10,7 @@ export async function fetchProducts(offset = 0, params = null) {
     }
     try {
         const response = await api.get(url);
-        return response.data
+        return response.data;
     } catch (error) {
         console.error('Error fetching products:', error);
     }

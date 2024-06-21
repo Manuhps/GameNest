@@ -11,6 +11,8 @@ import { loadNavbar } from './utilities/navbar.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     let offset = 0;
+    const limit = 12;
+
     try {
         loadNavbar('navbarContainer');
 
@@ -42,15 +44,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Event for pagination - Next page
         document.querySelector('#nextPage').addEventListener('click', async () => {
-            offset += 12;
-            await fetchAndDisplayProducts(offset);
+            offset += limit;
+            await fetchAndDisplayProducts(offset, limit);
         });
 
         // Event for pagination - Previous page
         document.querySelector('#prevPage').addEventListener('click', async () => {
             if (offset > 0) {
-                offset -= 12;
-                await fetchAndDisplayProducts(offset);
+                offset -= limit;
+                await fetchAndDisplayProducts(offset, limit);
             }
         });
 
@@ -74,11 +76,11 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (rating && rating !== "none") params.append('rating', rating);
             if (date && date !== "none") params.append('date', date);
 
-            await fetchAndDisplayProducts(offset, params);
+            await fetchAndDisplayProducts(offset, limit, params);
         });
 
         // Initially load and display products
-        await fetchAndDisplayProducts(offset);
+        await fetchAndDisplayProducts(offset, limit);
 
         // Check if user is logged in and show admin features if applicable
         if (localStorage.getItem('authToken')) {
