@@ -62,7 +62,7 @@ module.exports = {
                     message: `Genre deleted successfully.`
                 });
             else {
-                handleNotFoundError(res, "Genre Not Found")
+                handleNotFoundError(res, "Genre not found")
             }
         }
         catch (error) {
