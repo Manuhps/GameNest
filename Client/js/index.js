@@ -86,7 +86,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (user.role === 'admin') {
                 // Show "Add Product" button
                 document.getElementById('addProductContainer').style.display = 'block';
+            } else {
+                document.getElementById('addProductContainer').style.display = 'none';
             }
+        }
+        if (!localStorage.getItem('isLoggedIn')) {
+            document.getElementById('addProductContainer').style.display = 'none';
         }
     } catch (error) {
         console.error('Error loading products:', error);
