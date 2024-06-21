@@ -66,16 +66,20 @@ document.addEventListener('DOMContentLoaded', async function () {
             const price = document.querySelector('input[name="price"]:checked')?.value || '';
             const rating = document.querySelector('input[name="rating"]:checked')?.value || '';
             const date = document.querySelector('input[name="date"]:checked')?.value || '';
-
+            const genre = document.getElementById('selGenre').value;
+            const gameMode = document.getElementById('selGameMode').value;
+        
             const params = new URLSearchParams();
-
+        
             if (search) params.append('name', search);
             if (category && category !== "none") params.append('categoryID', category);
             if (subCategory && subCategory !== "none") params.append('subCategoryID', subCategory);
             if (price && price !== "none") params.append('curPrice', price);
             if (rating && rating !== "none") params.append('rating', rating);
             if (date && date !== "none") params.append('date', date);
-
+            if (genre && genre !== "none") params.append('genre', genre);
+            if (gameMode && gameMode !== "none") params.append('gameMode', gameMode);
+        
             await fetchAndDisplayProducts(offset, limit, params);
         });
 
