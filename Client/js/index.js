@@ -12,7 +12,6 @@ import { loadNavbar } from './utilities/navbar.js';
 document.addEventListener('DOMContentLoaded', async function () {
     let offset = 0;
     try {
-        // Load navbar dynamically for index page
         loadNavbar('navbarContainer');
 
         // Check user login status and update UI accordingly

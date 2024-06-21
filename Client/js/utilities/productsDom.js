@@ -51,10 +51,10 @@ function displayProducts(products, pagination) {
 // Function to fetch and display products with pagination
 export async function fetchAndDisplayProducts(offset, params) {
     try {
-        const { data, pagination } = await fetchProducts(offset, params);
+        const  data  = await fetchProducts(offset, params);
 
-        if (data && data.length > 0) {
-            displayProducts(data, pagination);
+        if (data && data.data.length > 0) {
+            displayProducts(data.data, data.pagination);
         } else {
             console.log('No products found.');
         }

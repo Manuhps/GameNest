@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     checkUserLoginStatus();
     const { user } = await getSelf();
     let productID = window.location.search.split("=")[1];
-    const delProductButton = document.getElementById('btnDeleteProduct')
+    const productManage = document.getElementById('btnProductActions')
     if (user.role === "admin") {
-        delProductButton.style.display = 'block';
+        productManage.style.display= 'block'
     }
     try {
         const { product } = await fetchProductById(productID);
