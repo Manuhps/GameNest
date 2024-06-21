@@ -42,38 +42,38 @@
                         <input type="text" id="search" name="search" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label for="category" class="form-label">Category:</label>
+                        <label for="category" class="form-label">Select a Category:</label>
                         <select id="category" name="category" class="form-select">
                             <option value="none">None</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="subCategory" class="form-label">SubCategory:</label>
+                        <label for="subCategory" class="form-label">Select a SubCategory:</label>
                         <select id="subCategory" name="subCategory" class="form-select">
                             <option value="none">None</option>
                         </select>
                     </div>
                     <div class="mb-3" id="selGameMode" style="display: none;">
-                        <label for="gameMode" class="form-label">Game Mode:</label>
+                        <label for="gameMode" class="form-label">Select a Game Mode:</label>
                         <select id="gameMode" name="gameMode" class="form-select">
                             <option value="none">None</option>
                         </select>
                     </div>
                     <div class="mb-3" id="selGenre" style="display: none;">
-                        <label for="genre" class="form-label">Genre:</label>
+                        <label for="genre" class="form-label">Select a Genre:</label>
                         <select id="genre" name="genre" class="form-select">
                             <option value="none">None</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Price:</label>
+                        <label class="form-label">Order by Price:</label>
                         <div class="form-check">
                             <input type="radio" id="priceAsc" name="price" value="higher" class="form-check-input">
-                            <label for="priceAsc" class="form-check-label">Higher</label>
+                            <label for="priceAsc" class="form-check-label">Lower to Higher</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" id="priceDesc" name="price" value="lower" class="form-check-input">
-                            <label for="priceDesc" class="form-check-label">Lower</label>
+                            <label for="priceDesc" class="form-check-label">Higher to Lower</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" id="noPrice" name="price" value="none" class="form-check-input" checked>
@@ -81,14 +81,14 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Rating:</label>
+                        <label class="form-label">Order by Rating:</label>
                         <div class="form-check">
                             <input type="radio" id="ratingAsc" name="rating" value="higher" class="form-check-input">
-                            <label for="ratingAsc" class="form-check-label">Higher</label>
+                            <label for="ratingAsc" class="form-check-label">Lower to Higher</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" id="ratingDesc" name="rating" value="lower" class="form-check-input">
-                            <label for="ratingDesc" class="form-check-label">Lower</label>
+                            <label for="ratingDesc" class="form-check-label">Higher to Lower</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" id="noRating" name="rating" value="none" class="form-check-input"
@@ -97,21 +97,21 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Date Added:</label>
+                        <label class="form-label">Order by Date Added:</label>
                         <div class="form-check">
                             <input type="radio" id="dateAsc" name="date" value="higher" class="form-check-input">
-                            <label for="dateAsc" class="form-check-label">Higher</label>
+                            <label for="dateAsc" class="form-check-label">Lower to Higher</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" id="dateDesc" name="date" value="lower" class="form-check-input">
-                            <label for="dateDesc" class="form-check-label">Lower</label>
+                            <label for="dateDesc" class="form-check-label">Higher to Lower</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" id="noDate" name="date" value="none" class="form-check-input" checked>
                             <label for="noDate" class="form-check-label">None</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
                 </form>
             </div>
             <!-- Products Area -->

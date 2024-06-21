@@ -3,8 +3,11 @@ import { loadNavbar } from "./utilities/navbar.js";
 import { getSelf } from "./api/users.js";
 document.addEventListener('DOMContentLoaded', async function () {
     loadNavbar('navbarContainer');
-    const user = await getSelf()
-    const loggedInUsername= user.user.username
+    let loggedInUsername = null
+    if(localStorage.getItem('loggedInUser')){
+        const user = await getSelf()
+        loggedInUsername= user.user.username
+    }
     try {
         const mostSpent = await getMostSpent();
         const mostOrders = await getMostOrders();
