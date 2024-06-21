@@ -138,5 +138,3 @@ export async function delOrderProduct(productID){
         throw error;
     }
 }
-
-
