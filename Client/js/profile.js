@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 name: product.name,
                                 imageUrl: product.img,
                                 price: product.basePrice,
-                                total: productTotal.toFixed(2) 
+                                total: productTotal.toFixed(2)
                             });
                         }
 
@@ -147,6 +147,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
             });
         }
+        // Event listener for logout button
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            logoutUser();
+        });
     } catch (error) {
         console.error('Error loading user profile:', error);
         alert('Failed to load user profile');

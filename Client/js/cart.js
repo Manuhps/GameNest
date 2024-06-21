@@ -2,6 +2,7 @@ import { renderCart } from './utilities/cart/renderCart.js';
 import { getOrderProducts, completeOrder } from './api/orders.js';
 import { getSelf } from './api/users.js';
 import { loadNavbar } from './utilities/navbar.js';
+import { logoutUser } from './utilities/userUtils.js';
 document.addEventListener('DOMContentLoaded', () => {
     loadNavbar('navbarContainer', false, true);
     renderCart();
@@ -41,10 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await completeOrder(orderData);
             if (response) {
                 alert('Order completed successfully!');
-                 // Clear the cart items container
-                 const cartItemsContainer = document.getElementById('cart-items');
-                 cartItemsContainer.innerHTML = ''; // Clear previous content
- 
+                // Clear the cart items container
+                const cartItemsContainer = document.getElementById('cart-items');
+                cartItemsContainer.innerHTML = ''; // Clear previous content
+
             } else {
                 alert('Failed to complete order');
             }
@@ -52,5 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error updating order:', error);
             alert('An error occurred while updating the order');
         }
+    });
+    // Event listener for logout button
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        logoutUser();
     });
 });
