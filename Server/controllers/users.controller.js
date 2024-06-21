@@ -67,7 +67,7 @@ module.exports = {
                     handleConflictError(res, "User with this email or name already exists");
                 } else {
                     let user_image = null;
-                    let defaultImageUrl = 'https://cdn1.iconfinder.com/data/icons/user-interface-664/24/User-512.png'; // Substitua pela URL da imagem padrão
+                    let defaultImageUrl = 'https://asset.cloudinary.com/dmw98mx7r/03a8e701fc207b801907a5709ae03e17'; // Substitua pela URL da imagem padrão
                     let imagePath = req.file ? req.file.path : defaultImageUrl;
 
                     // upload image
@@ -76,7 +76,6 @@ module.exports = {
                     } else {
                         user_image = { url: defaultImageUrl, public_id: null };
                     }
-
                     const user = await User.create({
                         username: req.body.username,
                         email: req.body.email,
