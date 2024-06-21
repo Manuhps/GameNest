@@ -111,6 +111,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Add-to-cart button event listener
         document.querySelector('.add-to-cart-button').addEventListener('click', async () => {
             try {
+                if (!localStorage.getItem('isLoggedIn')) {
+                    return alert('You have to be logged in to add to cart')
+                }
                 const quantity = document.getElementById('quantityInput').value
 
                 let isOrderCart = false

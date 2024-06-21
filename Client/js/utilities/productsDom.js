@@ -1,8 +1,7 @@
 import { fetchProducts } from '../api/products.js';
 import { getStarsHTML } from './ratingStarsHome.js';
 
-function displayProducts(products, pagination) {
-    const limit = 12;
+function displayProducts(products, pagination, limit) {
     let productCards = '';
 
     products.slice(0, limit).forEach(product => {
@@ -49,12 +48,12 @@ function displayProducts(products, pagination) {
 }
 
 // Function to fetch and display products with pagination
-export async function fetchAndDisplayProducts(offset, params) {
+export async function fetchAndDisplayProducts(offset, limit = 12, params) {
     try {
-        const  data  = await fetchProducts(offset, params);
+        const data = await fetchProducts(offset, limit, params);
 
         if (data && data.data.length > 0) {
-            displayProducts(data.data, data.pagination);
+            displayProducts(data.data, data.pagination, limit);
         } else {
             console.log('No products found.');
         }
